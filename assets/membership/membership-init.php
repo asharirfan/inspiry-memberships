@@ -18,8 +18,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 1.0.0
  */
-if ( file_exists( IM_BASE_DIR . '/assets/membership/cpt-membership.php' ) ) {
-    require_once( IM_BASE_DIR . '/assets/membership/cpt-membership.php' );
+if ( file_exists( IMS_BASE_DIR . '/assets/membership/cpt-membership.php' ) ) {
+    require_once( IMS_BASE_DIR . '/assets/membership/cpt-membership.php' );
 }
 
 /**
@@ -27,8 +27,8 @@ if ( file_exists( IM_BASE_DIR . '/assets/membership/cpt-membership.php' ) ) {
  *
  * @since 1.0.0
  */
-if ( file_exists( IM_BASE_DIR . '/assets/membership/class-membership.php' ) ) {
-    require_once( IM_BASE_DIR . '/assets/membership/class-membership.php' );
+if ( file_exists( IMS_BASE_DIR . '/assets/membership/class-membership.php' ) ) {
+    require_once( IMS_BASE_DIR . '/assets/membership/class-membership.php' );
 }
 
 /**
@@ -36,8 +36,8 @@ if ( file_exists( IM_BASE_DIR . '/assets/membership/class-membership.php' ) ) {
  *
  * @since 1.0.0
  */
-if ( file_exists( IM_BASE_DIR . '/assets/membership/class-membership-metaboxes.php' ) ) {
-    require_once( IM_BASE_DIR . '/assets/membership/class-membership-metaboxes.php' );
+if ( file_exists( IMS_BASE_DIR . '/assets/membership/class-membership-metaboxes.php' ) ) {
+    require_once( IMS_BASE_DIR . '/assets/membership/class-membership-metaboxes.php' );
 }
 
 /**
@@ -45,8 +45,26 @@ if ( file_exists( IM_BASE_DIR . '/assets/membership/class-membership-metaboxes.p
  *
  * @since 1.0.0
  */
-if ( file_exists( IM_BASE_DIR . '/assets/membership/class-membership-custom-columns.php' ) ) {
-    require_once( IM_BASE_DIR . '/assets/membership/class-membership-custom-columns.php' );
+if ( file_exists( IMS_BASE_DIR . '/assets/membership/class-membership-custom-columns.php' ) ) {
+    require_once( IMS_BASE_DIR . '/assets/membership/class-membership-custom-columns.php' );
+}
+
+/**
+ * Get Membership Class.
+ *
+ * @since 1.0.0
+ */
+if ( file_exists( IMS_BASE_DIR . '/assets/membership/class-get-membership.php' ) ) {
+    require_once( IMS_BASE_DIR . '/assets/membership/class-get-membership.php' );
+}
+
+/**
+ * Functions to get Membership Object.
+ *
+ * @since 1.0.0
+ */
+if ( file_exists( IMS_BASE_DIR . '/assets/membership/methods-get-membership.php' ) ) {
+    require_once( IMS_BASE_DIR . '/assets/membership/methods-get-membership.php' );
 }
 
 if ( class_exists( 'IMS_Membership' ) ) {

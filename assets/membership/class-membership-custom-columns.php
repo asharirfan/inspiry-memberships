@@ -60,9 +60,12 @@ if ( ! class_exists( 'IMS_Membership_Custom_Columns' ) ) :
 
 			global $post;
 
+			// Meta data prefix
+			$prefix = 'ims_membership_';
+
 			switch ( $column ) {
 				case 'properties':
-					$properties = get_post_meta( $post->ID, 'ims_allowed_properties', true );
+					$properties = get_post_meta( $post->ID, "{$prefix}allowed_properties", true );
 					if ( ! empty( $properties ) ) {
 						echo esc_html( $properties );
 					} else {
@@ -71,7 +74,7 @@ if ( ! class_exists( 'IMS_Membership_Custom_Columns' ) ) :
 					break;
 
 				case 'featured':
-					$featured = get_post_meta( $post->ID, 'ims_featured_properties', true );
+					$featured = get_post_meta( $post->ID, "{$prefix}featured_properties", true );
 					if ( ! empty( $featured ) ) {
 						echo esc_html( $featured );
 					} else {
@@ -80,7 +83,7 @@ if ( ! class_exists( 'IMS_Membership_Custom_Columns' ) ) :
 					break;
 
 				case 'price':
-					$price = get_post_meta( $post->ID, 'ims_price', true );
+					$price = get_post_meta( $post->ID, "{$prefix}price", true );
 					if ( ! empty( $price ) ) {
 						echo esc_html( $price );
 					} else {

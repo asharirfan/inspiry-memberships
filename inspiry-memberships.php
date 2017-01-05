@@ -45,20 +45,20 @@ if ( ! defined( 'WPINC' ) ) {
  *
  * @since 1.0.0
  */
-if ( ! defined( 'IM_VERSION' ) ) {
-    define( 'IM_VERSION', '1.0.0' );
+if ( ! defined( 'IMS_VERSION' ) ) {
+    define( 'IMS_VERSION', '1.0.0' );
 }
 
-if ( ! defined( 'IM_BASE_NAME' ) ) {
-	define( 'IM_BASE_NAME', plugin_basename( __FILE__ ) );
+if ( ! defined( 'IMS_BASE_NAME' ) ) {
+	define( 'IMS_BASE_NAME', plugin_basename( __FILE__ ) );
 }
 
-if ( ! defined( 'IM_BASE_URL' ) ) {
-	define( 'IM_BASE_URL', plugin_dir_url( __FILE__ ) );
+if ( ! defined( 'IMS_BASE_URL' ) ) {
+	define( 'IMS_BASE_URL', plugin_dir_url( __FILE__ ) );
 }
 
-if ( ! defined( 'IM_BASE_DIR' ) ) {
-	define( 'IM_BASE_DIR', dirname( __FILE__ ) );
+if ( ! defined( 'IMS_BASE_DIR' ) ) {
+	define( 'IMS_BASE_DIR', dirname( __FILE__ ) );
 }
 
 
@@ -74,8 +74,8 @@ function activate_inspiry_memberships() {
 	 *
 	 * @since 1.0.0
 	 */
-	if ( file_exists( IM_BASE_DIR . '/assets/includes/class-im-activator.php' ) ) {
-	    require_once( IM_BASE_DIR . '/assets/includes/class-im-activator.php' );
+	if ( file_exists( IMS_BASE_DIR . '/assets/includes/class-im-activator.php' ) ) {
+	    require_once( IMS_BASE_DIR . '/assets/includes/class-im-activator.php' );
 	}
 	Inspiry_Memberships_Activator::activate();
 
@@ -94,8 +94,8 @@ function deactivate_inspiry_memberships() {
 	 *
 	 * @since 1.0.0
 	 */
-	if ( file_exists( IM_BASE_DIR . '/assets/includes/class-im-deactivator.php' ) ) {
-	    require_once( IM_BASE_DIR . '/assets/includes/class-im-deactivator.php' );
+	if ( file_exists( IMS_BASE_DIR . '/assets/includes/class-im-deactivator.php' ) ) {
+	    require_once( IMS_BASE_DIR . '/assets/includes/class-im-deactivator.php' );
 	}
 	Inspiry_Memberships_Deactivator::deactivate();
 
@@ -107,10 +107,10 @@ register_deactivation_hook( __FILE__, 'deactivate_inspiry_memberships' );
 
 
 /**
- * im-init.php.
+ * ims-init.php.
  *
  * @since 1.0.0
  */
-if ( file_exists( IM_BASE_DIR . '/assets/im-init.php' ) ) {
-    require_once( IM_BASE_DIR . '/assets/im-init.php' );
+if ( file_exists( IMS_BASE_DIR . '/assets/ims-init.php' ) ) {
+    require_once( IMS_BASE_DIR . '/assets/ims-init.php' );
 }

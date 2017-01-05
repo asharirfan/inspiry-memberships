@@ -76,7 +76,8 @@ if ( ! class_exists( 'IMS_Membership_Meta_Boxes' ) ) :
 		 */
 		public function meta_box_content( $object, $box ) {
 
-			wp_nonce_field( basename( __FILE__ ), 'membership_meta_box_nonce' ); ?>
+			wp_nonce_field( basename( __FILE__ ), 'membership_meta_box_nonce' );
+			$prefix = 'ims_membership_'; ?>
 
 			<table class="form-table">
 
@@ -90,7 +91,7 @@ if ( ! class_exists( 'IMS_Membership_Meta_Boxes' ) ) :
 						<input 	type="number"
 								name="allowed_properties"
 								id="allowed_properties"
-								value="<?php echo esc_attr( get_post_meta( $object->ID, 'ims_allowed_properties', true ) ); ?>"
+								value="<?php echo esc_attr( get_post_meta( $object->ID, "{$prefix}allowed_properties", true ) ); ?>"
 						/>
 						<p class="description"><?php _e( 'Enter the number of properties allowed in this membership. Example: 50', 'inspiry-membership' ); ?></p>
 					</td>
@@ -106,7 +107,7 @@ if ( ! class_exists( 'IMS_Membership_Meta_Boxes' ) ) :
 						<input 	type="number"
 								name="featured_properties"
 								id="featured_properties"
-								value="<?php echo esc_attr( get_post_meta( $object->ID, 'ims_featured_properties', true ) ); ?>"
+								value="<?php echo esc_attr( get_post_meta( $object->ID, "{$prefix}featured_properties", true ) ); ?>"
 						/>
 						<p class="description"><?php _e( 'Enter the number of featured properties allowed in this membership. Example: 20', 'inspiry-membership' ); ?></p>
 					</td>
@@ -122,7 +123,7 @@ if ( ! class_exists( 'IMS_Membership_Meta_Boxes' ) ) :
 						<input 	type="number"
 								name="price"
 								id="price"
-								value="<?php echo esc_attr( get_post_meta( $object->ID, 'ims_price', true ) ); ?>"
+								value="<?php echo esc_attr( get_post_meta( $object->ID, "{$prefix}price", true ) ); ?>"
 						/>
 						<p class="description"><?php _e( 'Enter the price of this membership. Example: 20', 'inspiry-membership' ); ?></p>
 					</td>
@@ -167,10 +168,13 @@ if ( ! class_exists( 'IMS_Membership_Meta_Boxes' ) ) :
 			$ims_meta_value[ 'featured_properties' ]	= ( isset( $_POST[ 'featured_properties' ] ) ) ? sanitize_html_class( $_POST[ 'featured_properties' ] ) : '';
 			$ims_meta_value[ 'price' ] 					= ( isset( $_POST[ 'price' ] ) ) ? sanitize_html_class( $_POST[ 'price' ] ) : '';
 
+			// Meta data prefix.
+			$prefix = 'ims_membership_';
+
 			// Save the meta values.
-			$this->save_meta_value( $post_id, 'ims_allowed_properties', $ims_meta_value[ 'allowed_properties' ] );
-			$this->save_meta_value( $post_id, 'ims_featured_properties', $ims_meta_value[ 'featured_properties' ] );
-			$this->save_meta_value( $post_id, 'ims_price', $ims_meta_value[ 'price' ] );
+			$this->save_meta_value( $post_id, "{$prefix}allowed_properties", $ims_meta_value[ 'allowed_properties' ] );
+			$this->save_meta_value( $post_id, "{$prefix}featured_properties", $ims_meta_value[ 'featured_properties' ] );
+			$this->save_meta_value( $post_id, "{$prefix}price", $ims_meta_value[ 'price' ] );
 
 			do_action( 'ims_membership_save_meta_boxes', $post_id, $_POST );
 

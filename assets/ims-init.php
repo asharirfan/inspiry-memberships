@@ -18,6 +18,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 1.0.0
  */
-if ( file_exists( IM_BASE_DIR . '/assets/membership/membership-init.php' ) ) {
-    require_once( IM_BASE_DIR . '/assets/membership/membership-init.php' );
+if ( file_exists( IMS_BASE_DIR . '/assets/membership/membership-init.php' ) ) {
+    require_once( IMS_BASE_DIR . '/assets/membership/membership-init.php' );
 }
