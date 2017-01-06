@@ -83,9 +83,17 @@ if ( ! class_exists( 'IMS_Membership_Custom_Columns' ) ) :
 					break;
 
 				case 'price':
-					$price = get_post_meta( $post->ID, "{$prefix}price", true );
+					$currency_settings 	= get_option( 'ims_basic_section' );
+					$price 				= get_post_meta( $post->ID, "{$prefix}price", true );
+					$currency_position	= $currency_settings[ 'ims_currency_position' ];
+					$formatted_price 	= '';
+					if ( 'after' == $currency_position ) {
+						$formatted_price 	= $price . $currency_settings[ 'ims_currency_symbol' ];
+					} else {
+						$formatted_price 	= $currency_settings[ 'ims_currency_symbol' ] . $price;
+					}
 					if ( ! empty( $price ) ) {
-						echo esc_html( $price );
+						echo esc_html( $formatted_price );
 					} else {
 						_e( 'Not Available', 'inspiry-stripe' );
 					}

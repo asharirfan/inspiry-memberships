@@ -120,7 +120,7 @@ if ( ! class_exists( 'IMS_Membership_Meta_Boxes' ) ) :
 						</label>
 					</th>
 					<td>
-						<input 	type="number"
+						<input 	type="text"
 								name="price"
 								id="price"
 								value="<?php echo esc_attr( get_post_meta( $object->ID, "{$prefix}price", true ) ); ?>"
@@ -164,9 +164,9 @@ if ( ! class_exists( 'IMS_Membership_Meta_Boxes' ) ) :
 
 			// Get the posted data and sanitize it for use as an HTML class.
 			$ims_meta_value 							= array();
-			$ims_meta_value[ 'allowed_properties' ] 	= ( isset( $_POST[ 'allowed_properties' ] ) ) ? sanitize_html_class( $_POST[ 'allowed_properties' ] ) : '';
-			$ims_meta_value[ 'featured_properties' ]	= ( isset( $_POST[ 'featured_properties' ] ) ) ? sanitize_html_class( $_POST[ 'featured_properties' ] ) : '';
-			$ims_meta_value[ 'price' ] 					= ( isset( $_POST[ 'price' ] ) ) ? sanitize_html_class( $_POST[ 'price' ] ) : '';
+			$ims_meta_value[ 'allowed_properties' ] 	= ( isset( $_POST[ 'allowed_properties' ] ) ) ? intval( $_POST[ 'allowed_properties' ] ) : '';
+			$ims_meta_value[ 'featured_properties' ]	= ( isset( $_POST[ 'featured_properties' ] ) ) ? intval( $_POST[ 'featured_properties' ] ) : '';
+			$ims_meta_value[ 'price' ] 					= ( isset( $_POST[ 'price' ] ) ) ? floatval( $_POST[ 'price' ] ) : '';
 
 			// Meta data prefix.
 			$prefix = 'ims_membership_';

@@ -57,7 +57,7 @@ if ( ! class_exists( 'IMS_CPT_Membership' ) ) :
 				// 'taxonomies'          => array(),
 				'public'              => true,
 				'show_ui'             => true,
-				'show_in_menu'        => true,
+				'show_in_menu'        => 'inspiry_memberships',
 				'show_in_admin_bar'   => true,
 				'menu_position'       => 10,
 				'menu_icon'           => 'dashicons-smiley',
