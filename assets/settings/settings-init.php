@@ -34,14 +34,25 @@ if ( class_exists( 'WP_OSA' ) ) {
 	 */
     $ims_settings->add_section(
     	array(
-			'id'    => 'ims_basic_section',
+			'id'    => 'ims_basic_settings',
 			'title' => __( 'Basic Settings', 'inspiry-memberships' )
 		)
     );
 
+    // Field: Membership Mode Check
+    $ims_settings->add_field(
+		'ims_basic_settings',
+		array(
+			'id'   => 'ims_memberships_enable',
+			'type' => 'checkbox',
+			'name' => __( 'Enable Memberships', 'inspiry-memberships' ),
+			'desc' => __( 'Check this to enable memberships on your website.', 'inspiry-memberships' ),
+		)
+	);
+
     // Field: Currency Code.
 	$ims_settings->add_field(
-		'ims_basic_section',
+		'ims_basic_settings',
 		array(
 			'id'      => 'ims_currency_code',
 			'type'    => 'text',
@@ -53,7 +64,7 @@ if ( class_exists( 'WP_OSA' ) ) {
 
 	// Field: Currency Symbol.
 	$ims_settings->add_field(
-		'ims_basic_section',
+		'ims_basic_settings',
 		array(
 			'id'      => 'ims_currency_symbol',
 			'type'    => 'text',
@@ -65,7 +76,7 @@ if ( class_exists( 'WP_OSA' ) ) {
 
 	// Field: Currency Position.
 	$ims_settings->add_field(
-		'ims_basic_section',
+		'ims_basic_settings',
 		array(
 			'id'      => 'ims_currency_position',
 			'type'    => 'select',
@@ -86,14 +97,14 @@ if ( class_exists( 'WP_OSA' ) ) {
 	 */
     $ims_settings->add_section(
     	array(
-			'id'    => 'ims_stripe_section',
+			'id'    => 'ims_stripe_settings',
 			'title' => __( 'Stripe Settings', 'inspiry-memberships' )
 		)
     );
 
     // Field: Test mode check
     $ims_settings->add_field(
-		'ims_stripe_section',
+		'ims_stripe_settings',
 		array(
 			'id'   => 'ims_test_mode',
 			'type' => 'checkbox',
@@ -104,7 +115,7 @@ if ( class_exists( 'WP_OSA' ) ) {
 
     // Field: Live Secret Key.
 	$ims_settings->add_field(
-		'ims_stripe_section',
+		'ims_stripe_settings',
 		array(
 			'id'      => 'ims_live_secret',
 			'type'    => 'text',
@@ -116,7 +127,7 @@ if ( class_exists( 'WP_OSA' ) ) {
 
 	// Field: Live Publishable Key.
 	$ims_settings->add_field(
-		'ims_stripe_section',
+		'ims_stripe_settings',
 		array(
 			'id'      => 'ims_live_publishable',
 			'type'    => 'text',
@@ -128,7 +139,7 @@ if ( class_exists( 'WP_OSA' ) ) {
 
 	// Field: Test Secret Key.
 	$ims_settings->add_field(
-		'ims_stripe_section',
+		'ims_stripe_settings',
 		array(
 			'id'      => 'ims_test_secret',
 			'type'    => 'text',
@@ -140,7 +151,7 @@ if ( class_exists( 'WP_OSA' ) ) {
 
 	// Field: Test Publishable Key.
 	$ims_settings->add_field(
-		'ims_stripe_section',
+		'ims_stripe_settings',
 		array(
 			'id'      => 'ims_test_publishable',
 			'type'    => 'text',

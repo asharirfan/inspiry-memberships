@@ -29,4 +29,7 @@ if ( class_exists( 'IMS_Admin_Menu' ) ) {
 	// Admin menu.
 	add_action( 'admin_menu', array( $ims_admin_menu_init, 'ims_menu' ), 10 );
 
+	// Current menu when clicked on a tab.
+	add_action( 'admin_footer', array( $ims_admin_menu_init, 'open_menu' ) );
+
 }

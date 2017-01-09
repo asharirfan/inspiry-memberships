@@ -23,6 +23,15 @@ if ( file_exists( IMS_BASE_DIR . '/assets/membership/membership-init.php' ) ) {
 }
 
 /**
+ * receipt-init.php.
+ *
+ * @since 1.0.0
+ */
+if ( file_exists( IMS_BASE_DIR . '/assets/receipt/receipt-init.php' ) ) {
+    require_once( IMS_BASE_DIR . '/assets/receipt/receipt-init.php' );
+}
+
+/**
  * admin-menu-init.php.
  *
  * @since 1.0.0
@@ -38,4 +47,31 @@ if ( file_exists( IMS_BASE_DIR . '/assets/admin-menu/admin-menu-init.php' ) ) {
  */
 if ( file_exists( IMS_BASE_DIR . '/assets/settings/settings-init.php' ) ) {
     require_once( IMS_BASE_DIR . '/assets/settings/settings-init.php' );
+}
+
+/**
+ * class-scripts.php.
+ *
+ * @since 1.0.0
+ */
+if ( file_exists( IMS_BASE_DIR . '/assets/js/class-scripts.php' ) ) {
+    require_once( IMS_BASE_DIR . '/assets/js/class-scripts.php' );
+}
+
+/**
+ * ajax-functions.php.
+ *
+ * @since 1.0.0
+ */
+if ( file_exists( IMS_BASE_DIR . '/assets/js/ajax-functions.php' ) ) {
+    require_once( IMS_BASE_DIR . '/assets/js/ajax-functions.php' );
+}
+
+/**
+ * class-functions.php.
+ *
+ * @since 1.0.0
+ */
+if ( file_exists( IMS_BASE_DIR . '/assets/class-functions.php' ) ) {
+    require_once( IMS_BASE_DIR . '/assets/class-functions.php' );
 }

@@ -83,7 +83,7 @@ if ( ! class_exists( 'IMS_Membership_Custom_Columns' ) ) :
 					break;
 
 				case 'price':
-					$currency_settings 	= get_option( 'ims_basic_section' );
+					$currency_settings 	= get_option( 'ims_basic_settings' );
 					$price 				= get_post_meta( $post->ID, "{$prefix}price", true );
 					$currency_position	= $currency_settings[ 'ims_currency_position' ];
 					$formatted_price 	= '';
