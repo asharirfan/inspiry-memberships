@@ -1,8 +1,8 @@
 <?php
 /**
- * Payment Handling Class
+ * Payment Handler Initialization
  *
- * Class for handling payment functions.
+ * Payment handling initialization file.
  *
  * @since 	1.0.0
  * @package IMS
@@ -14,19 +14,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * IMS_Payment_Handler.
- *
- * Class for handling payment functions.
+ * class-payment-handler.php.
  *
  * @since 1.0.0
  */
+if ( file_exists( IMS_BASE_DIR . '/assets/payment-handler/class-payment-handler.php' ) ) {
+    require_once( IMS_BASE_DIR . '/assets/payment-handler/class-payment-handler.php' );
+}
 
-if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
+if ( class_exists( 'IMS_Payment_Handler' ) ) {
 
-	class IMS_Payment_Handler {
+	/**
+	 * If IMS_Payment_Handler class exists then initialize
+	 * it to make it available to init hook.
+	 */
+	$ims_payment_handler = new IMS_Payment_Handler();
 
-		Start here...
+	add_action( 'init', array( $ims_payment_handler, 'process_stripe_payment' ) );
 
-	}
-
-endif;
+}

@@ -64,7 +64,7 @@ if ( ! class_exists( 'IMS_Admin_Menu' ) ) :
 				'addnew' => array(
 					'inspiry_memberships',
 					__( 'Add New Membership', 'inspiry-memberships' ),
-					__( 'New Membership', 'inspiry-memberships' ),
+					__( '⇨ New Membership', 'inspiry-memberships' ),
 					'manage_options',
 					'post-new.php?post_type=ims_membership',
 				),
@@ -74,6 +74,13 @@ if ( ! class_exists( 'IMS_Admin_Menu' ) ) :
 					__( 'Receipts', 'inspiry-memberships' ),
 					'manage_options',
 					'edit.php?post_type=ims_receipt',
+				),
+				'addnewreceipt' => array(
+					'inspiry_memberships',
+					__( 'Add New Receipt', 'inspiry-memberships' ),
+					__( '✓ New Receipt', 'inspiry-memberships' ),
+					'manage_options',
+					'post-new.php?post_type=ims_receipt',
 				),
 			);
 
@@ -108,30 +115,30 @@ if ( ! class_exists( 'IMS_Admin_Menu' ) ) :
 		 */
 		public function open_menu() {
 			// Get Current Screen.
-			$screen = get_current_screen();
-			$menu_arr = [
+			$screen 	= get_current_screen();
+			$menu_arr 	= [
 				'ims_membership',
 				'edit-ims_membership',
 				'ims_receipt',
 				'edit-ims_receipt',
-				// 'vacation-rentals_page_vacation_rentals_settings',
+				// 'vacation-rentals_page_inspiry_memberships_settings',
 			];
 			// Check if the current screen's ID has any of the above menu array items.
 			if ( in_array( $screen->id, $menu_arr ) ) { ?>
 				<script type="text/javascript">
 						jQuery("body").removeClass("sticky-menu");
-						jQuery("#toplevel_page_vacation_rentals").addClass('wp-has-current-submenu wp-menu-open').removeClass('wp-not-current-submenu');
-						jQuery("#toplevel_page_vacation_rentals > a").addClass('wp-has-current-submenu wp-menu-open').removeClass('wp-not-current-submenu');
-						// jQuery("#toplevel_page_vacation_rentals .wp-first-item").addClass('current');
+						jQuery("#toplevel_page_inspiry_memberships").addClass('wp-has-current-submenu wp-menu-open').removeClass('wp-not-current-submenu');
+						jQuery("#toplevel_page_inspiry_memberships > a").addClass('wp-has-current-submenu wp-menu-open').removeClass('wp-not-current-submenu');
+						// jQuery("#toplevel_page_inspiry_memberships .wp-first-item").addClass('current');
 				<?php
-					// if ( isset( $_GET['taxonomy'] ) && ( 'vr_rental-destination' ==  $_GET['taxonomy'] ) ) {
-					// 	echo 'jQuery("#toplevel_page_vacation_rentals ul li:nth-child(4)").addClass("current");';
+					// if ( 'ims_receipt' == $screen->id ) {
+					// 	echo 'jQuery("#toplevel_page_inspiry_memberships ul li:nth-child(4)").addClass("current");';
 					// }
 					// if ( isset( $_GET['taxonomy'] ) && ( 'vr_rental-feature' ==  $_GET['taxonomy'] ) ) {
-					// 	echo 'jQuery("#toplevel_page_vacation_rentals ul li:nth-child(5)").addClass("current");';
+					// 	echo 'jQuery("#toplevel_page_inspiry_memberships ul li:nth-child(5)").addClass("current");';
 					// }
 					// if ( isset( $_GET['taxonomy'] ) && ( 'vr_rental-type' ==  $_GET['taxonomy'] ) ) {
-					// 	echo 'jQuery("#toplevel_page_vacation_rentals ul li:nth-child(6)").addClass("current");';
+					// 	echo 'jQuery("#toplevel_page_inspiry_memberships ul li:nth-child(6)").addClass("current");';
 					// }
 				?>
 					jQuery(window).load(function ($) {

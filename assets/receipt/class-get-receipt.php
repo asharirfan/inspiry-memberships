@@ -53,7 +53,8 @@ if ( ! class_exists( 'IMS_Get_Receipt' ) ) :
 		 	'membership_id'	=> 'ims_membership_membership_id',
 		 	'price'			=> 'ims_membership_price',
 		 	'purchase_date'	=> 'ims_membership_purchase_date',
-		 	'user_id'		=> 'ims_membership_user_id'
+		 	'user_id'		=> 'ims_membership_user_id',
+		 	'vendor'		=> 'ims_membership_vendor'
 		 );
 
 		/**
@@ -72,7 +73,7 @@ if ( ! class_exists( 'IMS_Get_Receipt' ) ) :
 
 			if ( $the_receipt_id > 0 ) {
 				$this->the_receipt_id	= $the_receipt_id;
-				$this->the_meta_data		= get_post_custom( $the_receipt_id );
+				$this->the_meta_data	= get_post_custom( $the_receipt_id );
 			}
 
 		}
@@ -181,6 +182,19 @@ if ( ! class_exists( 'IMS_Get_Receipt' ) ) :
 			    return false;
 			}
 			return $this->get_meta( $this->meta_keys[ 'user_id' ] );
+		}
+
+		/**
+		 * Get Receipt: Vendor.
+		 *
+		 * @since 1.0.0
+		 */
+		public function get_vendor() {
+			// Returns false if ID is not present.
+			if ( ! $this->the_receipt_id ) {
+			    return false;
+			}
+			return $this->get_meta( $this->meta_keys[ 'vendor' ] );
 		}
 
 	}

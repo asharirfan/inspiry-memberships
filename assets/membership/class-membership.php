@@ -56,6 +56,32 @@ if ( ! class_exists( 'IMS_Membership' ) ) :
 
 		}
 
+		/**
+		 * Method: Create custom schedules for memberships.
+		 *
+		 * @since 1.0.0
+		 */
+		public function create_schedules( $schedules ) {
+
+			$schedules[ 'weekly' ]	= array(
+				'interval'	=> 7 * 24 * 60 * 60, // 7 days * 24 hours * 60 minutes * 60 seconds
+				'display' 	=> __( 'Once Weekly', 'inspiry-memberships' )
+			);
+
+			$schedules[ 'monthly' ]	= array(
+				'interval'	=> 30 * 24 * 60 * 60, // 30 days * 24 hours * 60 minutes * 60 seconds
+				'display' 	=> __( 'Once Monthly', 'inspiry-memberships' )
+			);
+
+			$schedules[ 'yearly' ]	= array(
+				'interval'	=> 365 * 24 * 60 * 60, // 365 days * 24 hours * 60 minutes * 60 seconds
+				'display' 	=> __( 'Once Yearly', 'inspiry-memberships' )
+			);
+
+			return $schedules;
+
+		}
+
 	}
 
 endif;

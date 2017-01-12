@@ -4,12 +4,12 @@ jQuery( function( $ ) {
 
 	$( document ).ready( function() {
 
-		$( '#rh-membership-select' ).change( function() {
+		$( '#ims-membership-select' ).change( function() {
 
 			var membership_id 	= $( this ).val(); // Membership ID.
-			var ims_stripe_load	= $( '.rh-membership_loader img' ); // Form Loader Image.
+			var ims_stripe_load	= $( '.ims-membership_loader img' ); // Form Loader Image.
 			var ims_adminAjax 	= $( this ).data( 'ajax-link' );
-			var stripe_button 	= $( '.rh-stripe-button' ); // Stripe button div.
+			var stripe_button 	= $( '.ims-stripe-button' ); // Stripe button div.
 
 			stripe_button.empty();
 
@@ -30,7 +30,7 @@ jQuery( function( $ ) {
                 if( response.success ) {
                     stripe_button.html( '<script src="https://checkout.stripe.com/checkout.js" class="stripe-button" data-key="' + response.publishable_key + '" data-amount="' + response.price + '" data-name="' + response.blog_name + '" data-currency="' + response.currency_code + '" data-description="' + response.desc + ' for ' + response.membership + '" data-locale="auto" data-billing-address="true" data-label="' + response.button_label + '"> </script>' );
                     stripe_button.append( '<input type="hidden" name="action" value="ims_stripe_membership_payment"/>' );
-                    stripe_button.append( '<input type="hidden" name="isp_nonce" value="' + response.payment_nonce + '"/>' );
+                    stripe_button.append( '<input type="hidden" name="ims_stripe_nonce" value="' + response.payment_nonce + '"/>' );
                     stripe_button.append( '<input type="hidden" name="membership_price" value="' + response.price + '"/>' );
                     stripe_button.append( '<input type="hidden" name="membership_id" value="' + response.membership_id + '"/>' );
                 } else {

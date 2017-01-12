@@ -37,7 +37,8 @@ if ( ! class_exists( 'IMS_Membership_Custom_Columns' ) ) :
 	            'title' 		=> __( 'Membership Title', 'inspiry-stripe' ),
 	            'properties'	=> __( 'Properties Allowed', 'inspiry-stripe' ),
 	            'featured' 		=> __( 'Featured Properties', 'inspiry-stripe' ),
-	            'price' 		=> __('Price', 'inspiry-stripe')
+	            'price' 		=> __( 'Price', 'inspiry-stripe' ),
+	            'duration' 		=> __( 'Duration', 'inspiry-stripe' )
 	        );
 
 	        /**
@@ -98,6 +99,19 @@ if ( ! class_exists( 'IMS_Membership_Custom_Columns' ) ) :
 						_e( 'Not Available', 'inspiry-stripe' );
 					}
 					break;
+
+				case 'duration':
+					$duration 		= get_post_meta( $post->ID, "{$prefix}duration", true );
+					$duration_unit	= get_post_meta( $post->ID, "{$prefix}duration_unit", true );
+					if ( ! empty( $duration ) && ( $duration > 1 ) ) {
+						echo esc_html( $duration . ' ' . $duration_unit );
+					} elseif ( ! empty( $duration ) && ( $duration == 1 ) ) {
+						echo esc_html( $duration . ' ' . rtrim( $duration_unit, "s" ) );
+					} else {
+						_e( 'Not Available', 'inspiry-stripe' );
+					}
+					break;
+
 			}
 
 		}

@@ -102,6 +102,11 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 					<td>
 						<?php $receipt_for = get_post_meta( $object->ID, "{$prefix}receipt_for", true ); ?>
 						<p class=""><?php echo ( ! empty( $receipt_for ) ) ? $receipt_for : __( 'Data not available!' ); ?></p>
+						<input 	type="hidden"
+								name="receipt_for"
+								id="receipt_for"
+								value="<?php echo esc_attr( get_post_meta( $object->ID, "{$prefix}receipt_for", true ) ); ?>"
+						/>
 					</td>
 				</tr>
 
@@ -169,7 +174,44 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 					</td>
 				</tr>
 
-				<?php do_action( 'ims_receipt_add_meta_boxes', $object->ID ); ?>
+				<tr valign="top">
+					<th scope="row" valign="top">
+						<label for="user_id">
+							<?php _e( 'Vendor', 'inspiry-membership' ); ?>
+						</label>
+					</th>
+					<td>
+						<?php $vendor = get_post_meta( $object->ID, "{$prefix}vendor", true ); ?>
+						<select	name="vendor" id="vendor">
+							<option value="" <?php echo ( '' == $vendor ) ? 'selected' : ''; ?> disabled>
+								<?php _e( 'None', 'inspiry-memberships' ); ?>
+							</option>
+							<option value="stripe" <?php echo ( 'stripe' == $vendor ) ? 'selected' : ''; ?> >
+								<?php _e( 'Stripe', 'inspiry-memberships' ); ?>
+							</option>
+							<option value="paypal" <?php echo ( 'paypal' == $vendor ) ? 'selected' : ''; ?> >
+								<?php _e( 'PayPal', 'inspiry-memberships' ); ?>
+							</option>
+							<option value="wire" <?php echo ( 'wire' == $vendor ) ? 'selected' : ''; ?> >
+								<?php _e( 'Wire Transfer', 'inspiry-memberships' ); ?>
+							</option>
+						</select>
+					</td>
+				</tr>
+
+				<?php
+
+					/**
+					 * `ims_receipt_add_meta_boxes`
+					 *
+					 * This hook can be used to extend the meta-boxes
+					 * of receipt post type.
+					 *
+					 * @param int $object->ID Receipt Post ID.
+					 * @since 1.0.0
+					 */
+					do_action( 'ims_receipt_add_meta_boxes', $object->ID );
+				?>
 
 			</table>
 
@@ -206,11 +248,12 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 			// Get the posted data and sanitize it for use as an HTML class.
 			$ims_meta_value 					= array();
 			$ims_meta_value[ 'receipt_id' ] 	= ( ! empty( $post_id ) ) ? intval( $post_id ) : '';
-			$ims_meta_value[ 'receipt_for' ]	= ( isset( $_POST[ 'receipt_for' ] ) ) ? sanitize_text_field( $_POST[ 'receipt_for' ] ) : '';
+			$ims_meta_value[ 'receipt_for' ]	= ( isset( $_POST[ 'receipt_for' ] ) && ! empty( $_POST[ 'receipt_for' ] ) ) ? sanitize_text_field( $_POST[ 'receipt_for' ] ) : 'Normal';
 			$ims_meta_value[ 'membership_id' ] 	= ( isset( $_POST[ 'membership_id' ] ) ) ? intval( $_POST[ 'membership_id' ] ) : '';
 			$ims_meta_value[ 'price' ] 			= ( isset( $_POST[ 'price' ] ) ) ? floatval( $_POST[ 'price' ] ) : '';
 			$ims_meta_value[ 'purchase_date' ] 	= ( isset( $_POST[ 'purchase_date' ] ) ) ? sanitize_text_field( $_POST[ 'purchase_date' ] ) : '';
 			$ims_meta_value[ 'user_id' ] 		= ( isset( $_POST[ 'user_id' ] ) ) ? intval( $_POST[ 'user_id' ] ) : '';
+			$ims_meta_value[ 'vendor' ] 		= ( isset( $_POST[ 'vendor' ] ) ) ? sanitize_text_field( $_POST[ 'vendor' ] ) : '';
 
 			// Meta data prefix.
 			$prefix = 'ims_membership_';
@@ -222,7 +265,18 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 			$this->save_meta_value( $post_id, "{$prefix}price", $ims_meta_value[ 'price' ] );
 			$this->save_meta_value( $post_id, "{$prefix}purchase_date", $ims_meta_value[ 'purchase_date' ] );
 			$this->save_meta_value( $post_id, "{$prefix}user_id", $ims_meta_value[ 'user_id' ] );
+			$this->save_meta_value( $post_id, "{$prefix}vendor", $ims_meta_value[ 'vendor' ] );
 
+			/**
+			 * `ims_receipt_save_meta_boxes`
+			 *
+			 * This hook extends the saving process of receipt
+			 * meta boxes.
+			 *
+			 * @param int $post_id Receipt post id.
+			 * @param int $_POST POST array of form.
+			 * @since 1.0.0
+			 */
 			do_action( 'ims_receipt_save_meta_boxes', $post_id, $_POST );
 
 		}

@@ -685,7 +685,7 @@ if ( ! class_exists( 'WP_OSA' ) ) :
 		    add_submenu_page(
 				'inspiry_memberships',
 				__( 'Settings', 'inspiry-memberships' ),
-				__( 'Settings', 'inspiry-memberships' ),
+				__( '☉ Settings', 'inspiry-memberships' ),
 				'manage_options',
 				'ims_settings',
 				array( $this, 'plugin_page' )

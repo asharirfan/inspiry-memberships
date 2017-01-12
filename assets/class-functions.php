@@ -127,7 +127,9 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 						'format_price'	=> self::get_formatted_price( $membership_obj->get_price() ),
 						'price'			=> $membership_obj->get_price(),
 						'properties'	=> $membership_obj->get_properties(),
-						'featured_prop'	=> $membership_obj->get_featured_properties()
+						'featured_prop'	=> $membership_obj->get_featured_properties(),
+						'duration'		=> $membership_obj->get_duration(),
+						'duration_unit'	=> $membership_obj->get_duration_unit()
 					);
 				}
 
@@ -150,8 +152,10 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 				$user_id 	= $user->ID;
 			}
 
-			// Get membership id.
-			$membership_id 	= get_user_meta( $user_id, 'ims_current_membership', true );
+			// Get current membership details.
+			$membership_id 			= get_user_meta( $user_id, 'ims_current_membership', true );
+			$current_properties 	= get_user_meta( $user_id, 'ims_current_properties', true );
+			$current_featured_props	= get_user_meta( $user_id, 'ims_current_featured_props', true );
 
 			// Membership Data array.
 			$membership_data 	= array();
@@ -162,12 +166,16 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 				$membership_obj 	= ims_get_membership_object( $membership_id );
 
 				$membership_data 	= array(
-					'ID'			=> get_the_ID(),
-					'title' 		=> get_the_title( $membership_id ),
-					'format_price'	=> self::get_formatted_price( $membership_obj->get_price() ),
-					'price'			=> $membership_obj->get_price(),
-					'properties'	=> $membership_obj->get_properties(),
-					'featured_prop'	=> $membership_obj->get_featured_properties()
+					'ID'				=> get_the_ID(),
+					'title' 			=> get_the_title( $membership_id ),
+					'format_price'		=> self::get_formatted_price( $membership_obj->get_price() ),
+					'price'				=> $membership_obj->get_price(),
+					'properties'		=> $membership_obj->get_properties(),
+					'current_props'		=> $current_properties,
+					'featured_prop'		=> $membership_obj->get_featured_properties(),
+					'current_featured'	=> $current_featured_props,
+					'duration'			=> $membership_obj->get_duration(),
+					'duration_unit'		=> $membership_obj->get_duration_unit()
 				);
 			} else {
 				return false;
@@ -182,48 +190,52 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 		 *
 		 * @since 1.0.0
 		 */
-		public static function ims_display_stripe_form( $membership ) {
+		public static function ims_display_stripe_form() {
 
-			// Bail if $membership is not an array.
-			if ( ! is_array( $membership ) ) {
-				return;
-			}
+			$ims_memberships 	= self::ims_get_all_memberships();
 
-			// Get currency code.
-			$ims_basic_settings 	= get_option( 'ims_basic_settings' );
-			$ims_currency_code 		= $ims_basic_settings[ 'ims_currency_code' ];
-			if ( empty( $ims_currency_code ) ) {
-				$ims_currency_code 	= 'USD';
-			}
+			if ( is_array( $ims_memberships ) && ! empty( $ims_memberships ) ) : ?>
 
-			// Strip button label.
-			$ims_button_label 		= 'Pay with Card';
+				<form action="" method="POST" id="ims_select_membership" class="clearfix">
 
-			// Get Stripe settings.
-			$ims_stripe_settings 	= get_option( 'ims_stripe_settings' );
+					<div class="form-option">
 
-			// Check if we are using test mode.
-			if ( isset( $ims_stripe_settings[ 'ims_test_mode' ] ) && $ims_stripe_settings[ 'ims_test_mode' ] ) {
-				$ims_publishable_key	= $ims_stripe_settings[ 'ims_test_publishable' ];
-			} else {
-				$ims_publishable_key 	= $ims_stripe_settings[ 'ims_live_publishable' ];
-			}
+						<label for="ims-membership-select"><?php _e( 'Select Membership', 'inspiry-memberships' ); ?></label>
 
-			?>
+						<select name="ims-membership-select"
+								id="ims-membership-select"
+								data-ajax-link="<?php echo admin_url( 'admin-ajax.php' ); ?>">
 
-				<script
-					src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-					data-key="<?php echo esc_attr( $ims_publishable_key ); ?>"
-					data-amount="<?php echo esc_attr( $membership[ 'price' ] ); ?>"
-					data-name="<?php echo get_bloginfo( 'name' ); ?>"
-					data-currency="<?php echo esc_attr( $ims_currency_code ); ?>"
-					data-description="<?php _e( 'Membership Payment', 'inspiry-stripe' ); ?>"
-					data-locale="auto"
-					data-billing-address="true"
-					data-label="<?php _e( $ims_button_label, 'inspiry-stripe' ); ?>">
-				</script>
+							<option selected disabled><?php _e( 'None', 'inspiry-memberships' ); ?></option>
+							<?php foreach ( $ims_memberships as $ims_membership ) : ?>
+								<option value="<?php echo $ims_membership[ 'ID' ]; ?>">
+									<?php _e( $ims_membership[ 'title' ], 'inspiry-memberships' ); ?>
+								</option>
+							<?php endforeach; ?>
 
-			<?php
+						</select>
+
+						<input type="checkbox" name="ims_recurring" id="ims_recurring" />
+						<label for="ims_recurring" id="ims_recurring_label">
+							<?php _e( 'Recurring Membership?', 'inspiry-memberships' ); ?>
+						</label>
+
+					</div>
+					<!-- /.form-option -->
+
+					<div class="ims-membership_loader">
+						<img src="<?php echo IMS_BASE_URL; ?>assets/img/ajax-loader.gif">
+						<!-- Ajax Loader GIF -->
+					</div>
+					<!-- /.rh-membership_loader -->
+
+					<div class="ims-button-option ims-stripe-button"></div>
+					<!-- /.form-option rh-stripe-button -->
+
+				</form>
+
+				<?php
+			endif;
 
 		}
 

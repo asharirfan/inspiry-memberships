@@ -129,6 +129,56 @@ if ( ! class_exists( 'IMS_Membership_Meta_Boxes' ) ) :
 					</td>
 				</tr>
 
+				<tr valign="top">
+					<th scope="row" valign="top">
+						<label for="duration">
+							<?php _e( 'Membership Duration', 'inspiry-membership' ); ?>
+						</label>
+					</th>
+					<td>
+						<input 	type="number"
+								name="duration"
+								id="duration"
+								value="<?php echo esc_attr( get_post_meta( $object->ID, "{$prefix}duration", true ) ); ?>"
+						/>
+						<?php $duration_unit = get_post_meta( $object->ID, "{$prefix}duration_unit", true ); ?>
+						<select	name="duration_unit" id="duration_unit">
+							<option value="" <?php echo ( '' == $duration_unit ) ? 'selected' : ''; ?> disabled>
+								<?php _e( 'None', 'inspiry-memberships' ); ?>
+							</option>
+							<option value="days" <?php echo ( 'days' == $duration_unit ) ? 'selected' : ''; ?> >
+								<?php _e( 'Days', 'inspiry-memberships' ); ?>
+							</option>
+							<option value="weeks" <?php echo ( 'weeks' == $duration_unit ) ? 'selected' : ''; ?> >
+								<?php _e( 'Weeks', 'inspiry-memberships' ); ?>
+							</option>
+							<option value="months" <?php echo ( 'months' == $duration_unit ) ? 'selected' : ''; ?> >
+								<?php _e( 'Months', 'inspiry-memberships' ); ?>
+							</option>
+							<option value="years" <?php echo ( 'years' == $duration_unit ) ? 'selected' : ''; ?> >
+								<?php _e( 'Years', 'inspiry-memberships' ); ?>
+							</option>
+						</select>
+						<p class="description"><?php _e( 'Please select the duartion of membership.', 'inspiry-membership' ); ?></p>
+					</td>
+				</tr>
+
+				<tr valign="top">
+					<th scope="row" valign="top">
+						<label for="stripe_plan_id">
+							<?php _e( 'Stripe Plan ID', 'inspiry-membership' ); ?>
+						</label>
+					</th>
+					<td>
+						<input 	type="text"
+								name="stripe_plan_id"
+								id="stripe_plan_id"
+								value="<?php echo esc_attr( get_post_meta( $object->ID, "{$prefix}stripe_plan_id", true ) ); ?>"
+						/>
+						<p class="description"><?php _e( 'Enter the stripe plan ID for this membership. Example: professional-plan', 'inspiry-membership' ); ?></p>
+					</td>
+				</tr>
+
 				<?php do_action( 'ims_membership_add_meta_boxes', $object->ID ); ?>
 
 			</table>
@@ -167,6 +217,9 @@ if ( ! class_exists( 'IMS_Membership_Meta_Boxes' ) ) :
 			$ims_meta_value[ 'allowed_properties' ] 	= ( isset( $_POST[ 'allowed_properties' ] ) ) ? intval( $_POST[ 'allowed_properties' ] ) : '';
 			$ims_meta_value[ 'featured_properties' ]	= ( isset( $_POST[ 'featured_properties' ] ) ) ? intval( $_POST[ 'featured_properties' ] ) : '';
 			$ims_meta_value[ 'price' ] 					= ( isset( $_POST[ 'price' ] ) ) ? floatval( $_POST[ 'price' ] ) : '';
+			$ims_meta_value[ 'duration' ]				= ( isset( $_POST[ 'duration' ] ) ) ? intval( $_POST[ 'duration' ] ) : '';
+			$ims_meta_value[ 'duration_unit' ]			= ( isset( $_POST[ 'duration_unit' ] ) ) ? sanitize_text_field( $_POST[ 'duration_unit' ] ) : '';
+			$ims_meta_value[ 'stripe_plan_id' ]			= ( isset( $_POST[ 'stripe_plan_id' ] ) ) ? sanitize_text_field( $_POST[ 'stripe_plan_id' ] ) : '';
 
 			// Meta data prefix.
 			$prefix = 'ims_membership_';
@@ -175,6 +228,9 @@ if ( ! class_exists( 'IMS_Membership_Meta_Boxes' ) ) :
 			$this->save_meta_value( $post_id, "{$prefix}allowed_properties", $ims_meta_value[ 'allowed_properties' ] );
 			$this->save_meta_value( $post_id, "{$prefix}featured_properties", $ims_meta_value[ 'featured_properties' ] );
 			$this->save_meta_value( $post_id, "{$prefix}price", $ims_meta_value[ 'price' ] );
+			$this->save_meta_value( $post_id, "{$prefix}duration", $ims_meta_value[ 'duration' ] );
+			$this->save_meta_value( $post_id, "{$prefix}duration_unit", $ims_meta_value[ 'duration_unit' ] );
+			$this->save_meta_value( $post_id, "{$prefix}stripe_plan_id", $ims_meta_value[ 'stripe_plan_id' ] );
 
 			do_action( 'ims_membership_save_meta_boxes', $post_id, $_POST );
 
@@ -206,6 +262,20 @@ if ( ! class_exists( 'IMS_Membership_Meta_Boxes' ) ) :
 				delete_post_meta( $post_id, $meta_key, $old_meta_value );
 
 			}
+
+		}
+
+		/**
+		 * add_styles.
+		 *
+		 * @since 1.0.0
+		 */
+		public function add_styles() {
+
+			global $post_type;
+    		if ( 'ims_membership' == $post_type ) {
+    			wp_enqueue_style( 'ims-admin-styles', IMS_BASE_URL . 'assets/css/custom.css', array(), IMS_VERSION );
+    		}
 
 		}
 

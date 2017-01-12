@@ -50,6 +50,15 @@ if ( file_exists( IMS_BASE_DIR . '/assets/settings/settings-init.php' ) ) {
 }
 
 /**
+ * class-ims-email.php.
+ *
+ * @since 1.0.0
+ */
+if ( file_exists( IMS_BASE_DIR . '/assets/email/class-ims-email.php' ) ) {
+    require_once( IMS_BASE_DIR . '/assets/email/class-ims-email.php' );
+}
+
+/**
  * class-scripts.php.
  *
  * @since 1.0.0
@@ -74,4 +83,13 @@ if ( file_exists( IMS_BASE_DIR . '/assets/js/ajax-functions.php' ) ) {
  */
 if ( file_exists( IMS_BASE_DIR . '/assets/class-functions.php' ) ) {
     require_once( IMS_BASE_DIR . '/assets/class-functions.php' );
+}
+
+/**
+ * payment-handler-init.php.
+ *
+ * @since 1.0.0
+ */
+if ( file_exists( IMS_BASE_DIR . '/assets/payment-handler/payment-handler-init.php' ) ) {
+    require_once( IMS_BASE_DIR . '/assets/payment-handler/payment-handler-init.php' );
 }

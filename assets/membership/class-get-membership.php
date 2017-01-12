@@ -50,7 +50,10 @@ if ( ! class_exists( 'IMS_Get_Membership' ) ) :
 		 public $meta_keys = array(
 		 	'properties'			=> 'ims_membership_allowed_properties',
 		 	'featured_properties'	=> 'ims_membership_featured_properties',
-		 	'price'					=> 'ims_membership_price'
+		 	'price'					=> 'ims_membership_price',
+		 	'duration'				=> 'ims_membership_duration',
+		 	'duration_unit'			=> 'ims_membership_duration_unit',
+		 	'stripe_plan_id'		=> 'ims_membership_stripe_plan_id'
 		 );
 
 		/**
@@ -152,6 +155,45 @@ if ( ! class_exists( 'IMS_Get_Membership' ) ) :
 			    return false;
 			}
 			return $this->get_meta( $this->meta_keys[ 'featured_properties' ] );
+		}
+
+		/**
+		 * Get Membership: Duration.
+		 *
+		 * @since 1.0.0
+		 */
+		public function get_duration() {
+			// Returns false if ID is not present.
+			if ( ! $this->the_membership_id ) {
+			    return false;
+			}
+			return $this->get_meta( $this->meta_keys[ 'duration' ] );
+		}
+
+		/**
+		 * Get Membership: Duration Unit.
+		 *
+		 * @since 1.0.0
+		 */
+		public function get_duration_unit() {
+			// Returns false if ID is not present.
+			if ( ! $this->the_membership_id ) {
+			    return false;
+			}
+			return $this->get_meta( $this->meta_keys[ 'duration_unit' ] );
+		}
+
+		/**
+		 * Get Membership: Stripe Plan ID.
+		 *
+		 * @since 1.0.0
+		 */
+		public function get_stripe_plan_id() {
+			// Returns false if ID is not present.
+			if ( ! $this->the_membership_id ) {
+			    return false;
+			}
+			return $this->get_meta( $this->meta_keys[ 'stripe_plan_id' ] );
 		}
 
 	}

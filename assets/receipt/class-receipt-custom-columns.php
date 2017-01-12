@@ -39,6 +39,7 @@ if ( ! class_exists( 'IMS_Receipt_Custom_Columns' ) ) :
 	            'membership'	=> __( 'Membership', 'inspiry-stripe' ),
 	            'price'			=> __( 'Price', 'inspiry-stripe' ),
 	            'user_id' 		=> __( 'User', 'inspiry-stripe' ),
+	            'vendor' 		=> __( 'Vendor', 'inspiry-stripe' ),
 	            'purchase_date'	=> __( 'Date of Purchase', 'inspiry-stripe' )
 	        );
 
@@ -71,7 +72,7 @@ if ( ! class_exists( 'IMS_Receipt_Custom_Columns' ) ) :
 					if ( ! empty( $receipt_for ) ) {
 						echo esc_html( $receipt_for );
 					} else {
-						_e( 'Not Available', 'inspiry-stripe' );
+						_e( 'Not Available', 'inspiry-memberships' );
 					}
 					break;
 
@@ -82,7 +83,7 @@ if ( ! class_exists( 'IMS_Receipt_Custom_Columns' ) ) :
 					if ( ! empty( $membership_title ) ) {
 						echo '<a href="' . get_edit_post_link( $membership_id ) . '">' . esc_html( $membership_title ) . '</a>';
 					} else {
-						_e( 'Not Available', 'inspiry-stripe' );
+						_e( 'Not Available', 'inspiry-memberships' );
 					}
 					break;
 
@@ -99,7 +100,7 @@ if ( ! class_exists( 'IMS_Receipt_Custom_Columns' ) ) :
 					if ( ! empty( $price ) ) {
 						echo esc_html( $formatted_price );
 					} else {
-						_e( 'Not Available', 'inspiry-stripe' );
+						_e( 'Not Available', 'inspiry-memberships' );
 					}
 					break;
 
@@ -112,7 +113,20 @@ if ( ! class_exists( 'IMS_Receipt_Custom_Columns' ) ) :
 					if ( ! empty( $user_name ) ) {
 						echo '<a href="' . get_edit_profile_url( $user_id ) . '">' . esc_html( $user_name ) . '</a>';
 					} else {
-						_e( 'Not Available', 'inspiry-stripe' );
+						_e( 'Not Available', 'inspiry-memberships' );
+					}
+					break;
+
+				case 'vendor':
+					$vendor = get_post_meta( $post->ID, "{$prefix}vendor", true );
+					if ( ! empty( $vendor ) && ( 'stripe' == $vendor ) ) {
+						_e( 'Stripe', 'inspiry-memberships' );
+					} elseif ( ! empty( $vendor ) && ( 'paypal' == $vendor ) ) {
+						_e( 'PayPal', 'inspiry-memberships' );
+					} elseif ( ! empty( $vendor ) && ( 'wire' == $vendor ) ) {
+						_e( 'Wire Transfer', 'inspiry-memberships' );
+					} else {
+						_e( 'Not Available', 'inspiry-memberships' );
 					}
 					break;
 
@@ -121,7 +135,7 @@ if ( ! class_exists( 'IMS_Receipt_Custom_Columns' ) ) :
 					if ( ! empty( $purchase_date ) ) {
 						echo esc_html( $purchase_date );
 					} else {
-						_e( 'Not Available', 'inspiry-stripe' );
+						_e( 'Not Available', 'inspiry-memberships' );
 					}
 					break;
 			}

@@ -71,7 +71,9 @@ if ( class_exists( 'IMS_Membership' ) ) {
 
 	$ims_membership_init	= new IMS_Membership(); // IMS_Membership object
 
-	add_action( 'init', array( $ims_membership_init, 'create_membership' ), 5 );
+	add_action( 'init', array( $ims_membership_init, 'create_membership' ), 5 ); // Creating Membership Post Type.
+
+	add_filter( 'cron_schedules', array( $ims_membership_init, 'create_schedules' ) ); // Adding custom time schedules.
 
 }
 
@@ -81,6 +83,9 @@ if ( class_exists( 'IMS_Membership_Meta_Boxes' ) ) {
 
 	add_action( 'load-post.php', array( $ims_membership_meta_boxes_init, 'setup_meta_box' ) );
 	add_action( 'load-post-new.php', array( $ims_membership_meta_boxes_init, 'setup_meta_box' ) );
+
+	add_action( 'admin_print_styles-post.php', array( $ims_membership_meta_boxes_init, 'add_styles' ) );
+	add_action( 'admin_print_styles-post-new.php', array( $ims_membership_meta_boxes_init, 'add_styles' ) );
 
 }
 
