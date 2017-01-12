@@ -78,26 +78,6 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 		 */
 		public function set_stripe_variables() {
 
-			// Get basic settings.
-			$basic_settings 		= get_option( 'ims_basic_settings' );
-
-			// Get stripe settings.
-			$stripe_settings 		= get_option( 'ims_stripe_settings' );
-
-			// Check if we are using test mode.
-			if ( isset( $stripe_settings[ 'ims_test_mode' ] ) && $stripe_settings[ 'ims_test_mode' ] ) {
-				$this->secret_key 	= $stripe_settings[ 'ims_test_secret' ];
-			} else {
-				$this->secret_key 	= $stripe_settings[ 'ims_live_secret' ];
-			}
-
-			// Set currency code.
-			if ( isset( $basic_settings[ 'ims_currency_code' ] ) && ! empty( $basic_settings[ 'ims_currency_code' ] ) ) {
-				$this->currency_code 	= $basic_settings[ 'ims_currency_code' ];
-			} else {
-				$this->currency_code 	= 'USD';
-			}
-
 			// Set customer details.
 			$this->customer_details	= array(
 				'recurring'	=> '',
@@ -114,6 +94,43 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 		}
 
 		/**
+		 * Check test mode of Stripe.
+		 *
+		 * @since 1.0.0
+		 */
+		public function stripe_routine_checks() {
+
+			// Get basic settings.
+			$basic_settings 		= get_option( 'ims_basic_settings' );
+
+			// Get stripe settings.
+			$stripe_settings 		= get_option( 'ims_stripe_settings' );
+
+			// Check if we are using test mode.
+			if ( isset( $stripe_settings[ 'ims_test_mode' ] ) && ! empty( $stripe_settings[ 'ims_test_mode' ] ) ) {
+
+				if ( isset( $stripe_settings[ 'ims_test_secret' ] ) && ! empty( $stripe_settings[ 'ims_test_secret' ] ) ) {
+					$this->secret_key 	= $stripe_settings[ 'ims_test_secret' ];
+				}
+
+			} elseif ( ! isset( $stripe_settings[ 'ims_test_mode' ] ) && empty( $stripe_settings[ 'ims_test_mode' ] ) ) {
+
+				if ( isset( $stripe_settings[ 'ims_live_secret' ] ) && ! empty( $stripe_settings[ 'ims_live_secret' ] ) ) {
+					$this->secret_key 	= $stripe_settings[ 'ims_live_secret' ];
+				}
+
+			}
+
+			// Set currency code.
+			if ( isset( $basic_settings[ 'ims_currency_code' ] ) && ! empty( $basic_settings[ 'ims_currency_code' ] ) ) {
+				$this->currency_code 	= $basic_settings[ 'ims_currency_code' ];
+			} else {
+				$this->currency_code 	= 'USD';
+			}
+
+		}
+
+		/**
 		 * This function starts processing stripe payment.
 		 *
 		 * @since 1.0.0
@@ -123,6 +140,8 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 			if ( isset( $_POST[ 'action' ] )
 					&& 'ims_stripe_membership_payment' == $_POST[ 'action' ]
 					&& wp_verify_nonce( $_POST[ 'ims_stripe_nonce' ], 'ims-stripe-nonce' ) ) {
+
+				$this->stripe_routine_checks();
 
 				// Get membership details.
 				$membership_id 		= intval( $_POST[ 'membership_id' ] );
