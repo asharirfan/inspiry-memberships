@@ -161,4 +161,16 @@ if ( class_exists( 'WP_OSA' ) ) {
 		)
 	);
 
+	// Field: Test Publishable Key.
+	$ims_settings->add_field(
+		'ims_stripe_settings',
+		array(
+			'id'      => 'ims_wait_duration',
+			'type'    => 'number',
+			'name'    => __( 'Hours to Wait', 'inspiry-memberships' ),
+			'desc'    => __( 'Number of hours to wait before checking the status of subscription past due date.', 'inspiry-memberships' ),
+			'default' => '48',
+		)
+	);
+
 }

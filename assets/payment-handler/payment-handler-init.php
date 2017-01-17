@@ -30,6 +30,10 @@ if ( class_exists( 'IMS_Payment_Handler' ) ) {
 	 */
 	$ims_payment_handler = new IMS_Payment_Handler();
 
-	add_action( 'init', array( $ims_payment_handler, 'process_stripe_payment' ) );
+	add_action( 'init', array( $ims_payment_handler, 'process_stripe_payment' ) ); // Stripe Payment Process Init.
+
+	add_action( 'init', array( $ims_payment_handler, 'cancel_user_subscription_request' ) ); // Cancel User Membership Request.
+
+	add_action( 'init', array( $ims_payment_handler, 'handle_stripe_subscription_event' ), 1 ); // Hande stripe events for memberships.
 
 }

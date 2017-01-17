@@ -143,6 +143,9 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 
 				$this->stripe_routine_checks();
 
+				// Get recurring payment check.
+				$is_recurring 		= ( isset( $_POST[ 'ims_recurring' ] ) ) ? $_POST[ 'ims_recurring' ]: false;
+
 				// Get membership details.
 				$membership_id 		= intval( $_POST[ 'membership_id' ] );
 				$membership_price 	= floatval( $_POST[ 'membership_price' ] );
@@ -155,7 +158,7 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 				$this->stripe_token	= $_POST[ 'stripeToken' ];
 
 				// Customer Details
-				$recurring 	= $_POST[ 'ims_recurring' ];
+				$recurring 	= $is_recurring;
 				$email 		= $_POST[ 'stripeEmail' ];
 				$name 		= $_POST[ 'stripeBillingName' ];
 				$address 	= $_POST[ 'stripeBillingAddressLine1' ];
@@ -180,7 +183,12 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 				$this->customer_details 	= apply_filters( 'ims_membership_customer_details', $this->customer_details );
 
 				// Charge the card using stripe.
-				$this->stripe_charge( $user_id, $membership_id, $membership_price );
+				if ( empty( $is_recurring ) ) {
+					$this->stripe_charge( $user_id, $membership_id, $membership_price );
+				} elseif ( ! empty( $is_recurring ) ) {
+					$this->stripe_recurring_charge( $user_id, $membership_id, $membership_price );
+				}
+
 
 			}
 
@@ -210,14 +218,13 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 					$this->mail_user( $user_id, $membership_id, $receipt_id );
 					$this->mail_admin( $membership_id, $receipt_id );
 
+					// Redirect on empty token or membership id.
+					$redirect = add_query_arg( 'payment', 'paid', $_POST[ 'redirect' ] );
+
 				} catch ( Exception $e ) {
 
 					// Redirect on empty token or membership id.
 					$redirect = add_query_arg( 'payment', 'failed', $_POST[ 'redirect' ] );
-
-					// Redirect back to our previous page with the added query variable.
-					wp_redirect( $redirect );
-					exit;
 
 				}
 
@@ -226,11 +233,76 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 				// Redirect on empty token or membership id.
 				$redirect = add_query_arg( 'payment', 'failed', $_POST[ 'redirect' ] );
 
+			}
+
+			// Redirect back to our previous page with the added query variable.
+			wp_redirect( $redirect );
+			exit;
+
+		}
+
+		/**
+		 * Method: Creates recurring charge on stripe.
+		 *
+		 * @since 1.0.0
+		 */
+		public function stripe_recurring_charge( $user_id = 0, $membership_id = 0, $membership_price = 0 ) {
+
+			// Redirect to payment failed if any of the parameters are empty.
+			if ( empty( $user_id ) || empty( $membership_id ) || empty( $membership_price ) ) {
+				// Redirect on empty token or membership id.
+				$redirect = add_query_arg( 'payment', 'failed', $_POST[ 'redirect' ] );
+
 				// Redirect back to our previous page with the added query variable.
 				wp_redirect( $redirect );
 				exit;
+			}
+
+			// Get Stripe plan ID for the membership.
+			$membership_obj 			= ims_get_membership_object( $membership_id );
+			$membership_stripe_plan 	= $membership_obj->get_stripe_plan_id();
+
+			// Charge the customer.
+			try {
+
+				\Stripe\Stripe::setApiKey( $this->secret_key );
+
+				$customer_args 	= array(
+					'email'		=> $this->customer_details[ 'email' ],
+					'source'	=> $this->stripe_token
+				);
+				$customer 		= \Stripe\Customer::create( $customer_args );
+
+				$subscription_args	= array(
+					"customer"		=> $customer->id,
+					"plan"			=> $membership_stripe_plan
+				);
+
+				$subscription 	= \Stripe\Subscription::create( $subscription_args );
+
+				update_user_meta( $user_id, 'ims_stripe_customer_id', $customer->id );
+				update_user_meta( $user_id, 'ims_stripe_subscription_id', $subscription->id );
+				update_user_meta( $user_id, 'ims_stripe_subscription_due', $subscription->current_period_end );
+
+				$this->add_membership_subscription( $user_id, $membership_id );
+				$receipt_id 	= $this->generate_receipt( $user_id, $membership_id );
+				// $this->schedule_renew_membership( $user_id, $membership_id, $receipt_id );
+				$this->mail_user( $user_id, $membership_id, $receipt_id );
+				$this->mail_admin( $membership_id, $receipt_id );
+
+				// Redirect on empty token or membership id.
+				$redirect = add_query_arg( 'payment', 'paid', $_POST[ 'redirect' ] );
+
+			} catch ( Exception $e ) {
+
+				// Redirect on empty token or membership id.
+				$redirect = add_query_arg( 'payment', 'failed', $_POST[ 'redirect' ] );
 
 			}
+
+			// Redirect back to our previous page with the added query variable.
+			wp_redirect( $redirect );
+			exit;
 
 		}
 
@@ -334,7 +406,7 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 					foreach ( $properties as $property ) {
 						$property_args 		= array(
 							'ID' 			=> $property->ID,
-							'post_status'	=> 'draft'
+							'post_status'	=> 'pending'
 						);
 						wp_update_post( $property_args );
 					}
@@ -380,16 +452,29 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 
 					$membership_obj 	= ims_get_membership_object( $membership_id );
 
+					$receipt_type		= __( 'Normal', 'inspiry-memberships' );
+					$receipt_type 		= ( isset( $this->customer_details[ 'recurring' ] ) && ! empty( $this->customer_details[ 'recurring' ] ) ) ? __( 'Recurring', 'inspiry-memberships' ) : $receipt_type;
+
 					update_post_meta( $receipt_id, "{$prefix}receipt_id", $receipt_id );
-					update_post_meta( $receipt_id, "{$prefix}receipt_for", __( 'Normal', 'inspiry-memberships' ) );
+					update_post_meta( $receipt_id, "{$prefix}receipt_for", $receipt_type );
 					update_post_meta( $receipt_id, "{$prefix}membership_id", $membership_id );
 					update_post_meta( $receipt_id, "{$prefix}price", $membership_obj->get_price() );
 					update_post_meta( $receipt_id, "{$prefix}purchase_date", $receipt->post_date );
 					update_post_meta( $receipt_id, "{$prefix}user_id", $user_id );
 					update_post_meta( $receipt_id, "{$prefix}vendor", 'stripe' );
 
-					$user_receipts 		= get_user_meta( $user_id, 'ims_receipts', false );
-					$user_receipts[]	= $receipt_id;
+					// Updating user receipts.
+					$user_receipts 		= get_user_meta( $user_id, 'ims_receipts', true );
+					if ( is_string( $user_receipts ) ) {
+						$user_receipts 	= explode( ",", $user_receipts );
+					}
+
+					if ( ! empty( $user_receipts ) ) {
+						$user_receipts[]	= $receipt_id;
+					} else {
+						$user_receipts 		= array();
+						$user_receipts[]	= $receipt_id;
+					}
 					update_user_meta( $user_id, 'ims_receipts', $user_receipts );
 
 					return $receipt_id;
@@ -524,6 +609,106 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 				return;
 			}
 
+			$this->ims_cancel_user_membership( $user_id );
+
+		}
+
+		/**
+		 * Method: Send email to user after selected period of time.
+		 *
+		 * @since 1.0.0
+		 */
+		public function ims_membership_reminder_email( $user_id, $membership_id ) {
+
+			// Bail if user, membership or receipt id is empty.
+			if ( empty( $user_id ) || empty( $membership_id ) ) {
+				return;
+			}
+
+			// Get user.
+			$user	= get_user_by( 'id', $user_id );
+			if ( ! empty( $user ) ) {
+				$user_email	= $user->user_email;
+			}
+
+			$site_name 		= get_bloginfo( 'name' );
+			$site_url		= get_bloginfo( 'url' );
+
+			$subject		= __( 'Membership is about to end.', 'inspiry-memberships' );
+
+			$message 	= sprintf( __( 'Your membership package on %s is about to end.', 'inspiry-memberships' ), $site_name ) . "<br/><br/>";
+			$message 	.= __( 'Please make sure that you renew your membership within due date via Stripe.', 'inspiry-memberships' ) . "<br/><br/>";
+			$message 	.= __( 'Otherwise your membership will be cancelled.', 'inspiry-memberships' ) . "<br/><br/>";
+			$message 	.= '<a target="_blank" href="' . $site_url . '">' . $site_name . '</a>';
+
+			if ( is_email( $user_email ) ) {
+				IMS_Email::send_email( $user_email, $subject, $message );
+			}
+
+		}
+
+		/**
+		 * Method: Cancels user subscription.
+		 *
+		 * @since 1.0.0
+		 */
+		public function ims_cancel_user_membership_manual( $user_id = 0 ) {
+
+			// Bail if user id is empty.
+			if ( empty( $user_id ) ) {
+				return;
+			}
+
+			$this->stripe_routine_checks();
+			\Stripe\Stripe::setApiKey( $this->secret_key );
+
+			$stripe_subscription 	= get_user_meta( $user_id, 'ims_stripe_subscription_id', true );
+			if ( ! empty( $stripe_subscription ) ) {
+				$subscription 		= \Stripe\Subscription::retrieve( $stripe_subscription );
+				$subscription->cancel( array( 'at_period_end' => true ) );
+			} else {
+				$this->ims_cancel_user_membership( $user_id );
+			}
+
+		}
+
+		/**
+		 * Method: This function process membership cancel request.
+		 *
+		 * @since 1.0.0
+		 */
+		public function cancel_user_subscription_request() {
+
+			if ( isset( $_POST[ 'action' ] )
+					&& 'ims_cancel_user_membership' == $_POST[ 'action' ]
+					&& wp_verify_nonce( $_POST[ 'ims_cancel_membership_nonce' ], 'ims-cancel-membership-nonce' ) ) {
+
+				// Get user and membership id.
+				$user_id		= $_POST[ 'user_id' ];
+
+				// Bail if user id is empty.
+				if ( empty( $user_id ) ) {
+					return;
+				}
+
+				$this->ims_cancel_user_membership_manual( $user_id );
+
+			}
+
+		}
+
+		/**
+		 * Method: Stripe cancel event function.
+		 *
+		 * @since 1.0.0
+		 */
+		public function ims_cancel_user_membership( $user_id ) {
+
+			// Bail if user id is empty.
+			if ( empty( $user_id ) ) {
+				return;
+			}
+
 			// Delete membership details from user meta.
 			delete_user_meta( $user_id, 'ims_current_membership' );
 
@@ -535,6 +720,94 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 			delete_user_meta( $user_id, 'ims_current_duration' );
 			delete_user_meta( $user_id, 'ims_current_duration_unit' );
 			delete_user_meta( $user_id, 'ims_current_stripe_plan_id' );
+			delete_user_meta( $user_id, 'ims_stripe_subscription_id' );
+			delete_user_meta( $user_id, 'ims_stripe_subscription_due' );
+			delete_user_meta( $user_id, 'ims_stripe_customer_id' );
+
+		}
+
+		/**
+		 * Method: To detect and handle stripe membership events.
+		 *
+		 * @since 1.0.0
+		 */
+		public function handle_stripe_subscription_event() {
+
+			if ( isset( $_GET[ 'ims_stripe' ] ) && 'membership_event' == $_GET[ 'ims_stripe' ] ) {
+
+				$this->stripe_routine_checks();
+				\Stripe\Stripe::setApiKey( $this->secret_key );
+
+				$input 		= @file_get_contents( "php://input" );
+				$event_json	= json_decode( $input );
+
+				$event 		= \Stripe\Event::retrieve( $event_json->id );
+
+				// Get stripe customer id.
+				$customer_arr		= get_object_vars( $event->data );
+				if ( ! empty( $customer_arr ) ) {
+					foreach ( $customer_arr as $customer_data => $value ) {
+						$cus_stripe_id 		= $value->customer;
+					}
+				}
+
+				if ( 'customer.subscription.deleted' == $event->type ) {
+
+					$customer_args 	= array(
+						'meta_key'		=> 'ims_stripe_customer_id',
+						'meta_value'	=> $cus_stripe_id
+					);
+					$customers 		= get_users( $customer_args );
+
+					// Cancel subscription.
+					if ( ! empty( $customers ) ) {
+						foreach ( $customers as $customer ) {
+							$this->ims_cancel_user_membership( $customer->ID );
+						}
+					}
+
+				} elseif ( 'invoice.payment_succeeded' == $event->type ) {
+
+					$customer_args 	= array(
+						'meta_key'		=> 'ims_stripe_customer_id',
+						'meta_value'	=> $cus_stripe_id
+					);
+					$customers 		= get_users( $customer_args );
+
+					if ( ! empty( $customers ) ) {
+						foreach ( $customers as $customer ) {
+							// Update subscription end date.
+							$stripe_subscription 	= get_user_meta( $customer->ID, 'ims_stripe_subscription_id', true );
+							$subscription 			= \Stripe\Subscription::retrieve( $stripe_subscription );
+							$subscription_due 		= $subscription->current_period_end;
+							update_user_meta( $customer->ID, 'ims_stripe_subscription_due', $subscription_due );
+						}
+					}
+
+				} elseif ( 'invoice.created' == $event->type ) {
+
+					$customer_args 	= array(
+						'meta_key'		=> 'ims_stripe_customer_id',
+						'meta_value'	=> $cus_stripe_id
+					);
+					$customers 		= get_users( $customer_args );
+
+					if ( ! empty( $customers ) ) {
+						foreach ( $customers as $customer ) {
+							// Send reminder email.
+							$membership_id 	= get_user_meta( $customer->ID, 'ims_current_membership', true );
+							if ( ! empty( $membership_id ) ) {
+								$this->ims_membership_reminder_email( $customer->ID, $membership_id );
+							}
+						}
+					}
+
+				}
+
+				http_response_code( 200 );
+				exit();
+
+			}
 
 		}
 

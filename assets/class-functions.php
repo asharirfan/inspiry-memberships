@@ -200,7 +200,7 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 
 					<div class="form-option">
 
-						<label for="ims-membership-select"><?php _e( 'Select Membership', 'inspiry-memberships' ); ?></label>
+						<h4><?php _e( 'Select Membership', 'inspiry-memberships' ); ?></h4>
 
 						<select name="ims-membership-select"
 								id="ims-membership-select"
@@ -214,6 +214,8 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 							<?php endforeach; ?>
 
 						</select>
+
+						<input type="hidden" name="redirect" value="<?php echo get_bloginfo( 'url' ); ?>"/>
 
 						<input type="checkbox" name="ims_recurring" id="ims_recurring" />
 						<label for="ims_recurring" id="ims_recurring_label">
@@ -232,6 +234,36 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 					<div class="ims-button-option ims-stripe-button"></div>
 					<!-- /.form-option rh-stripe-button -->
 
+				</form>
+
+				<?php
+			endif;
+
+		}
+
+		/**
+		 * Method: Displays cancel membership form.
+		 *
+		 * @since 1.0.0
+		 */
+		public static function cancel_user_membership_form( $user ) {
+
+			// Get user id.
+			if ( is_object( $user ) ) {
+				$user_id 	= $user->ID;
+			} else {
+				return;
+			}
+
+			if ( ! empty( $user_id ) ) : ?>
+
+				<form action="" method="POST" id="ims-cancel-user-membership">
+					<h4 class="title"><?php _e( 'Are you sure?', 'inspiry-memberships' ); ?></h4>
+					<button class="ims-btn" id="ims-btn-confirm" type="submit"><?php _e( 'Yes', 'inspiry-memberships' ); ?></button>
+					<button class="ims-btn" id="ims-btn-close" type="button"><?php _e( 'No', 'inspiry-memberships' ); ?></button>
+					<input type="hidden" name="action" value="ims_cancel_user_membership" />
+					<input type="hidden" name="user_id" value="<?php echo esc_attr( $user_id ); ?>" />
+					<input type="hidden" name="ims_cancel_membership_nonce" value="<?php echo wp_create_nonce( 'ims-cancel-membership-nonce' ); ?>" />
 				</form>
 
 				<?php
