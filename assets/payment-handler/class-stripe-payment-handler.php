@@ -14,16 +14,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * IMS_Payment_Handler.
+ * IMS_Stripe_Payment_Handler.
  *
  * Class for handling payment functions.
  *
  * @since 1.0.0
  */
 
-if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
+if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 
-	class IMS_Payment_Handler {
+	class IMS_Stripe_Payment_Handler {
 
 		/**
 		 * Stripe Secret Key.
@@ -64,7 +64,7 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 		 */
 		public function __construct() {
 
-			$this->set_stripe_variables();
+			$this->set_variables();
 
 			// Require Stripe library.
 			include( IMS_BASE_DIR . '/assets/stripe/stripe-init.php' );
@@ -72,11 +72,11 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 		}
 
 		/**
-		 * set_variables.
+		 * Method: Set the customer details variable.
 		 *
 		 * @since 1.0.0
 		 */
-		public function set_stripe_variables() {
+		public function set_variables() {
 
 			// Set customer details.
 			$this->customer_details	= array(
@@ -94,7 +94,8 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 		}
 
 		/**
-		 * Check test mode of Stripe.
+		 * Method: Perform routine checks to keep the plugin
+		 * updated about the latest user settings.
 		 *
 		 * @since 1.0.0
 		 */
@@ -131,7 +132,7 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 		}
 
 		/**
-		 * This function starts processing stripe payment.
+		 * Method: Starting point of Stripe Payment processing.
 		 *
 		 * @since 1.0.0
 		 */
@@ -195,7 +196,7 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 		}
 
 		/**
-		 * This function creates charge for stripe.
+		 * Method: Create a simple charge on stripe.
 		 *
 		 * @since 1.0.0
 		 */
@@ -280,15 +281,14 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 
 				$subscription 	= \Stripe\Subscription::create( $subscription_args );
 
-				update_user_meta( $user_id, 'ims_stripe_customer_id', $customer->id );
-				update_user_meta( $user_id, 'ims_stripe_subscription_id', $subscription->id );
-				update_user_meta( $user_id, 'ims_stripe_subscription_due', $subscription->current_period_end );
+				update_user_meta( $user_id, 'ims_stripe_customer_id', $customer->id ); // Stripe Customer ID.
+				update_user_meta( $user_id, 'ims_stripe_subscription_id', $subscription->id ); // Stripe Subscription ID.
+				update_user_meta( $user_id, 'ims_stripe_subscription_due', $subscription->current_period_end ); // Stripe Subscription End.
 
-				$this->add_membership_subscription( $user_id, $membership_id );
-				$receipt_id 	= $this->generate_receipt( $user_id, $membership_id );
-				// $this->schedule_renew_membership( $user_id, $membership_id, $receipt_id );
-				$this->mail_user( $user_id, $membership_id, $receipt_id );
-				$this->mail_admin( $membership_id, $receipt_id );
+				$this->add_membership_subscription( $user_id, $membership_id ); // Add membership to user.
+				$receipt_id 	= $this->generate_receipt( $user_id, $membership_id ); // Generate receipt of the membership.
+				$this->mail_user( $user_id, $membership_id, $receipt_id ); // Mail the user about the membership.
+				$this->mail_admin( $membership_id, $receipt_id ); // Mail the admin about the membership sale.
 
 				// Redirect on empty token or membership id.
 				$redirect = add_query_arg( 'payment', 'paid', $_POST[ 'redirect' ] );
@@ -593,7 +593,7 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 			 * @param string - name of action
 			 * @param string - name of function to run on this action
 			 */
-			add_action( 'ims_schedule_membership_end', array( $this, 'ims_schedule_membership_end_function' ), 10, 3 );
+			add_action( 'ims_schedule_membership_end', array( $this, 'schedule_normal_membership_end' ), 10, 3 );
 
 		}
 
@@ -602,14 +602,14 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 		 *
 		 * @since 1.0.0
 		 */
-		public function ims_schedule_membership_end_function( $user_id, $membership_id, $receipt_id ) {
+		public function schedule_normal_membership_end( $user_id, $membership_id, $receipt_id ) {
 
 			// Bail if user, membership or receipt id is empty.
 			if ( empty( $user_id ) || empty( $membership_id ) || empty( $receipt_id ) ) {
 				return;
 			}
 
-			$this->ims_cancel_user_membership( $user_id );
+			$this->cancel_user_membership( $user_id );
 
 		}
 
@@ -618,7 +618,7 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 		 *
 		 * @since 1.0.0
 		 */
-		public function ims_membership_reminder_email( $user_id, $membership_id ) {
+		public function membership_reminder_email( $user_id, $membership_id ) {
 
 			// Bail if user, membership or receipt id is empty.
 			if ( empty( $user_id ) || empty( $membership_id ) ) {
@@ -652,7 +652,7 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 		 *
 		 * @since 1.0.0
 		 */
-		public function ims_cancel_user_membership_manual( $user_id = 0 ) {
+		public function cancel_user_membership_manual( $user_id = 0 ) {
 
 			// Bail if user id is empty.
 			if ( empty( $user_id ) ) {
@@ -667,7 +667,7 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 				$subscription 		= \Stripe\Subscription::retrieve( $stripe_subscription );
 				$subscription->cancel( array( 'at_period_end' => true ) );
 			} else {
-				$this->ims_cancel_user_membership( $user_id );
+				$this->cancel_user_membership( $user_id );
 			}
 
 		}
@@ -691,7 +691,7 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 					return;
 				}
 
-				$this->ims_cancel_user_membership_manual( $user_id );
+				$this->cancel_user_membership_manual( $user_id );
 
 			}
 
@@ -702,7 +702,7 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 		 *
 		 * @since 1.0.0
 		 */
-		public function ims_cancel_user_membership( $user_id ) {
+		public function cancel_user_membership( $user_id ) {
 
 			// Bail if user id is empty.
 			if ( empty( $user_id ) ) {
@@ -762,9 +762,27 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 					// Cancel subscription.
 					if ( ! empty( $customers ) ) {
 						foreach ( $customers as $customer ) {
-							$this->ims_cancel_user_membership( $customer->ID );
+							$this->cancel_user_membership( $customer->ID );
 						}
 					}
+
+				} elseif ( 'customer.subscription.created' == $event->type ) {
+
+					$user_reminder 	= 0;
+
+					$customer_args 	= array(
+						'meta_key'		=> 'ims_stripe_customer_id',
+						'meta_value'	=> $cus_stripe_id
+					);
+					$customers 		= get_users( $customer_args );
+
+					// Cancel subscription.
+					if ( ! empty( $customers ) ) {
+						foreach ( $customers as $customer ) {
+							update_user_meta( $customer->ID, 'ims_user_reminder_mail', $user_reminder );
+						}
+					}
+
 
 				} elseif ( 'invoice.payment_succeeded' == $event->type ) {
 
@@ -795,10 +813,12 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 					if ( ! empty( $customers ) ) {
 						foreach ( $customers as $customer ) {
 							// Send reminder email.
+							$reminder_user 	= get_user_meta( $customer->ID, 'ims_user_reminder_mail', true );
 							$membership_id 	= get_user_meta( $customer->ID, 'ims_current_membership', true );
-							if ( ! empty( $membership_id ) ) {
-								$this->ims_membership_reminder_email( $customer->ID, $membership_id );
+							if ( ! empty( $membership_id ) && ! empty( $reminder_user ) ) {
+								$this->membership_reminder_email( $customer->ID, $membership_id );
 							}
+							update_user_meta( $customer->ID, 'ims_user_reminder_mail', 1 );
 						}
 					}
 

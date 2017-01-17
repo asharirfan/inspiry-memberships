@@ -14,26 +14,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * class-payment-handler.php.
+ * class-stripe-payment-handler.php.
  *
  * @since 1.0.0
  */
-if ( file_exists( IMS_BASE_DIR . '/assets/payment-handler/class-payment-handler.php' ) ) {
-    require_once( IMS_BASE_DIR . '/assets/payment-handler/class-payment-handler.php' );
+if ( file_exists( IMS_BASE_DIR . '/assets/payment-handler/class-stripe-payment-handler.php' ) ) {
+    require_once( IMS_BASE_DIR . '/assets/payment-handler/class-stripe-payment-handler.php' );
 }
 
-if ( class_exists( 'IMS_Payment_Handler' ) ) {
+if ( class_exists( 'IMS_Stripe_Payment_Handler' ) ) {
 
 	/**
-	 * If IMS_Payment_Handler class exists then initialize
+	 * If IMS_Stripe_Payment_Handler class exists then initialize
 	 * it to make it available to init hook.
 	 */
-	$ims_payment_handler = new IMS_Payment_Handler();
+	$ims_stripe_payment_handler = new IMS_Stripe_Payment_Handler();
 
-	add_action( 'init', array( $ims_payment_handler, 'process_stripe_payment' ) ); // Stripe Payment Process Init.
+	add_action( 'init', array( $ims_stripe_payment_handler, 'process_stripe_payment' ) ); // Stripe Payment Process Init.
 
-	add_action( 'init', array( $ims_payment_handler, 'cancel_user_subscription_request' ) ); // Cancel User Membership Request.
+	add_action( 'init', array( $ims_stripe_payment_handler, 'cancel_user_subscription_request' ) ); // Cancel User Membership Request.
 
-	add_action( 'init', array( $ims_payment_handler, 'handle_stripe_subscription_event' ), 1 ); // Hande stripe events for memberships.
+	add_action( 'init', array( $ims_stripe_payment_handler, 'handle_stripe_subscription_event' ), 1 ); // Hande stripe events for memberships.
 
 }
