@@ -42,6 +42,13 @@ if ( ! class_exists( 'IMS_Scripts' ) ) :
                     IMS_VERSION,
                     true
                 );
+
+                // data to print in JavaScript format above edit profile script tag in HTML
+                $ims_js_data 	= array(
+                    'ajaxURL'	=> admin_url( 'admin-ajax.php' )
+                );
+
+                wp_localize_script( 'ims-custom-js', 'jsData', $ims_js_data );
                 wp_enqueue_script( 'ims-custom-js' );
 
 			}

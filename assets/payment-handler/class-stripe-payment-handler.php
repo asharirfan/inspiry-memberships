@@ -1,8 +1,8 @@
 <?php
 /**
- * Payment Handling Class
+ * Payment Handling Class for Stripe
  *
- * Class for handling payment functions.
+ * Class for handling payment functions for stripe.
  *
  * @since 	1.0.0
  * @package IMS
@@ -579,26 +579,28 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 			$schedule_args		= array( $user_id, $membership_id, $receipt_id );
 
 			/**
-			 * Schedule the event
-			 *
-			 * @param int - unix timestamp of when to run the event
-			 * @param string - action to fire at the timestamp
-			 */
-			wp_schedule_single_event( time() + $time_duration, 'ims_schedule_membership_end', $schedule_args );
-
-			/**
 			 * Action to run event on
 			 * Doesn't need to be an existing WordPress action
 			 *
-			 * @param string - name of action
-			 * @param string - name of function to run on this action
+			 * @param string - ims_schedule_membership_end
+			 * @param string - schedule_normal_membership_end
 			 */
 			add_action( 'ims_schedule_membership_end', array( $this, 'schedule_normal_membership_end' ), 10, 3 );
+
+			inspiry_log( 'single_event' );
+			/**
+			 * Schedule the event
+			 *
+			 * @param int - unix timestamp of when to run the event
+			 * @param string - ims_schedule_membership_end
+			 */
+			wp_schedule_single_event( time() + $time_duration, 'ims_schedule_membership_end', $schedule_args );
 
 		}
 
 		/**
-		 * Function to be called when ims_schedule_membership_end event is fired
+		 * Method: Function to be called when ims_schedule_membership_end
+		 * event is fired.
 		 *
 		 * @since 1.0.0
 		 */
@@ -610,7 +612,7 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 			}
 
 			$this->cancel_user_membership( $user_id );
-
+			inspiry_log( 'cancelled user membership' );
 		}
 
 		/**

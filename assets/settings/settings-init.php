@@ -161,15 +161,66 @@ if ( class_exists( 'WP_OSA' ) ) {
 		)
 	);
 
-	// Field: Test Publishable Key.
+	/**
+	 * Field: Test Publishable Key.
+	 *
+	 * @todo Make an option to let the user know how to register WebHook URL.
+	 */
 	$ims_settings->add_field(
 		'ims_stripe_settings',
 		array(
-			'id'      => 'ims_wait_duration',
-			'type'    => 'number',
-			'name'    => __( 'Hours to Wait', 'inspiry-memberships' ),
-			'desc'    => __( 'Number of hours to wait before checking the status of subscription past due date.', 'inspiry-memberships' ),
-			'default' => '48',
+			'id'      => 'ims_stripe_webhook_url',
+			// 'type'    => 'number',
+			'name'    => __( 'Stripe WebHook URL', 'inspiry-memberships' ),
+			'desc'    => __( get_bloginfo( 'url' ) . '/?ims_stripe=membership_event', 'inspiry-memberships' ),
+			// 'default' => '48',
+		)
+	);
+
+	/**
+	 * Section: PayPal Settings.
+	 *
+	 * @since 1.0.0
+	 */
+    $ims_settings->add_section(
+    	array(
+			'id'    => 'ims_paypal_settings',
+			'title' => __( 'PayPal Settings', 'inspiry-memberships' )
+		)
+    );
+
+    // Field: Test Mode.
+	$ims_settings->add_field(
+		'ims_paypal_settings',
+		array(
+			'id'      => 'ims_paypal_test_mode',
+			'type'    => 'checkbox',
+			'name'    => __( 'Sandbox Mode', 'inspiry-memberships' ),
+			'desc'    => __( 'Check this option to use PayPal sandbox.', 'inspiry-memberships' ),
+		)
+	);
+
+    // Field: Client ID.
+	$ims_settings->add_field(
+		'ims_paypal_settings',
+		array(
+			'id'      => 'ims_paypal_client_id',
+			'type'    => 'text',
+			'name'    => __( 'Client ID', 'inspiry-memberships' ),
+			'desc'    => __( 'Paste your client ID here.', 'inspiry-memberships' ),
+			// 'default' => 'Default Text',
+		)
+	);
+
+	// Field: Client Secret.
+	$ims_settings->add_field(
+		'ims_paypal_settings',
+		array(
+			'id'      => 'ims_paypal_client_secret',
+			'type'    => 'text',
+			'name'    => __( 'Client Secret', 'inspiry-memberships' ),
+			'desc'    => __( 'Paste your client secret here.', 'inspiry-memberships' ),
+			// 'default' => 'Default Text',
 		)
 	);
 

@@ -202,9 +202,7 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 
 						<h4><?php _e( 'Select Membership', 'inspiry-memberships' ); ?></h4>
 
-						<select name="ims-membership-select"
-								id="ims-membership-select"
-								data-ajax-link="<?php echo admin_url( 'admin-ajax.php' ); ?>">
+						<select name="ims-membership-select" id="ims-membership-select">
 
 							<option selected disabled><?php _e( 'None', 'inspiry-memberships' ); ?></option>
 							<?php foreach ( $ims_memberships as $ims_membership ) : ?>
@@ -215,7 +213,7 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 
 						</select>
 
-						<input type="hidden" name="redirect" value="<?php echo get_bloginfo( 'url' ); ?>"/>
+						<input type="hidden" name="redirect" value="<?php echo esc_url( get_bloginfo( 'url' ) ); ?>"/>
 
 						<input type="checkbox" name="ims_recurring" id="ims_recurring" />
 						<label for="ims_recurring" id="ims_recurring_label">
@@ -231,8 +229,17 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 					</div>
 					<!-- /.rh-membership_loader -->
 
-					<div class="ims-button-option ims-stripe-button"></div>
+					<div class="ims-button-option ims-paypal-button">
+						<a href="#" id="ims-paypal"><?php _e( 'Pay with PayPal', 'inspiry-memberships' ); ?></a>
+					</div>
+					<!-- /.form-option rh-paypal-button -->
+
+					<div class="ims-button-option ims-stripe-button">
+					</div>
 					<!-- /.form-option rh-stripe-button -->
+
+					<div class="ims-button-option error"></div>
+					<!-- /.ims-button-option error -->
 
 				</form>
 

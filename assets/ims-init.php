@@ -13,6 +13,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+if ( ! function_exists( 'inspiry_log' ) ) {
+    /**
+     * Function to help in debugging
+     *
+     * @param $message
+     */
+    function inspiry_log( $message ) {
+        if ( WP_DEBUG === true ) {
+            if ( is_array( $message ) || is_object( $message ) ) {
+                error_log( print_r( $message, true ) );
+            } else {
+                error_log( $message );
+            }
+        }
+    }
+}
+
 /**
  * membership-init.php.
  *
