@@ -69,6 +69,15 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 			// Require Stripe library.
 			include( IMS_BASE_DIR . '/assets/stripe/stripe-init.php' );
 
+			/**
+			 * Action to run event on
+			 * Doesn't need to be an existing WordPress action
+			 *
+			 * @param string - ims_schedule_membership_end
+			 * @param string - schedule_normal_membership_end
+			 */
+			add_action( 'ims_schedule_membership_end', array( $this, 'schedule_normal_membership_end' ), 10, 3 );
+
 		}
 
 		/**
@@ -579,16 +588,6 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 			$schedule_args		= array( $user_id, $membership_id, $receipt_id );
 
 			/**
-			 * Action to run event on
-			 * Doesn't need to be an existing WordPress action
-			 *
-			 * @param string - ims_schedule_membership_end
-			 * @param string - schedule_normal_membership_end
-			 */
-			add_action( 'ims_schedule_membership_end', array( $this, 'schedule_normal_membership_end' ), 10, 3 );
-
-			inspiry_log( 'single_event' );
-			/**
 			 * Schedule the event
 			 *
 			 * @param int - unix timestamp of when to run the event
@@ -612,7 +611,6 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 			}
 
 			$this->cancel_user_membership( $user_id );
-			inspiry_log( 'cancelled user membership' );
 		}
 
 		/**

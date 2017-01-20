@@ -54,7 +54,8 @@ if ( ! class_exists( 'IMS_Get_Receipt' ) ) :
 		 	'price'			=> 'ims_membership_price',
 		 	'purchase_date'	=> 'ims_membership_purchase_date',
 		 	'user_id'		=> 'ims_membership_user_id',
-		 	'vendor'		=> 'ims_membership_vendor'
+		 	'vendor'		=> 'ims_membership_vendor',
+		 	'payment_id'	=> 'ims_membership_payment_id',
 		 );
 
 		/**
@@ -195,6 +196,19 @@ if ( ! class_exists( 'IMS_Get_Receipt' ) ) :
 			    return false;
 			}
 			return $this->get_meta( $this->meta_keys[ 'vendor' ] );
+		}
+
+		/**
+		 * Get Receipt: Payment ID.
+		 *
+		 * @since 1.0.0
+		 */
+		public function get_payment_id() {
+			// Returns false if ID is not present.
+			if ( ! $this->the_receipt_id ) {
+			    return false;
+			}
+			return $this->get_meta( $this->meta_keys[ 'payment_id' ] );
 		}
 
 	}

@@ -127,8 +127,7 @@ jQuery( function( $ ) {
                 paypal_payment_request.done( function( response ) {
                     form_loader.hide(); // Hide ajax loader GIF.
                     if ( response.success ) {
-                        // console.log(response);
-                        window.location.href    = response.url;
+                        window.location.href    = response.url; // Redirect to URL returned by PayPal.
                     } else {
                         error_div.text( response.message );
                     }

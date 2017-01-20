@@ -89,7 +89,13 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 					</th>
 					<td>
 						<?php $receipt_id = get_post_meta( $object->ID, "{$prefix}receipt_id", true ); ?>
-						<p><?php echo ( ! empty( $receipt_id ) ) ? $receipt_id : __( 'Receipt ID is not generated yet!' ); ?></p>
+						<p><?php //echo ( ! empty( $receipt_id ) ) ? $receipt_id : __( 'Receipt ID is not generated yet!' ); ?></p>
+						<input 	type="text"
+								name="receipt_id"
+								id="receipt_id"
+								disabled
+								value="<?php echo ( ! empty( $receipt_id ) ) ? esc_attr( $receipt_id ) : __( 'Receipt ID is not generated yet!' ); ?>"
+						/>
 					</td>
 				</tr>
 
@@ -101,11 +107,12 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 					</th>
 					<td>
 						<?php $receipt_for = get_post_meta( $object->ID, "{$prefix}receipt_for", true ); ?>
-						<p class=""><?php echo ( ! empty( $receipt_for ) ) ? $receipt_for : __( 'Data not available!' ); ?></p>
-						<input 	type="hidden"
+						<p><?php// echo ( ! empty( $receipt_for ) ) ? $receipt_for : __( 'Data not available!' ); ?></p>
+						<input 	type="text"
 								name="receipt_for"
 								id="receipt_for"
-								value="<?php echo esc_attr( get_post_meta( $object->ID, "{$prefix}receipt_for", true ) ); ?>"
+								disabled
+								value="<?php echo ( ! empty( $receipt_for ) ) ? esc_attr( $receipt_for ) : __( 'Data not available!' ); ?>"
 						/>
 					</td>
 				</tr>
@@ -155,6 +162,7 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 								placeholder="Date of Purchase"
 								value="<?php echo esc_attr( get_post_meta( $object->ID, "{$prefix}purchase_date", true ) ); ?>"
 						/>
+						<p class="description"><?php _e( 'Format: YYYY-MM-DD H:M:S' ); ?></p>
 					</td>
 				</tr>
 
@@ -196,6 +204,22 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 								<?php _e( 'Wire Transfer', 'inspiry-memberships' ); ?>
 							</option>
 						</select>
+					</td>
+				</tr>
+
+				<tr valign="top">
+					<th scope="row" valign="top">
+						<label for="payment_id">
+							<?php _e( 'Payment ID', 'inspiry-membership' ); ?>
+						</label>
+					</th>
+					<td>
+						<input 	type="text"
+								name="payment_id"
+								id="payment_id"
+								placeholder="Payment ID"
+								value="<?php echo esc_attr( get_post_meta( $object->ID, "{$prefix}payment_id", true ) ); ?>"
+						/>
 					</td>
 				</tr>
 
@@ -254,6 +278,7 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 			$ims_meta_value[ 'purchase_date' ] 	= ( isset( $_POST[ 'purchase_date' ] ) ) ? sanitize_text_field( $_POST[ 'purchase_date' ] ) : '';
 			$ims_meta_value[ 'user_id' ] 		= ( isset( $_POST[ 'user_id' ] ) ) ? intval( $_POST[ 'user_id' ] ) : '';
 			$ims_meta_value[ 'vendor' ] 		= ( isset( $_POST[ 'vendor' ] ) ) ? sanitize_text_field( $_POST[ 'vendor' ] ) : '';
+			$ims_meta_value[ 'payment_id' ] 		= ( isset( $_POST[ 'payment_id' ] ) ) ? sanitize_text_field( $_POST[ 'payment_id' ] ) : '';
 
 			// Meta data prefix.
 			$prefix = 'ims_membership_';
@@ -266,6 +291,7 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 			$this->save_meta_value( $post_id, "{$prefix}purchase_date", $ims_meta_value[ 'purchase_date' ] );
 			$this->save_meta_value( $post_id, "{$prefix}user_id", $ims_meta_value[ 'user_id' ] );
 			$this->save_meta_value( $post_id, "{$prefix}vendor", $ims_meta_value[ 'vendor' ] );
+			$this->save_meta_value( $post_id, "{$prefix}payment_id", $ims_meta_value[ 'payment_id' ] );
 
 			/**
 			 * `ims_receipt_save_meta_boxes`

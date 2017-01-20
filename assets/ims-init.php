@@ -31,6 +31,15 @@ if ( ! function_exists( 'inspiry_log' ) ) {
 }
 
 /**
+ * class-ims-email.php.
+ *
+ * @since 1.0.0
+ */
+if ( file_exists( IMS_BASE_DIR . '/assets/email/class-ims-email.php' ) ) {
+    require_once( IMS_BASE_DIR . '/assets/email/class-ims-email.php' );
+}
+
+/**
  * membership-init.php.
  *
  * @since 1.0.0
@@ -64,15 +73,6 @@ if ( file_exists( IMS_BASE_DIR . '/assets/admin-menu/admin-menu-init.php' ) ) {
  */
 if ( file_exists( IMS_BASE_DIR . '/assets/settings/settings-init.php' ) ) {
     require_once( IMS_BASE_DIR . '/assets/settings/settings-init.php' );
-}
-
-/**
- * class-ims-email.php.
- *
- * @since 1.0.0
- */
-if ( file_exists( IMS_BASE_DIR . '/assets/email/class-ims-email.php' ) ) {
-    require_once( IMS_BASE_DIR . '/assets/email/class-ims-email.php' );
 }
 
 /**

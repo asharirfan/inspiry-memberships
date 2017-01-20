@@ -57,4 +57,6 @@ if ( class_exists( 'IMS_PayPal_Payment_Handler' ) ) {
 
 	add_action( 'wp_ajax_ims_paypal_simple_payment', array( $ims_paypal_payment_handler, 'process_paypal_payment' ) );
 
+	add_action( 'init', array( $ims_paypal_payment_handler, 'execute_paypal_payment' ) );
+
 }

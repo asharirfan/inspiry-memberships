@@ -67,6 +67,15 @@ if ( file_exists( IMS_BASE_DIR . '/assets/membership/methods-get-membership.php'
     require_once( IMS_BASE_DIR . '/assets/membership/methods-get-membership.php' );
 }
 
+/**
+ * Membership methods class file.
+ *
+ * @since 1.0.0
+ */
+if ( file_exists( IMS_BASE_DIR . '/assets/membership/class-membership-methods.php' ) ) {
+    require_once( IMS_BASE_DIR . '/assets/membership/class-membership-methods.php' );
+}
+
 if ( class_exists( 'IMS_Membership' ) ) {
 
 	$ims_membership_init	= new IMS_Membership(); // IMS_Membership object
