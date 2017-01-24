@@ -55,8 +55,12 @@ if ( class_exists( 'IMS_PayPal_Payment_Handler' ) ) {
 	 */
 	$ims_paypal_payment_handler = new IMS_PayPal_Payment_Handler();
 
-	add_action( 'wp_ajax_ims_paypal_simple_payment', array( $ims_paypal_payment_handler, 'process_paypal_payment' ) );
+	add_action( 'wp_ajax_ims_paypal_simple_payment', array( $ims_paypal_payment_handler, 'process_simple_paypal_payment' ) );
 
 	add_action( 'init', array( $ims_paypal_payment_handler, 'execute_paypal_payment' ) );
+
+	add_action( 'wp_ajax_ims_paypal_recurring_payment', array( $ims_paypal_payment_handler, 'process_recurring_paypal_payment' ) );
+
+	add_action( 'init', array( $ims_paypal_payment_handler, 'execute_recurring_paypal_payment' ) );
 
 }

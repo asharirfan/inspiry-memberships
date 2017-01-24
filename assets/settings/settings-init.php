@@ -224,4 +224,40 @@ if ( class_exists( 'WP_OSA' ) ) {
 		)
 	);
 
+	// Field: API Username.
+	$ims_settings->add_field(
+		'ims_paypal_settings',
+		array(
+			'id'      => 'ims_paypal_api_username',
+			'type'    => 'text',
+			'name'    => __( 'API Username', 'inspiry-memberships' ),
+			'desc'    => __( 'Paste your API username here.', 'inspiry-memberships' ),
+			// 'default' => 'Default Text',
+		)
+	);
+
+	// Field: API Password.
+	$ims_settings->add_field(
+		'ims_paypal_settings',
+		array(
+			'id'      => 'ims_paypal_api_password',
+			'type'    => 'text',
+			'name'    => __( 'API Password', 'inspiry-memberships' ),
+			'desc'    => __( 'Paste your API password here.', 'inspiry-memberships' ),
+			// 'default' => 'Default Text',
+		)
+	);
+
+	// Field: API Signature.
+	$ims_settings->add_field(
+		'ims_paypal_settings',
+		array(
+			'id'      => 'ims_paypal_api_signature',
+			'type'    => 'text',
+			'name'    => __( 'API Signature', 'inspiry-memberships' ),
+			'desc'    => __( 'Paste your API signature here.', 'inspiry-memberships' ),
+			// 'default' => 'Default Text',
+		)
+	);
+
 }

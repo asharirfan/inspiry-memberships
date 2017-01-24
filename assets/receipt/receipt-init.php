@@ -91,6 +91,9 @@ if ( class_exists( 'IMS_Receipt_Meta_Boxes' ) ) {
 	add_action( 'load-post.php', array( $ims_receipt_meta_boxes_init, 'setup_meta_box' ) );
 	add_action( 'load-post-new.php', array( $ims_receipt_meta_boxes_init, 'setup_meta_box' ) );
 
+	add_action( 'admin_print_styles-post.php', array( $ims_receipt_meta_boxes_init, 'add_styles' ) );
+	add_action( 'admin_print_styles-post-new.php', array( $ims_receipt_meta_boxes_init, 'add_styles' ) );
+
 }
 
 if ( class_exists( 'IMS_Receipt_Custom_Columns' ) ) {

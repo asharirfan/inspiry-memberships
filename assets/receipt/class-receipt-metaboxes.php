@@ -336,6 +336,20 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 
 		}
 
+		/**
+		 * add_styles.
+		 *
+		 * @since 1.0.0
+		 */
+		public function add_styles() {
+
+			global $post_type;
+    		if ( 'ims_receipt' == $post_type ) {
+    			wp_enqueue_style( 'ims-admin-styles', IMS_BASE_URL . 'assets/css/receipt.css', array(), IMS_VERSION );
+    		}
+
+		}
+
 	}
 
 endif;

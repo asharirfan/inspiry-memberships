@@ -105,6 +105,17 @@ jQuery( function( $ ) {
             $( '#ims-paypal' ).click( function( e ) {
 
                 e.preventDefault(); // Prevent the default event of link.
+                var recurring           = $( '#ims_recurring');
+
+                if ( ! recurring.is( ':checked' ) ) {
+                    ims_paypal_simple_payment_request();
+                } else {
+                    ims_paypal_recurring_payment_request();
+                }
+
+            } );
+
+            var ims_paypal_simple_payment_request = function() {
 
                 var membershipSelect    = $( '#ims-membership-select' ); // Membership select option.
                 var membership          = membershipSelect.val(); // Getting selected membership id.
@@ -114,7 +125,7 @@ jQuery( function( $ ) {
 
                 form_loader.show(); // Show ajax loader GIF.
 
-                var paypal_payment_request = $.ajax({
+                var simple_paypal_payment_request = $.ajax({
                     url         : ajaxURL,
                     type        : "POST",
                     data        : {
@@ -124,7 +135,7 @@ jQuery( function( $ ) {
                     dataType    : "json"
                 });
 
-                paypal_payment_request.done( function( response ) {
+                simple_paypal_payment_request.done( function( response ) {
                     form_loader.hide(); // Hide ajax loader GIF.
                     if ( response.success ) {
                         window.location.href    = response.url; // Redirect to URL returned by PayPal.
@@ -133,11 +144,48 @@ jQuery( function( $ ) {
                     }
                 } );
 
-                paypal_payment_request.fail( function( jqXHR, textStatus ) {
+                simple_paypal_payment_request.fail( function( jqXHR, textStatus ) {
                     error_div.text( "Request failed: " + textStatus );
                 });
 
-            } );
+            }
+
+            var ims_paypal_recurring_payment_request = function() {
+
+                var membershipSelect    = $( '#ims-membership-select' ); // Membership select option.
+                var membership          = membershipSelect.val(); // Getting selected membership id.
+                var form_loader         = $( '.ims-membership_loader img' ); // Form Loader Image.
+                var error_div           = $( '#ims_select_membership > .error' ); // Error div.
+                error_div.empty();
+
+                form_loader.show(); // Show ajax loader GIF.
+
+                var recurring_paypal_payment_request = $.ajax({
+                    url         : ajaxURL,
+                    type        : "POST",
+                    data        : {
+                        membership_id   : membership,
+                        action          : "ims_paypal_recurring_payment"
+                    },
+                    dataType    : "json"
+                });
+
+                recurring_paypal_payment_request.done( function( response ) {
+                    form_loader.hide(); // Hide ajax loader GIF.
+                    if ( response.success ) {
+                        // console.log(response);
+                        window.location.href    = response.url; // Redirect to URL returned by PayPal.
+                    } else {
+                        // console.log(response);
+                        error_div.text( response.message );
+                    }
+                } );
+
+                recurring_paypal_payment_request.fail( function( jqXHR, textStatus ) {
+                    error_div.text( "Request failed: " + textStatus );
+                });
+
+            }
 
         }
 
