@@ -246,8 +246,8 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 
         			$paypal_payment_uri	= $paypal_url . "payments/payment";
 
-        			$return_url 		= esc_url( add_query_arg( 'paypal_payment', 'success', get_bloginfo( 'url' ) ) );
-        			$cancel_url 		= esc_url( add_query_arg( 'paypal_payment', 'failed', get_bloginfo( 'url' ) ) );
+        			$return_url 		= esc_url( add_query_arg( 'paypal_payment', 'success', esc_url( get_bloginfo( 'url' ) ) ) );
+        			$cancel_url 		= esc_url( add_query_arg( 'paypal_payment', 'failed', esc_url( get_bloginfo( 'url' ) ) ) );
         			$memberships_title 	= esc_html( get_the_title( $membership_id ) );
 
         			$payment_args 	= array(
@@ -520,6 +520,8 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 
 			if ( 'days' == $time_unit ) {
 				$seconds		= 24 * 60 * 60;
+			} elseif ( 'weeks' == $time_unit ) {
+				$seconds 		= 7 * 24 * 60 * 60;
 			} elseif ( 'months' == $time_unit ) {
 				$seconds 		= 30 * 24 * 60 * 60;
 			} elseif ( 'years' == $time_unit ) {
@@ -593,8 +595,8 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 				$paypal_settings 	= get_option( 'ims_paypal_settings' );
 				$sandbox_mode 		= $paypal_settings[ 'ims_paypal_test_mode' ];
 
-				$return_url		= esc_url( add_query_arg( 'paypal_recurring_payment', 'success', get_bloginfo( 'url' ) ) );
-        		$cancel_url		= esc_url( add_query_arg( 'paypal_recurring_payment', 'failed', get_bloginfo( 'url' ) ) );
+				$return_url		= esc_url( add_query_arg( 'paypal_recurring_payment', 'success', esc_url( get_bloginfo( 'url' ) ) ) );
+        		$cancel_url		= esc_url( add_query_arg( 'paypal_recurring_payment', 'failed', esc_url( get_bloginfo( 'url' ) ) ) );
 
 				$response 	= $this->callShortcutExpressCheckout( $price, $currency_code, "Sale", $return_url, $cancel_url, $description );
 				if ( ! empty( $response ) ) {
@@ -672,6 +674,18 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 
 						// Store the profile id in user meta.
 						update_user_meta( $user_id, 'ims_paypal_profile_id', $profile_id );
+
+						$membership_methods	= new IMS_Membership_Method();
+						$receipt_methods 	= new IMS_Receipt_Method();
+
+						$membership_methods->add_user_membership( $current_user->ID, $membership_id, 'paypal' );
+						$receipt_id			= $receipt_methods->generate_receipt( $current_user->ID, $membership_id, 'paypal', '', true );
+
+						if ( ! empty( $receipt_id ) ) {
+							$membership_methods->mail_user( $current_user->ID, $membership_id, 'paypal' );
+							$membership_methods->mail_admin( $current_user->ID, $receipt_id, 'paypal' );
+						}
+
 						$redirect_url 	= add_query_arg( 'membership', 'success', esc_url( get_bloginfo( 'url' ) ) );
 						wp_redirect( $redirect_url );
 						exit();
@@ -690,6 +704,13 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 
 		}
 
+		/**
+		 * Method: Call the PayPal API SetExpressCheckout to initiate
+		 * the billing agreement.
+		 *
+		 * @return array The NVP Collection object of the SetExpressCheckout Call Response.
+		 * @since 1.0.0
+		 */
 		private function callShortcutExpressCheckout( $amount, $currency_code, $type, $returnURL, $cancelURL, $description ) {
 
 			// Bail if parameters are empty.
@@ -706,7 +727,7 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 			 * Construct the parameter string that describes the SetExpressCheckout API call in the shortcut implementation.
 			 */
 			$nvpstr	= "PAYMENTREQUEST_0_AMT=" . $amount;
-			$nvpstr = $nvpstr . "&ReturnUrl=" . $returnURL;
+			$nvpstr = $nvpstr . "&RETURNURL=" . $returnURL;
 			$nvpstr = $nvpstr . "&CANCELURL=" . $cancelURL;
 			$nvpstr = $nvpstr . "&PAYMENTACTION=" . urlencode( $type );
 			$nvpstr = $nvpstr . "&CURRENCYCODE=" . $currency_code;
@@ -821,6 +842,9 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 			if ( array_key_exists( 'PAYERID', $shipping_details ) && ! empty( $shipping_details[ 'PAYERID' ] ) ) {
 				$payer_id 		= urlencode( $shipping_details[ 'PAYERID' ] );
 			}
+			if ( array_key_exists( 'EMAIL', $shipping_details ) && ! empty( $shipping_details[ 'EMAIL' ] ) ) {
+				$user_email		= urlencode( $shipping_details[ 'EMAIL' ] );
+			}
 			if ( array_key_exists( 'SHIPTONAME', $shipping_details ) && ! empty( $shipping_details[ 'SHIPTONAME' ] ) ) {
 				$shipToName 	= urlencode( $shipping_details[ 'SHIPTONAME' ] );
 			}
@@ -857,12 +881,6 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 				$period 	= "Year";
 			}
 
-			// Get user email.
-			$user	= get_user_by( 'id', $user_id );
-			if ( ! empty( $user ) ) {
-				$user_email	= $user->user_email;
-			}
-
 			// Get currency code.
 			$ims_basic_settings	= get_option( 'ims_basic_settings' );
 			$currency_code		= $ims_basic_settings[ 'ims_currency_code' ];
@@ -884,12 +902,12 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 			$nvpstr	.=	"&SHIPTOSTATE=" . $shipToState;
 			$nvpstr	.=	"&SHIPTOZIP=" . $shipToZip;
 			$nvpstr	.=	"&SHIPTOCOUNTRY=" . $shipToCountry;
-			$nvpstr	.=	"&PROFILESTARTDATE=" . urlencode( date( 'Y-m-d H:i:s', time() ) );
+			$nvpstr	.=	"&PROFILESTARTDATE=" . urlencode( date( 'Y-m-d H:i:s', current_time( 'timestamp' ) ) );
 			$nvpstr	.=	"&DESC=" . urlencode( $description );
 			$nvpstr	.=	"&BILLINGPERIOD=" . urlencode( $period );
 			$nvpstr	.=	"&BILLINGFREQUENCY=" . urlencode( $duration );
 			$nvpstr	.=	"&AMT=" . urlencode( $price );
-			$nvpstr .= 	"&INITAMT=" . urlencode( $price );
+			// $nvpstr .= 	"&INITAMT=" . urlencode( $price );
 			$nvpstr	.=	"&CURRENCYCODE=" . urlencode( $currency_code );
 			$nvpstr	.=	"&IPADDRESS=" . $_SERVER['REMOTE_ADDR'];
 			$nvpstr .= 	"&MAXFAILEDPAYMENTS=1";
@@ -1016,6 +1034,205 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 		    }
 
 			return $nvpArray;
+
+		}
+
+		/**
+		 * Method: Cancel PayPal user membership.
+		 *
+		 * @since 1.0.0
+		 */
+		public function cancel_paypal_membership( $user_id ) {
+
+			// Bail if parameters are empty.
+			if ( empty( $user_id ) ) {
+				return false;
+			}
+
+			$profile_id = get_user_meta( $user_id, 'ims_paypal_profile_id', true );
+
+			if ( empty( $profile_id ) ) {
+				return false;
+			}
+
+			 /**
+		     * Build an API request to PayPal for
+		     * ManageRecurringPaymentsProfileStatus.
+		     */
+			$nvpstr =	"PROFILEID=" . urlencode( $profile_id );
+			$nvpstr .=	"&ACTION=" . urlencode( 'Cancel' );
+			$nvpstr	.=	"&NOTE=" . urlencode( __( 'Membership cancelled!' ) );
+
+			$resArray 	= $this->hash_call( "ManageRecurringPaymentsProfileStatus", $nvpstr );
+			$ack 		= strtoupper( $resArray[ "ACK" ] );
+			if ( "SUCCESS" == $ack || "SUCCESSWITHWARNING" == $ack ) {
+
+				// Redirect on empty token or membership id.
+				$redirect = add_query_arg( 'request', 'submitted', esc_url( get_bloginfo( 'url' ) ) );
+				wp_redirect( $redirect );
+				exit;
+
+			}
+			return false;
+
+		}
+
+		/**
+		 * Method: Handle PayPal IPN event.
+		 *
+		 * @since 1.0.0
+		 */
+		public function handle_paypal_ipn_event() {
+
+			// Get PayPal settings.
+			$paypal_settings 	= get_option( 'ims_paypal_settings' );
+
+			if ( isset( $paypal_settings[ 'ims_paypal_ipn_url' ] ) && ! empty( $paypal_settings[ 'ims_paypal_ipn_url' ] ) ) {
+
+				// Extract URL parameters.
+				$ipn_url 			= $paypal_settings[ 'ims_paypal_ipn_url' ];
+				$ipn_url_params		= parse_url( $ipn_url, PHP_URL_QUERY );
+				$ipn_url_params 	= explode( '=', $ipn_url_params );
+
+			} else {
+				return false;
+			}
+
+			if ( isset( $_GET[ $ipn_url_params[0] ] ) && ( $ipn_url_params[1] == $_GET[ $ipn_url_params[0] ] ) ) {
+
+				$this->paypal_routine_check();
+				inspiry_log( "IPN Received" );
+				/**
+				 *  STEP 1: Read POST data. Reading POSTed data directly
+				 *  from $_POST causes serialization issues with array
+				 *  data in the POST. Instead, read raw POST data from
+				 *  the input stream.
+				 */
+				$raw_post_data 	= file_get_contents( 'php://input' );
+				$raw_post_array	= explode( '&', $raw_post_data );
+				$myPost 		= array();
+
+				// Bail if post data array is empty.
+				if ( empty( $raw_post_array ) ) {
+					return false;
+				}
+
+				foreach ( $raw_post_array as $keyval ) {
+
+					$keyval 	= explode ( '=', $keyval );
+					if ( 2 == count( $keyval ) ) {
+						$myPost[ $keyval[0] ] = urldecode( $keyval[1] );
+					}
+
+				}
+
+				// Bail if myPost data array is empty.
+				if ( empty( $myPost ) ) {
+					return false;
+				}
+
+				// Read the IPN message sent from PayPal and prepend 'cmd=_notify-validate'
+				$req 	= 'cmd=_notify-validate';
+				if ( function_exists( 'get_magic_quotes_gpc' ) ) {
+					$get_magic_quotes_exists = true;
+				}
+				foreach ( $myPost as $key => $value ) {
+					if ( $get_magic_quotes_exists == true && 1 == get_magic_quotes_gpc() ) {
+						$value = urlencode( stripslashes( $value ) );
+					} else {
+						$value = urlencode( $value );
+					}
+					$req .= "&$key=$value";
+				}
+
+				// Step 2: POST IPN data back to PayPal to validate.
+				$sandbox_mode	= $paypal_settings[ 'ims_paypal_test_mode' ];
+				if ( ! empty( $sandbox_mode ) && ( 'on' === $sandbox_mode ) ) {
+					$paypal_ipn_url = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
+				} else {
+					$paypal_ipn_url = 'https://www.paypal.com/cgi-bin/webscr';
+				}
+
+				$ch 	= curl_init( $paypal_ipn_url );
+				curl_setopt( $ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1 );
+				curl_setopt( $ch, CURLOPT_POST, 1 );
+				curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
+				curl_setopt( $ch, CURLOPT_POSTFIELDS, $req );
+				curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, 1 );
+				curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, 2 );
+				curl_setopt( $ch, CURLOPT_FORBID_REUSE, 1 );
+				curl_setopt( $ch, CURLOPT_HTTPHEADER, array( 'Connection: Close' ) );
+
+				$result	= curl_exec( $ch );
+				if ( empty( $result ) ) {
+					inspiry_log( "Got " . $ch . " when processing IPN data" );
+					curl_close( $ch );
+					return false;
+				} else {
+					curl_close( $ch );
+				}
+
+				inspiry_log( "Done. Got " . $ch );
+
+				// Inspect IPN validation result and act accordingly.
+				if ( 0 === strcmp( $result, "VERIFIED" ) ) {
+
+					// The IPN is verified, process it.
+					$item_name 			= ( isset( $_POST[ 'item_name' ] ) && ! empty( $_POST[ 'item_name' ] ) ) ? wp_kses( $_POST[ 'item_name' ], array() ) : false;
+					$item_number 		= ( isset( $_POST[ 'item_number' ] ) && ! empty( $_POST[ 'item_number' ] ) ) ? wp_kses( $_POST[ 'item_number' ], array() ) : false;
+					$payment_status 	= ( isset( $_POST[ 'payment_status' ] ) && ! empty( $_POST[ 'payment_status' ] ) ) ? wp_kses( $_POST[ 'payment_status' ], array() ) : false;
+					$payment_amount 	= ( isset( $_POST[ 'mc_gross' ] ) && ! empty( $_POST[ 'mc_gross' ] ) ) ? wp_kses( $_POST[ 'mc_gross' ], array() ) : false;
+					$payment_currency	= ( isset( $_POST[ 'mc_currency' ] ) && ! empty( $_POST[ 'mc_currency' ] ) ) ? wp_kses( $_POST[ 'mc_currency' ], array() ) : false;
+					$txn_id 			= ( isset( $_POST[ 'txn_id' ] ) && ! empty( $_POST[ 'txn_id' ] ) ) ? wp_kses( $_POST[ 'txn_id' ], array() ) : false;
+					$txn_type 			= ( isset( $_POST[ 'txn_type' ] ) && ! empty( $_POST[ 'txn_type' ] ) ) ? wp_kses( $_POST[ 'txn_type' ], array() ) : false;
+					$receiver_email 	= ( isset( $_POST[ 'receiver_email' ] ) && ! empty( $_POST[ 'receiver_email' ] ) ) ? wp_kses( $_POST[ 'receiver_email' ], array() ) : false;
+					$payer_email 		= ( isset( $_POST[ 'payer_email' ] ) && ! empty( $_POST[ 'payer_email' ] ) ) ? wp_kses( $_POST[ 'payer_email' ], array() ) : false;
+					$recurring_id 		= ( isset( $_POST[ 'recurring_payment_id' ] ) && ! empty( $_POST[ 'recurring_payment_id' ] ) ) ? wp_kses( $_POST[ 'recurring_payment_id' ], array() ) : false;
+					$profile_status		= ( isset( $_POST[ 'profile_status' ] ) && ! empty( $_POST[ 'profile_status' ] ) ) ? wp_kses( $_POST[ 'profile_status' ], array() ) : false;
+
+					$membership_methods	= new IMS_Membership_Method();
+					$receipt_methods	= new IMS_Receipt_Method();
+					$user_id			= $membership_methods->get_user_by_paypal_profile( $recurring_id );
+
+					if ( empty( $user_id ) ) {
+						return false;
+					}
+
+					if ( 'recurring_payment' === $txn_type && 'Completed' == $payment_status ) {
+
+						// Extend membership.
+						$current_membership	= get_user_meta( $user_id, 'ims_current_membership', true );
+						$membership_methods->update_membership_due_date( $current_membership, $user_id );
+						$receipt_id 		= $receipt_methods->generate_receipt( $user_id, $current_membership, 'paypal', $txn_id, true );
+
+						if ( ! empty( $receipt_id ) ) {
+							$membership_methods->mail_user( $user_id, $current_membership, 'paypal', true );
+							$membership_methods->mail_admin( $user_id, $receipt_id, 'paypal', true );
+						}
+						inspiry_log( "Membership Upgraded" );
+
+					} elseif ( 'recurring_payment_profile_created' === $txn_type ) {
+
+						inspiry_log( "Membership Created" );
+
+					} elseif ( 'recurring_payment_failed' === $txn_type || 'recurring_payment_profile_cancel' === $txn_type ) {
+
+						// Cancel user membership.
+						$current_membership	= get_user_meta( $user_id, 'ims_current_membership', true );
+						$membership_methods->cancel_user_membership( $user_id, $current_membership );
+						inspiry_log( "Membership Deleted" );
+
+					}
+
+					return true;
+
+				} elseif ( 0 === strcmp( $result, "INVALID" ) ) {
+					// IPN invalid, log for manual investigation.
+					inspiry_log( "Got error: " . $result );
+					return false;
+				}
+
+			}
 
 		}
 

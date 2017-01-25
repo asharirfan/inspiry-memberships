@@ -47,6 +47,9 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 
 			if ( empty( $current_membership ) ) {
 
+				$time_due 	= $this->get_membership_due_date( $membership_id, current_time( 'timestamp' ) );
+				$due_date 	= date( 'Y-m-d H:i:s', $time_due );
+
 				// Add membership id to user meta.
 				update_user_meta( $user_id, 'ims_current_membership', $membership_id );
 
@@ -57,6 +60,7 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 				update_user_meta( $user_id, 'ims_current_featured_props', $membership_obj->get_featured_properties() );
 				update_user_meta( $user_id, 'ims_current_duration', $membership_obj->get_duration() );
 				update_user_meta( $user_id, 'ims_current_duration_unit', $membership_obj->get_duration_unit() );
+				update_user_meta( $user_id, 'ims_membership_due_date', $due_date );
 
 				if ( ! empty( $vendor ) && 'stripe' == $vendor ) {
 
@@ -115,6 +119,9 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 
 			if ( ! empty( $new_properties ) && ! empty( $new_featured_props ) ) {
 
+				$time_due 	= $this->get_membership_due_date( $new_membership_id, current_time( 'timestamp' ) );
+				$due_date 	= date( 'Y-m-d H:i:s', $time_due );
+
 				// Update membership id to user meta.
 				update_user_meta( $user_id, 'ims_current_membership', $new_membership_id );
 
@@ -125,6 +132,7 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 				update_user_meta( $user_id, 'ims_current_featured_props', $new_featured_props );
 				update_user_meta( $user_id, 'ims_current_duration', $new_membership_obj->get_duration() );
 				update_user_meta( $user_id, 'ims_current_duration_unit', $new_membership_obj->get_duration_unit() );
+				update_user_meta( $user_id, 'ims_membership_due_date', $due_date );
 
 				if ( ! empty( $vendor ) && 'stripe' == $vendor ) {
 
@@ -181,7 +189,7 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 		 *
 		 * @since 1.0.0
 		 */
-		public function mail_user( $user_id = 0, $membership_id = 0, $vendor = NULL ) {
+		public function mail_user( $user_id = 0, $membership_id = 0, $vendor = NULL, $recurring = false ) {
 
 			// Bail if user, membership or receipt id is empty.
 			if ( empty( $user_id ) || empty( $membership_id ) ) {
@@ -205,11 +213,25 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 
 			$membership = get_post( $membership_id );
 
-			$subject	= __( 'Membership Purchased.', 'inspiry-memberships' );
+			if ( empty( $recurring ) ) {
 
-			$message 	= sprintf( __( 'You have successfully purchased %s membership package on our site.', 'inspiry-memberships' ), $membership->post_title ) . "<br/><br/>";
-			$message 	.= sprintf( __( 'Your payment has been received successfully %s.', 'inspiry-memberships' ), $vendor ) . "<br/><br/>";
-			$message 	.= __( 'To view the details, please visit your profile page on the website.', 'inspiry-memberships' );
+				// Purchase Membership Mail.
+				$subject	= __( 'Membership Purchased.', 'inspiry-memberships' );
+
+				$message 	= sprintf( __( 'You have successfully purchased %s membership package on our site.', 'inspiry-memberships' ), $membership->post_title ) . "<br/><br/>";
+				$message 	.= sprintf( __( 'Your payment has been received successfully %s.', 'inspiry-memberships' ), $vendor ) . "<br/><br/>";
+				$message 	.= __( 'To view the details, please visit your profile page on our website.', 'inspiry-memberships' );
+
+			} elseif ( ! empty( $recurring ) ) {
+
+				// Update Membership Mail.
+				$subject	= __( 'Membership Updated Successfully.', 'inspiry-memberships' );
+
+				$message 	= sprintf( __( 'Your membership package: %s has been successfully updated on our site.', 'inspiry-memberships' ), $membership->post_title ) . "<br/><br/>";
+				$message 	.= sprintf( __( 'Your payment has been received successfully %s.', 'inspiry-memberships' ), $vendor ) . "<br/><br/>";
+				$message 	.= __( 'To view the details, please visit your profile page on our website.', 'inspiry-memberships' );
+
+			}
 
 			if ( is_email( $user_email ) ) {
 				IMS_Email::send_email( $user_email, $subject, $message );
@@ -222,7 +244,7 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 		 *
 		 * @since 1.0.0
 		 */
-		public function mail_admin( $membership_id = 0, $receipt_id = 0, $vendor = NULL ) {
+		public function mail_admin( $membership_id = 0, $receipt_id = 0, $vendor = NULL, $recurring = false ) {
 
 			// Bail if membership or receipt id is empty.
 			if ( empty( $membership_id ) || empty( $receipt_id ) ) {
@@ -247,12 +269,25 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 
 			$membership 	= get_post( $membership_id );
 
-			$subject		= __( 'Membership Purchased.', 'inspiry-memberships' );
+			if ( empty( $recurring ) ) {
 
-			$message 	= sprintf( __( 'A user successfully purchased %s membership package on your site.', 'inspiry-memberships' ), $membership->post_title ) . "<br/><br/>";
-			$message 	.= sprintf( __( 'Payment has been submitted %s.', 'inspiry-memberships' ), $vendor ) . "<br/><br/>";
-			$message 	.= __( 'To view the details, please visit : ', 'inspiry-memberships' );
-			$message 	.= '<a target="_blank" href="' . $receipt_link . '">' . $receipt->post_title . '</a>';
+				$subject		= __( 'Membership Purchased.', 'inspiry-memberships' );
+
+				$message 	= sprintf( __( 'A user successfully purchased %s membership package on your site.', 'inspiry-memberships' ), $membership->post_title ) . "<br/><br/>";
+				$message 	.= sprintf( __( 'Payment has been submitted %s.', 'inspiry-memberships' ), $vendor ) . "<br/><br/>";
+				$message 	.= __( 'To view the details, please visit : ', 'inspiry-memberships' );
+				$message 	.= '<a target="_blank" href="' . $receipt_link . '">' . $receipt->post_title . '</a>';
+
+			} elseif ( ! empty( $recurring ) ) {
+
+				$subject		= __( 'Membership Updated.', 'inspiry-memberships' );
+
+				$message 	= sprintf( __( 'A user successfully updated %s membership package on your site.', 'inspiry-memberships' ), $membership->post_title ) . "<br/><br/>";
+				$message 	.= sprintf( __( 'Payment has been submitted %s.', 'inspiry-memberships' ), $vendor ) . "<br/><br/>";
+				$message 	.= __( 'To view the details, please visit : ', 'inspiry-memberships' );
+				$message 	.= '<a target="_blank" href="' . $receipt_link . '">' . $receipt->post_title . '</a>';
+
+			}
 
 			if ( is_email( $admin_email ) ) {
 				IMS_Email::send_email( $admin_email, $subject, $message );
@@ -292,6 +327,7 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 			delete_user_meta( $user_id, 'ims_current_featured_props' );
 			delete_user_meta( $user_id, 'ims_current_duration' );
 			delete_user_meta( $user_id, 'ims_current_duration_unit' );
+			delete_user_meta( $user_id, 'ims_membership_due_date' );
 
 			// Delete meta related to vendors.
 			$vendor 	= get_user_meta( $user_id, 'ims_current_vendor', true );
@@ -304,9 +340,109 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 				delete_user_meta( $user_id, 'ims_stripe_customer_id' );
 			} elseif ( 'paypal' === $vendor ) {
 				delete_user_meta( $user_id, 'ims_current_vendor' );
+				delete_user_meta( $user_id, 'ims_paypal_profile_id' );
 			} elseif ( 'wire' === $vendor ) {
 				delete_user_meta( $user_id, 'ims_current_vendor' );
 			}
+
+		}
+
+		/**
+		 * Method: Get user by PayPal Profile ID.
+		 *
+		 * @since 1.0.0
+		 */
+		public function get_user_by_paypal_profile( $profile_id ) {
+
+			// Bail if user id is empty.
+			if ( empty( $profile_id ) ) {
+				return false;
+			}
+
+			$user_args 	= array(
+				'meta_key'		=> 'ims_paypal_profile_id',
+				'meta_value'	=> $profile_id,
+				'meta_compare'	=> '='
+			);
+			$users 		= get_users( $user_args );
+
+			if ( ! empty( $users ) ) {
+
+				foreach ( $users as $user ) {
+					$user_id 	= $user->ID;
+				}
+				return $user_id;
+
+			}
+			return false;
+
+		}
+
+		/**
+		 * Method: Calculate Membership Due date.
+		 *
+		 * @since 1.0.0
+		 */
+		public function get_membership_due_date( $membership_id, $current_time ) {
+
+			// Bail if paramters are empty.
+			if ( empty( $membership_id ) || empty( $current_time ) ) {
+				return false;
+			}
+
+			$membership 	= ims_get_membership_object( $membership_id );
+			$time_duration	= $membership->get_duration();
+			$time_unit 		= $membership->get_duration_unit();
+			$seconds 		= 0;
+
+			if ( 'days' == $time_unit ) {
+				$seconds		= 24 * 60 * 60;
+			} elseif ( 'months' == $time_unit ) {
+				$seconds 		= 30 * 24 * 60 * 60;
+			} elseif ( 'years' == $time_unit ) {
+				$seconds 		= 365 * 24 * 60 * 60;
+			}
+
+			$time_duration		= $time_duration * $seconds;
+
+			return $current_time + $time_duration;
+
+		}
+
+		/**
+		 * Method: Update membership due date.
+		 *
+		 * @since 1.0.0
+		 */
+		public function update_membership_due_date( $membership_id, $user_id ) {
+
+			// Bail if paramters are empty.
+			if ( empty( $membership_id ) || empty( $user_id ) ) {
+				return false;
+			}
+
+			$membership 	= ims_get_membership_object( $membership_id );
+			$time_duration	= $membership->get_duration();
+			$time_unit 		= $membership->get_duration_unit();
+			$seconds 		= 0;
+
+			if ( 'days' == $time_unit ) {
+				$seconds		= 24 * 60 * 60;
+			} elseif ( 'months' == $time_unit ) {
+				$seconds 		= 30 * 24 * 60 * 60;
+			} elseif ( 'years' == $time_unit ) {
+				$seconds 		= 365 * 24 * 60 * 60;
+			}
+
+			$time_duration		= $time_duration * $seconds;
+			$current_time 		= current_time( 'timestamp' );
+			$due_time 			= $current_time + $time_duration;
+			$due_date 			= date( 'Y-m-d H:i:s', $due_time );
+
+			if ( update_user_meta( $user_id, 'ims_membership_due_date', $due_date ) ) {
+				return true;
+			}
+			return false;
 
 		}
 

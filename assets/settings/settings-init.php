@@ -162,7 +162,7 @@ if ( class_exists( 'WP_OSA' ) ) {
 	);
 
 	/**
-	 * Field: Test Publishable Key.
+	 * Field: Stripe WebHook URL.
 	 *
 	 * @todo Make an option to let the user know how to register WebHook URL.
 	 */
@@ -170,10 +170,10 @@ if ( class_exists( 'WP_OSA' ) ) {
 		'ims_stripe_settings',
 		array(
 			'id'      => 'ims_stripe_webhook_url',
-			// 'type'    => 'number',
+			'type'    => 'text',
 			'name'    => __( 'Stripe WebHook URL', 'inspiry-memberships' ),
-			'desc'    => __( get_bloginfo( 'url' ) . '/?ims_stripe=membership_event', 'inspiry-memberships' ),
-			// 'default' => '48',
+			'desc'    => __( esc_url( get_bloginfo( 'url' ) ) . '/?ims_stripe=membership_event', 'inspiry-memberships' ),
+			'default' => __( esc_url( get_bloginfo( 'url' ) ) . '/?ims_stripe=membership_event', 'inspiry-memberships' ),
 		)
 	);
 
@@ -257,6 +257,22 @@ if ( class_exists( 'WP_OSA' ) ) {
 			'name'    => __( 'API Signature', 'inspiry-memberships' ),
 			'desc'    => __( 'Paste your API signature here.', 'inspiry-memberships' ),
 			// 'default' => 'Default Text',
+		)
+	);
+
+	/**
+	 * Field: PayPal IPN URL.
+	 *
+	 * @todo Make an option to let the user know how to register IPN URL.
+	 */
+	$ims_settings->add_field(
+		'ims_paypal_settings',
+		array(
+			'id'      => 'ims_paypal_ipn_url',
+			'type'    => 'text',
+			'name'    => __( 'PayPal IPN URL', 'inspiry-memberships' ),
+			'desc'    => __( esc_url( get_bloginfo( 'url' ) ) . '/?ims_paypal=notification', 'inspiry-memberships' ),
+			'default' => __( esc_url( get_bloginfo( 'url' ) ) . '/?ims_paypal=notification', 'inspiry-memberships' ),
 		)
 	);
 

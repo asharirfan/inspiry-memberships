@@ -631,8 +631,8 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 				$user_email	= $user->user_email;
 			}
 
-			$site_name 		= get_bloginfo( 'name' );
-			$site_url		= get_bloginfo( 'url' );
+			$site_name 		= esc_html( get_bloginfo( 'url' ) );
+			$site_url		= esc_url( get_bloginfo( 'url' ) );
 
 			$subject		= __( 'Membership is about to end.', 'inspiry-memberships' );
 
@@ -652,7 +652,7 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 		 *
 		 * @since 1.0.0
 		 */
-		public function cancel_user_membership_manual( $user_id = 0 ) {
+		public function cancel_stripe_membership( $user_id = 0 ) {
 
 			// Bail if user id is empty.
 			if ( empty( $user_id ) ) {
@@ -667,7 +667,11 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 				$subscription 		= \Stripe\Subscription::retrieve( $stripe_subscription );
 				$subscription->cancel( array( 'at_period_end' => true ) );
 			} else {
-				$this->cancel_user_membership( $user_id );
+
+				$current_membership = get_user_meta( $user_id, 'ims_current_membership', true );
+				$membership_methods = new IMS_Membership_Method();
+				$membership_methods->cancel_user_membership( $user_id, $current_membership );
+
 			}
 
 		}
@@ -677,54 +681,54 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 		 *
 		 * @since 1.0.0
 		 */
-		public function cancel_user_subscription_request() {
+		// public function cancel_user_subscription_request() {
 
-			if ( isset( $_POST[ 'action' ] )
-					&& 'ims_cancel_user_membership' == $_POST[ 'action' ]
-					&& wp_verify_nonce( $_POST[ 'ims_cancel_membership_nonce' ], 'ims-cancel-membership-nonce' ) ) {
+		// 	if ( isset( $_POST[ 'action' ] )
+		// 			&& 'ims_cancel_user_membership' == $_POST[ 'action' ]
+		// 			&& wp_verify_nonce( $_POST[ 'ims_cancel_membership_nonce' ], 'ims-cancel-membership-nonce' ) ) {
 
-				// Get user and membership id.
-				$user_id		= $_POST[ 'user_id' ];
+		// 		// Get user and membership id.
+		// 		$user_id		= $_POST[ 'user_id' ];
 
-				// Bail if user id is empty.
-				if ( empty( $user_id ) ) {
-					return;
-				}
+		// 		// Bail if user id is empty.
+		// 		if ( empty( $user_id ) ) {
+		// 			return;
+		// 		}
 
-				$this->cancel_user_membership_manual( $user_id );
+		// 		// $this->cancel_user_membership_manual( $user_id );
 
-			}
+		// 	}
 
-		}
+		// }
 
 		/**
 		 * Method: Stripe cancel event function.
 		 *
 		 * @since 1.0.0
 		 */
-		public function cancel_user_membership( $user_id ) {
+		// public function cancel_user_membership( $user_id ) {
 
-			// Bail if user id is empty.
-			if ( empty( $user_id ) ) {
-				return;
-			}
+		// 	// Bail if user id is empty.
+		// 	if ( empty( $user_id ) ) {
+		// 		return;
+		// 	}
 
-			// Delete membership details from user meta.
-			delete_user_meta( $user_id, 'ims_current_membership' );
+		// 	// Delete membership details from user meta.
+		// 	delete_user_meta( $user_id, 'ims_current_membership' );
 
-			// Add number of properties available.
-			delete_user_meta( $user_id, 'ims_package_properties' );
-			delete_user_meta( $user_id, 'ims_current_properties' );
-			delete_user_meta( $user_id, 'ims_package_featured_props' );
-			delete_user_meta( $user_id, 'ims_current_featured_props' );
-			delete_user_meta( $user_id, 'ims_current_duration' );
-			delete_user_meta( $user_id, 'ims_current_duration_unit' );
-			delete_user_meta( $user_id, 'ims_current_stripe_plan_id' );
-			delete_user_meta( $user_id, 'ims_stripe_subscription_id' );
-			delete_user_meta( $user_id, 'ims_stripe_subscription_due' );
-			delete_user_meta( $user_id, 'ims_stripe_customer_id' );
+		// 	// Add number of properties available.
+		// 	delete_user_meta( $user_id, 'ims_package_properties' );
+		// 	delete_user_meta( $user_id, 'ims_current_properties' );
+		// 	delete_user_meta( $user_id, 'ims_package_featured_props' );
+		// 	delete_user_meta( $user_id, 'ims_current_featured_props' );
+		// 	delete_user_meta( $user_id, 'ims_current_duration' );
+		// 	delete_user_meta( $user_id, 'ims_current_duration_unit' );
+		// 	delete_user_meta( $user_id, 'ims_current_stripe_plan_id' );
+		// 	delete_user_meta( $user_id, 'ims_stripe_subscription_id' );
+		// 	delete_user_meta( $user_id, 'ims_stripe_subscription_due' );
+		// 	delete_user_meta( $user_id, 'ims_stripe_customer_id' );
 
-		}
+		// }
 
 		/**
 		 * Method: To detect and handle stripe membership events.
@@ -761,9 +765,16 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 
 					// Cancel subscription.
 					if ( ! empty( $customers ) ) {
+
 						foreach ( $customers as $customer ) {
-							$this->cancel_user_membership( $customer->ID );
+
+							// $this->cancel_user_membership( $customer->ID );
+							$current_membership = get_user_meta( $customer->ID, 'ims_current_membership', true );
+							$membership_methods = new IMS_Membership_Method();
+							$membership_methods->cancel_user_membership( $customer->ID, $current_membership );
+
 						}
+
 					}
 
 				} elseif ( 'customer.subscription.created' == $event->type ) {

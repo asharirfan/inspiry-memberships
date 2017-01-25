@@ -156,6 +156,7 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 			$membership_id 			= get_user_meta( $user_id, 'ims_current_membership', true );
 			$current_properties 	= get_user_meta( $user_id, 'ims_current_properties', true );
 			$current_featured_props	= get_user_meta( $user_id, 'ims_current_featured_props', true );
+			$membership_due_date 	= get_user_meta( $user_id, 'ims_membership_due_date', true );
 
 			// Membership Data array.
 			$membership_data 	= array();
@@ -175,7 +176,8 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 					'featured_prop'		=> $membership_obj->get_featured_properties(),
 					'current_featured'	=> $current_featured_props,
 					'duration'			=> $membership_obj->get_duration(),
-					'duration_unit'		=> $membership_obj->get_duration_unit()
+					'duration_unit'		=> $membership_obj->get_duration_unit(),
+					'due_date'			=> $membership_due_date
 				);
 			} else {
 				return false;

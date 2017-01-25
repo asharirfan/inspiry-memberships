@@ -89,7 +89,6 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 					</th>
 					<td>
 						<?php $receipt_id = get_post_meta( $object->ID, "{$prefix}receipt_id", true ); ?>
-						<p><?php //echo ( ! empty( $receipt_id ) ) ? $receipt_id : __( 'Receipt ID is not generated yet!' ); ?></p>
 						<input 	type="text"
 								name="receipt_id"
 								id="receipt_id"
@@ -107,7 +106,6 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 					</th>
 					<td>
 						<?php $receipt_for = get_post_meta( $object->ID, "{$prefix}receipt_for", true ); ?>
-						<p><?php// echo ( ! empty( $receipt_for ) ) ? $receipt_for : __( 'Data not available!' ); ?></p>
 						<input 	type="text"
 								name="receipt_for"
 								id="receipt_for"

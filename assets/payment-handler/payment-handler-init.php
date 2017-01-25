@@ -14,6 +14,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * class-payment-handler.php.
+ *
+ * @since 1.0.0
+ */
+if ( file_exists( IMS_BASE_DIR . '/assets/payment-handler/class-payment-handler.php' ) ) {
+    require_once( IMS_BASE_DIR . '/assets/payment-handler/class-payment-handler.php' );
+}
+
+/**
  * class-stripe-payment-handler.php.
  *
  * @since 1.0.0
@@ -31,6 +40,17 @@ if ( file_exists( IMS_BASE_DIR . '/assets/payment-handler/class-paypal-payment-h
     require_once( IMS_BASE_DIR . '/assets/payment-handler/class-paypal-payment-handler.php' );
 }
 
+if ( class_exists( 'IMS_Payment_Handler' ) ) {
+
+	/**
+	 * If IMS_Payment_Handler class exists then initialize it.
+	 */
+	$ims_payment_handler = new IMS_Payment_Handler();
+
+	add_action( 'init', array( $ims_payment_handler, 'cancel_user_membership_request' ) ); // Cancel User Membership Request.
+
+}
+
 if ( class_exists( 'IMS_Stripe_Payment_Handler' ) ) {
 
 	/**
@@ -41,7 +61,7 @@ if ( class_exists( 'IMS_Stripe_Payment_Handler' ) ) {
 
 	add_action( 'init', array( $ims_stripe_payment_handler, 'process_stripe_payment' ) ); // Stripe Payment Process Init.
 
-	add_action( 'init', array( $ims_stripe_payment_handler, 'cancel_user_subscription_request' ) ); // Cancel User Membership Request.
+	// add_action( 'init', array( $ims_stripe_payment_handler, 'cancel_user_subscription_request' ) ); // Cancel User Membership Request.
 
 	add_action( 'init', array( $ims_stripe_payment_handler, 'handle_stripe_subscription_event' ), 1 ); // Hande stripe events for memberships.
 
@@ -62,5 +82,7 @@ if ( class_exists( 'IMS_PayPal_Payment_Handler' ) ) {
 	add_action( 'wp_ajax_ims_paypal_recurring_payment', array( $ims_paypal_payment_handler, 'process_recurring_paypal_payment' ) );
 
 	add_action( 'init', array( $ims_paypal_payment_handler, 'execute_recurring_paypal_payment' ) );
+
+	add_action( 'init', array( $ims_paypal_payment_handler, 'handle_paypal_ipn_event' ) );
 
 }

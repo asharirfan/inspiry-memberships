@@ -35,7 +35,7 @@ if ( ! class_exists( 'IMS_Receipt_Method' ) ) :
 		public function generate_receipt( $user_id = 0, $membership_id = 0, $vendor = NULL, $payment_id = 0, $recurring = false ) {
 
 			// Bail if user or membership id is empty.
-			if ( empty( $user_id ) || empty( $membership_id ) || empty( $payment_id ) ) {
+			if ( empty( $user_id ) || empty( $membership_id ) || empty( $vendor ) ) {
 				return false;
 			}
 
