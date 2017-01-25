@@ -446,6 +446,40 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 
 		}
 
+		/**
+		 * Method: Send email to user after selected period of time.
+		 *
+		 * @since 1.0.0
+		 */
+		public function membership_reminder_email( $user_id, $membership_id ) {
+
+			// Bail if user, membership or receipt id is empty.
+			if ( empty( $user_id ) || empty( $membership_id ) ) {
+				return;
+			}
+
+			// Get user.
+			$user	= get_user_by( 'id', $user_id );
+			if ( ! empty( $user ) ) {
+				$user_email	= $user->user_email;
+			}
+
+			$site_name 		= esc_html( get_bloginfo( 'name' ) );
+			$site_url		= esc_url( get_bloginfo( 'url' ) );
+
+			$subject		= __( 'Membership is about to end.', 'inspiry-memberships' );
+
+			$message 	= sprintf( __( 'Your membership package on %s is about to end.', 'inspiry-memberships' ), $site_name ) . "<br/><br/>";
+			$message 	.= __( 'Please make sure that you renew your membership within due date via Stripe.', 'inspiry-memberships' ) . "<br/><br/>";
+			$message 	.= __( 'Otherwise your membership will be cancelled.', 'inspiry-memberships' ) . "<br/><br/>";
+			$message 	.= '<a target="_blank" href="' . $site_url . '">' . $site_name . '</a>';
+
+			if ( is_email( $user_email ) ) {
+				IMS_Email::send_email( $user_email, $subject, $message );
+			}
+
+		}
+
 	}
 
 endif;

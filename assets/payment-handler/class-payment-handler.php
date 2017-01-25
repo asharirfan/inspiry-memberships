@@ -59,8 +59,6 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 
 				}
 
-				// $this->cancel_user_membership_manual( $user_id );
-
 			}
 
 		}
