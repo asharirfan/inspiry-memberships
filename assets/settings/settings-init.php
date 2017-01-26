@@ -102,6 +102,17 @@ if ( class_exists( 'WP_OSA' ) ) {
 		)
     );
 
+    // Field: Enable Stripe
+    $ims_settings->add_field(
+		'ims_stripe_settings',
+		array(
+			'id'   => 'ims_stripe_enable',
+			'type' => 'checkbox',
+			'name' => __( 'Enable Stripe', 'inspiry-memberships' ),
+			'desc' => __( 'Check this to enable Stripe payments.', 'inspiry-memberships' ),
+		)
+	);
+
     // Field: Test mode check
     $ims_settings->add_field(
 		'ims_stripe_settings',
@@ -189,6 +200,17 @@ if ( class_exists( 'WP_OSA' ) ) {
 		)
     );
 
+    // Field: Enable PayPal
+    $ims_settings->add_field(
+		'ims_paypal_settings',
+		array(
+			'id'   => 'ims_paypal_enable',
+			'type' => 'checkbox',
+			'name' => __( 'Enable PayPal', 'inspiry-memberships' ),
+			'desc' => __( 'Check this to enable PayPal payments.', 'inspiry-memberships' ),
+		)
+	);
+
     // Field: Test Mode.
 	$ims_settings->add_field(
 		'ims_paypal_settings',
@@ -273,6 +295,43 @@ if ( class_exists( 'WP_OSA' ) ) {
 			'name'    => __( 'PayPal IPN URL', 'inspiry-memberships' ),
 			'desc'    => __( esc_url( get_bloginfo( 'url' ) ) . '/?ims_paypal=notification', 'inspiry-memberships' ),
 			'default' => __( esc_url( get_bloginfo( 'url' ) ) . '/?ims_paypal=notification', 'inspiry-memberships' ),
+		)
+	);
+
+	/**
+	 * Section: PayPal Settings.
+	 *
+	 * @since 1.0.0
+	 */
+    $ims_settings->add_section(
+    	array(
+			'id'    => 'ims_wire_settings',
+			'title' => __( 'Wire Transfer Settings', 'inspiry-memberships' )
+		)
+    );
+
+    // Field: Enable PayPal
+    $ims_settings->add_field(
+		'ims_wire_settings',
+		array(
+			'id'   => 'ims_wire_enable',
+			'type' => 'checkbox',
+			'name' => __( 'Enable Wire Transfer', 'inspiry-memberships' ),
+			'desc' => __( 'Check this to enable wire transfer.', 'inspiry-memberships' ),
+		)
+	);
+
+	// Field: Wire Transfer Instructions.
+	$ims_settings->add_field(
+		'ims_wire_settings',
+		array(
+			'id'      => 'ims_wire_transfer_instructions',
+			'type'    => 'textarea',
+			'name'    => __( 'Instructions for Wire Transfer', 'inspiry-memberships' ),
+			'desc'    => __( 'Enter the instructions for wire transfer.', 'inspiry-memberships' ),
+			'default' => 'Please include the following information on all wire transfers to our bank account:
+Account Name: Real Homes
+Account Number: 1111-2222-33333-44-5',
 		)
 	);
 
