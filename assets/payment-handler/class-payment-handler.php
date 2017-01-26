@@ -49,8 +49,7 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 
 				if ( 'stripe' === $vendor ) {
 
-					$ims_stripe_payment_handler = new IMS_Stripe_Payment_Handler();
-					$ims_stripe_payment_handler->cancel_stripe_membership( $user_id );
+					IMS_Stripe_Payment_Handler::cancel_stripe_membership( $user_id );
 
 				} elseif ( 'paypal' === $vendor ) {
 

@@ -192,6 +192,9 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 				/**
 				 * Filter the values of $customer_details array
 				 * for membership payment to extend its values.
+				 *
+				 * @param array $customer_details - Array of customer details
+				 * @since 1.0.0
 				 */
 				$this->customer_details 	= apply_filters( 'ims_membership_customer_details', $this->customer_details );
 
@@ -210,6 +213,10 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 		/**
 		 * Method: Create a simple charge on stripe.
 		 *
+		 * @param int $user_id - ID of the user purchasing membership
+		 * @param int $membership_id - ID of the membership being purchased
+		 * @param int $membership_price - Price of the membership
+		 * @param string $redirect - Redirect URL
 		 * @since 1.0.0
 		 */
 		public function stripe_charge( $user_id = 0, $membership_id = 0, $membership_price = 0, $redirect = NULL ) {
@@ -246,7 +253,7 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 						$redirect_url	= add_query_arg( 'membership', 'successful', $redirect );
 
 					} else {
-						// Redirect on empty token or membership id.
+						// Redirect on empty receipt id.
 						$redirect_url 	= $redirect;
 					}
 
@@ -269,6 +276,10 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 		/**
 		 * Method: Creates recurring charge on stripe.
 		 *
+		 * @param int $user_id - ID of the user purchasing membership
+		 * @param int $membership_id - ID of the membership being purchased
+		 * @param int $membership_price - Price of the membership
+		 * @param string $redirect - Redirect URL
 		 * @since 1.0.0
 		 */
 		public function stripe_recurring_charge( $user_id = 0, $membership_id = 0, $membership_price = 0, $redirect ) {
@@ -277,7 +288,7 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 			if ( empty( $user_id ) || empty( $membership_id ) || empty( $membership_price ) ) {
 
 				// Redirect on empty token or membership id.
-				$redirect_url = add_query_arg( 'payment', 'failed', $redirect );
+				$redirect_url = add_query_arg( 'membership', 'failed', $redirect );
 				wp_redirect( $redirect_url );
 				exit;
 
@@ -310,30 +321,16 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 				update_user_meta( $user_id, 'ims_stripe_subscription_due', $subscription->current_period_end ); // Stripe Subscription End.
 
 				$membership_methods	= new IMS_Membership_Method();
-				// $receipt_methods 	= new IMS_Receipt_Method();
 
 				$membership_methods->add_user_membership( $user_id, $membership_id, 'stripe' );
-				// $receipt_id 	= $receipt_methods->generate_receipt( $user_id, $membership_id, 'stripe', $subscription->id, true );
 
 				// Redirect on empty token or membership id.
-				$redirect_url	= add_query_arg( 'payment', 'paid', $redirect );
-
-				// if ( ! empty( $receipt_id ) ) {
-
-				// 	$membership_methods->mail_user( $user_id, $membership_id, 'stripe' );
-				// 	$membership_methods->mail_admin( $membership_id, $receipt_id, 'stripe' );
-
-				// 	// Redirect on empty token or membership id.
-				// 	$redirect_url	= add_query_arg( 'payment', 'paid', $redirect );
-
-				// } else {
-				// 	$redirect_url 	= $redirect;
-				// }
+				$redirect_url	= add_query_arg( 'membership', 'successful', $redirect );
 
 			} catch ( Exception $e ) {
 
 				// Redirect on empty token or membership id.
-				$redirect_url	= add_query_arg( 'payment', 'failed', $redirect );
+				$redirect_url	= add_query_arg( 'membership', 'failed', $redirect );
 
 			}
 
@@ -347,6 +344,9 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 		 * This function is used to schedule the end of
 		 * non-recurring membership.
 		 *
+		 * @param int $user_id - ID of the user purchasing membership
+		 * @param int $membership_id - ID of the membership being purchased
+		 * @param int $receipt_id - Receipt ID of the purchased membership
 		 * @since 1.0.0
 		 */
 		public function schedule_end_membership( $user_id = 0, $membership_id = 0, $receipt_id = 0 ) {
@@ -389,6 +389,9 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 		 * Method: Function to be called when ims_schedule_membership_end
 		 * event is fired.
 		 *
+		 * @param int $user_id - ID of the user purchasing membership
+		 * @param int $membership_id - ID of the membership being purchased
+		 * @param int $receipt_id - Receipt ID of the purchased membership
 		 * @since 1.0.0
 		 */
 		public function schedule_normal_membership_end( $user_id, $membership_id, $receipt_id ) {
@@ -407,30 +410,62 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 		/**
 		 * Method: Cancels user subscription.
 		 *
+		 * @param int $user_id - User ID of the user making cancel request
 		 * @since 1.0.0
 		 */
-		public function cancel_stripe_membership( $user_id = 0 ) {
+		public static function cancel_stripe_membership( $user_id = 0 ) {
 
 			// Bail if user id is empty.
 			if ( empty( $user_id ) ) {
 				return;
 			}
 
-			$this->stripe_routine_checks();
-			\Stripe\Stripe::setApiKey( $this->secret_key );
+			// Get basic settings.
+			$basic_settings		= get_option( 'ims_basic_settings' );
 
-			$stripe_subscription 	= get_user_meta( $user_id, 'ims_stripe_subscription_id', true );
-			if ( ! empty( $stripe_subscription ) ) {
+			// Get stripe settings.
+			$stripe_settings	= get_option( 'ims_stripe_settings' );
 
-				$subscription 		= \Stripe\Subscription::retrieve( $stripe_subscription );
-				$subscription->cancel( array( 'at_period_end' => true ) );
+			$secret_key = '';
 
-			} else {
+			// Check if we are using test mode.
+			if ( isset( $stripe_settings[ 'ims_test_mode' ] ) && ! empty( $stripe_settings[ 'ims_test_mode' ] ) ) {
 
-				$current_membership = get_user_meta( $user_id, 'ims_current_membership', true );
-				$membership_methods = new IMS_Membership_Method();
-				$membership_methods->cancel_user_membership( $user_id, $current_membership );
+				if ( isset( $stripe_settings[ 'ims_test_secret' ] ) && ! empty( $stripe_settings[ 'ims_test_secret' ] ) ) {
+					$secret_key	= $stripe_settings[ 'ims_test_secret' ];
+				}
 
+			} elseif ( ! isset( $stripe_settings[ 'ims_test_mode' ] ) && empty( $stripe_settings[ 'ims_test_mode' ] ) ) {
+
+				if ( isset( $stripe_settings[ 'ims_live_secret' ] ) && ! empty( $stripe_settings[ 'ims_live_secret' ] ) ) {
+					$secret_key	= $stripe_settings[ 'ims_live_secret' ];
+				}
+
+			}
+
+			try {
+
+				\Stripe\Stripe::setApiKey( $secret_key );
+
+				$stripe_subscription 	= get_user_meta( $user_id, 'ims_stripe_subscription_id', true );
+				if ( ! empty( $stripe_subscription ) ) {
+
+					$subscription 		= \Stripe\Subscription::retrieve( $stripe_subscription );
+					$subscription->cancel( array( 'at_period_end' => true ) );
+
+				} else {
+
+					$current_membership = get_user_meta( $user_id, 'ims_current_membership', true );
+					$membership_methods = new IMS_Membership_Method();
+					$membership_methods->cancel_user_membership( $user_id, $current_membership );
+
+				}
+
+			} catch ( Exception $e ) {
+				// Redirect on empty token or membership id.
+				$redirect = add_query_arg( 'request', 'failed', esc_url( get_bloginfo( 'url' ) ) );
+				wp_redirect( $redirect );
+				exit;
 			}
 
 			// Redirect on empty token or membership id.
@@ -472,16 +507,22 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 				$event 		= \Stripe\Event::retrieve( $event_json->id );
 
 				// Get stripe customer id.
-				$customer_arr		= get_object_vars( $event->data );
+				$customer_arr	= get_object_vars( $event->data );
 				if ( ! empty( $customer_arr ) ) {
 					foreach ( $customer_arr as $customer_data => $value ) {
-						$cus_stripe_id 		= $value->customer;
+						$cus_stripe_id	= $value->customer;
 					}
+				}
+
+				// If customer stripe id does not exist then exit.
+				if ( empty( $cus_stripe_id ) ) {
+					http_response_code( 300 );
+					exit();
 				}
 
 				if ( 'customer.subscription.deleted' == $event->type ) {
 
-					$customer_args 	= array(
+					$customer_args	= array(
 						'meta_key'		=> 'ims_stripe_customer_id',
 						'meta_value'	=> $cus_stripe_id
 					);
@@ -531,15 +572,14 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 						foreach ( $customers as $customer ) {
 
 							// Update subscription end date.
-							$stripe_subscription 	= get_user_meta( $customer->ID, 'ims_stripe_subscription_id', true );
-							$subscription 			= \Stripe\Subscription::retrieve( $stripe_subscription );
-							$subscription_due 		= $subscription->current_period_end;
+							$subscription_id 	= get_user_meta( $customer->ID, 'ims_stripe_subscription_id', true );
+							$subscription 		= \Stripe\Subscription::retrieve( $subscription_id );
+							$subscription_due 	= $subscription->current_period_end;
 							update_user_meta( $customer->ID, 'ims_stripe_subscription_due', $subscription_due );
 
-							$membership_id 			= get_user_meta( $customer->ID, 'ims_current_membership', true );
-							$subscription_id 		= get_user_meta( $customer->ID, 'ims_stripe_subscription_id', true );
+							$membership_id 		= get_user_meta( $customer->ID, 'ims_current_membership', true );
 
-							$membership_methods		= new IMS_Membership_Method();
+							$membership_methods	= new IMS_Membership_Method();
 							$membership_methods->update_membership_due_date( $membership_id, $customer->ID );
 
 							$receipt_methods	= new IMS_Receipt_Method();

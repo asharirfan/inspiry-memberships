@@ -30,6 +30,9 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 		/**
 		 * Method: Add membership details to user meta.
 		 *
+		 * @param int $user_id - ID of the user purchasing membership
+		 * @param int $membership_id - ID of the membership being purchased
+		 * @param string $vendor - Vendor used by the user
 		 * @since 1.0.0
 		 */
 		public function add_user_membership( $user_id = 0, $membership_id = 0, $vendor = NULL ) {
@@ -90,6 +93,9 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 		/**
 		 * Method: Update membership of user.
 		 *
+		 * @param int $user_id - ID of the user purchasing membership
+		 * @param int $membership_id - ID of the membership being purchased
+		 * @param string $vendor - Vendor used by the user
 		 * @since 1.0.0
 		 */
 		public function update_user_membership( $user_id = 0, $membership_id = 0, $vendor = NULL ) {
@@ -187,6 +193,10 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 		/**
 		 * Method: Mail User to notify about membership purchase.
 		 *
+		 * @param int $user_id - ID of the user purchasing membership
+		 * @param int $membership_id - ID of the membership being purchased
+		 * @param string $vendor - Vendor used by the user
+		 * @param boolean $recurring - True if recurring membership, false if not
 		 * @since 1.0.0
 		 */
 		public function mail_user( $user_id = 0, $membership_id = 0, $vendor = NULL, $recurring = false ) {
@@ -211,15 +221,15 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 				$user_email	= $user->user_email;
 			}
 
-			$membership = get_post( $membership_id );
+			$membership_title	= get_the_title( $membership_id );
 
 			if ( empty( $recurring ) ) {
 
 				// Purchase Membership Mail.
 				$subject	= __( 'Membership Purchased.', 'inspiry-memberships' );
 
-				$message 	= sprintf( __( 'You have successfully purchased %s membership package on our site.', 'inspiry-memberships' ), $membership->post_title ) . "<br/><br/>";
-				$message 	.= sprintf( __( 'Your payment has been received successfully %s.', 'inspiry-memberships' ), $vendor ) . "<br/><br/>";
+				$message 	= sprintf( __( 'You have successfully purchased %s package on our site.', 'inspiry-memberships' ), $membership_title ) . "<br/><br/>";
+				$message 	.= sprintf( __( 'Your payment process completed successfully %s.', 'inspiry-memberships' ), $vendor ) . "<br/><br/>";
 				$message 	.= __( 'To view the details, please visit your profile page on our website.', 'inspiry-memberships' );
 
 			} elseif ( ! empty( $recurring ) ) {
@@ -227,8 +237,8 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 				// Update Membership Mail.
 				$subject	= __( 'Membership Updated Successfully.', 'inspiry-memberships' );
 
-				$message 	= sprintf( __( 'Your membership package: %s has been successfully updated on our site.', 'inspiry-memberships' ), $membership->post_title ) . "<br/><br/>";
-				$message 	.= sprintf( __( 'Your payment has been received successfully %s.', 'inspiry-memberships' ), $vendor ) . "<br/><br/>";
+				$message 	= sprintf( __( 'Your membership package: %s has been successfully updated on our site.', 'inspiry-memberships' ), $membership_title ) . "<br/><br/>";
+				$message 	.= sprintf( __( 'Your payment process completed successfully %s.', 'inspiry-memberships' ), $vendor ) . "<br/><br/>";
 				$message 	.= __( 'To view the details, please visit your profile page on our website.', 'inspiry-memberships' );
 
 			}
@@ -242,6 +252,10 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 		/**
 		 * Method: Mail Admin to notify about membership purchase.
 		 *
+		 * @param int $user_id - ID of the user purchasing membership
+		 * @param int $membership_id - ID of the membership being purchased
+		 * @param string $vendor - Vendor used by the user
+		 * @param boolean $recurring - True if recurring membership, false if not
 		 * @since 1.0.0
 		 */
 		public function mail_admin( $membership_id = 0, $receipt_id = 0, $vendor = NULL, $recurring = false ) {
@@ -264,28 +278,25 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 			$admin_email 	= get_bloginfo( 'admin_email' );
 
 			// Get receipt edit link.
-			$receipt_link 	= get_edit_post_link( $receipt_id );
-			$receipt 		= get_post( $receipt_id );
+			$receipt_title 	= get_the_title( $receipt_id );
 
-			$membership 	= get_post( $membership_id );
+			$membership_title	= get_the_title( $membership_id );
 
 			if ( empty( $recurring ) ) {
 
-				$subject		= __( 'Membership Purchased.', 'inspiry-memberships' );
+				$subject	= __( 'Membership Purchased.', 'inspiry-memberships' );
 
-				$message 	= sprintf( __( 'A user successfully purchased %s membership package on your site.', 'inspiry-memberships' ), $membership->post_title ) . "<br/><br/>";
-				$message 	.= sprintf( __( 'Payment has been submitted %s.', 'inspiry-memberships' ), $vendor ) . "<br/><br/>";
-				$message 	.= __( 'To view the details, please visit : ', 'inspiry-memberships' );
-				$message 	.= '<a target="_blank" href="' . $receipt_link . '">' . $receipt->post_title . '</a>';
+				$message	= sprintf( __( 'A user successfully purchased %s package on your site.', 'inspiry-memberships' ), $membership_title ) . "<br/><br/>";
+				$message 	.= sprintf( __( 'Payment process completed %s.', 'inspiry-memberships' ), $vendor ) . "<br/><br/>";
+				$message 	.= __( 'To view the details, please visit ' . $receipt_title, 'inspiry-memberships' );
 
 			} elseif ( ! empty( $recurring ) ) {
 
-				$subject		= __( 'Membership Updated.', 'inspiry-memberships' );
+				$subject	= __( 'Membership Updated.', 'inspiry-memberships' );
 
-				$message 	= sprintf( __( 'A user successfully updated %s membership package on your site.', 'inspiry-memberships' ), $membership->post_title ) . "<br/><br/>";
-				$message 	.= sprintf( __( 'Payment has been submitted %s.', 'inspiry-memberships' ), $vendor ) . "<br/><br/>";
-				$message 	.= __( 'To view the details, please visit : ', 'inspiry-memberships' );
-				$message 	.= '<a target="_blank" href="' . $receipt_link . '">' . $receipt->post_title . '</a>';
+				$message 	= sprintf( __( 'A user successfully updated %s membership package on your site.', 'inspiry-memberships' ), $membership_title ) . "<br/><br/>";
+				$message 	.= sprintf( __( 'Payment process completed %s.', 'inspiry-memberships' ), $vendor ) . "<br/><br/>";
+				$message 	.= __( 'To view the details, please visit ' . $receipt_title, 'inspiry-memberships' );
 
 			}
 
@@ -298,6 +309,8 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 		/**
 		 * Method: Cancel membership function.
 		 *
+		 * @param int $user_id - ID of the user requesting to cancel
+		 * @param int $membership_id - ID of the membership being cancelled
 		 * @since 1.0.0
 		 */
 		public function cancel_user_membership( $user_id = 0, $membership_id = 0 ) {
@@ -350,6 +363,7 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 		/**
 		 * Method: Get user by PayPal Profile ID.
 		 *
+		 * @param string $profile_id - PayPal profile ID of the user
 		 * @since 1.0.0
 		 */
 		public function get_user_by_paypal_profile( $profile_id ) {
@@ -381,6 +395,8 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 		/**
 		 * Method: Calculate Membership Due date.
 		 *
+		 * @param int $membership_id - ID of the membership
+		 * @param string $current_time - Current time stamp in UNIX format
 		 * @since 1.0.0
 		 */
 		public function get_membership_due_date( $membership_id, $current_time ) {
@@ -412,6 +428,8 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 		/**
 		 * Method: Update membership due date.
 		 *
+		 * @param int $membership_id - ID of the membership
+		 * @param int $user_id - ID of the user requesting update
 		 * @since 1.0.0
 		 */
 		public function update_membership_due_date( $membership_id, $user_id ) {
@@ -449,6 +467,8 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 		/**
 		 * Method: Send email to user after selected period of time.
 		 *
+		 * @param int $user_id - ID of the user to which reminder will be sent
+		 * @param int $membership_id - ID of the membership owned by the user
 		 * @since 1.0.0
 		 */
 		public function membership_reminder_email( $user_id, $membership_id ) {

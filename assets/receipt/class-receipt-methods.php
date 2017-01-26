@@ -32,7 +32,7 @@ if ( ! class_exists( 'IMS_Receipt_Method' ) ) :
 		 *
 		 * @since 1.0.0
 		 */
-		public function generate_receipt( $user_id = 0, $membership_id = 0, $vendor = NULL, $payment_id = 0, $recurring = false ) {
+		public function generate_receipt( $user_id = 0, $membership_id = 0, $vendor = NULL, $payment_id = 0, $recurring = false, $blank = false ) {
 
 			// Bail if user or membership id is empty.
 			if ( empty( $user_id ) || empty( $membership_id ) || empty( $vendor ) ) {
@@ -66,10 +66,15 @@ if ( ! class_exists( 'IMS_Receipt_Method' ) ) :
 					$receipt_type		= __( 'Normal Membership', 'inspiry-memberships' );
 					$receipt_type 		= ( ! empty( $recurring ) ) ? __( 'Recurring Membership', 'inspiry-memberships' ) : $receipt_type;
 
+					$price 		= $membership_obj->get_price();
+					if ( $blank ) {
+						$price	= 0;
+					}
+
 					update_post_meta( $receipt_id, "{$prefix}receipt_id", $receipt_id );
 					update_post_meta( $receipt_id, "{$prefix}receipt_for", $receipt_type );
 					update_post_meta( $receipt_id, "{$prefix}membership_id", $membership_id );
-					update_post_meta( $receipt_id, "{$prefix}price", $membership_obj->get_price() );
+					update_post_meta( $receipt_id, "{$prefix}price", $price );
 					update_post_meta( $receipt_id, "{$prefix}purchase_date", $receipt->post_date );
 					update_post_meta( $receipt_id, "{$prefix}user_id", $user_id );
 					update_post_meta( $receipt_id, "{$prefix}payment_id", $payment_id );
@@ -101,6 +106,27 @@ if ( ! class_exists( 'IMS_Receipt_Method' ) ) :
 				}
 			}
 			return false;
+		}
+
+		/**
+		 * Method: Generate receipt for recurring membership purchase via PayPal.
+		 *
+		 * @since 1.0.0
+		 */
+		public function generate_recurring_paypal_receipt( $user_id = 0, $membership_id = 0, $payment_id = 0 ) {
+
+			// Bail if paramters are empty.
+			if ( empty( $user_id ) || empty( $membership_id ) ) {
+				return false;
+			}
+
+			if ( empty( $payment_id ) ) {
+				$receipt_id = $this->generate_receipt( $user_id, $membership_id, 'paypal', '', true, true );
+			} else {
+				$receipt_id = $this->generate_receipt( $user_id, $membership_id, 'paypal', $payment_id, true, false );
+			}
+			return $receipt_id;
+
 		}
 
 	}
