@@ -283,18 +283,17 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 				return $post_id;
 			}
 
-
 			// Get the posted data and sanitize it for use as an HTML class.
 			$ims_meta_value 					= array();
 			$ims_meta_value[ 'receipt_id' ] 	= ( ! empty( $post_id ) ) ? intval( $post_id ) : '';
 			$ims_meta_value[ 'receipt_for' ]	= ( isset( $_POST[ 'receipt_for' ] ) && ! empty( $_POST[ 'receipt_for' ] ) ) ? sanitize_text_field( $_POST[ 'receipt_for' ] ) : 'Normal Membership';
-			$ims_meta_value[ 'membership_id' ] 	= ( isset( $_POST[ 'membership_id' ] ) ) ? intval( $_POST[ 'membership_id' ] ) : '';
-			$ims_meta_value[ 'price' ] 			= ( isset( $_POST[ 'price' ] ) ) ? floatval( $_POST[ 'price' ] ) : '';
-			$ims_meta_value[ 'purchase_date' ] 	= ( isset( $_POST[ 'purchase_date' ] ) ) ? sanitize_text_field( $_POST[ 'purchase_date' ] ) : '';
-			$ims_meta_value[ 'user_id' ] 		= ( isset( $_POST[ 'user_id' ] ) ) ? intval( $_POST[ 'user_id' ] ) : '';
-			$ims_meta_value[ 'vendor' ] 		= ( isset( $_POST[ 'vendor' ] ) ) ? sanitize_text_field( $_POST[ 'vendor' ] ) : '';
-			$ims_meta_value[ 'payment_id' ] 	= ( isset( $_POST[ 'payment_id' ] ) ) ? sanitize_text_field( $_POST[ 'payment_id' ] ) : '';
-			$ims_meta_value[ 'status' ] 		= ( isset( $_POST[ 'status' ] ) ) ? true : false;
+			$ims_meta_value[ 'membership_id' ] 	= ( isset( $_POST[ 'membership_id' ] ) && ! empty( $_POST[ 'membership_id' ] ) ) ? intval( $_POST[ 'membership_id' ] ) : '';
+			$ims_meta_value[ 'price' ] 			= ( isset( $_POST[ 'price' ] ) && ! empty( $_POST[ 'price' ] ) ) ? floatval( $_POST[ 'price' ] ) : '';
+			$ims_meta_value[ 'purchase_date' ] 	= ( isset( $_POST[ 'purchase_date' ] ) && ! empty( $_POST[ 'purchase_date' ] ) ) ? sanitize_text_field( $_POST[ 'purchase_date' ] ) : $post->post_date;
+			$ims_meta_value[ 'user_id' ] 		= ( isset( $_POST[ 'user_id' ] ) && ! empty( $_POST[ 'user_id' ] ) ) ? intval( $_POST[ 'user_id' ] ) : '';
+			$ims_meta_value[ 'vendor' ] 		= ( isset( $_POST[ 'vendor' ] ) ) && ! empty( $_POST[ 'vendor' ] ) ? sanitize_text_field( $_POST[ 'vendor' ] ) : '';
+			$ims_meta_value[ 'payment_id' ] 	= ( isset( $_POST[ 'payment_id' ] ) && ! empty( $_POST[ 'payment_id' ] ) ) ? sanitize_text_field( $_POST[ 'payment_id' ] ) : '';
+			$ims_meta_value[ 'status' ] 		= ( isset( $_POST[ 'status' ] ) && ! empty( $_POST[ 'status' ] ) ) ? true : false;
 
 			$membership_status			= get_post_meta( $post_id, 'ims_membership_status', true );
 			$ims_meta_value[ 'status' ]	= ( ! empty( $membership_status ) ) ? true : false;

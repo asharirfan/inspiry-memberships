@@ -83,6 +83,15 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 
 				}
 
+				/**
+				 * Hook: To extend the functionality of adding membership
+				 * to website.
+				 *
+				 * @param int $user_id - ID of the user buying membership
+				 * @param int $membership_id - ID of the membership being purchased
+				 */
+				do_action( 'ims_add_user_membership', $user_id, $membership_id );
+
 			} else {
 				// Update membership package if there is another package present before.
 				self::update_user_membership( $user_id, $membership_id, $vendor );
@@ -158,33 +167,45 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 
 				}
 
+				$prev_membership_id	= $current_membership_id;
+
+				/**
+				 * Hook: To extend the functionality of updating membership
+				 * to website.
+				 *
+				 * @param int $user_id - ID of the user buying membership
+				 * @param int $prev_membership_id - ID of the previous membership
+				 * @param int $membership_id - ID of the next membership
+				 */
+				do_action( 'ims_update_user_membership', $user_id, $prev_membership_id, $membership_id );
+
 				/**
 				 * The WordPress Query class.
 				 * @link http://codex.wordpress.org/Function_Reference/WP_Query
 				 *
 				 */
-				$properties_args		= array(
-					'author'      		=> $user_id, // Author Parameters
-					'post_type'   		=> 'property', // Type & Status Parameters
-					'post_status' 		=> 'publish',
-					'posts_per_page'	=> -1 // Pagination Parameters
-				);
+				// $properties_args		= array(
+				// 	'author'      		=> $user_id, // Author Parameters
+				// 	'post_type'   		=> 'property', // Type & Status Parameters
+				// 	'post_status' 		=> 'publish',
+				// 	'posts_per_page'	=> -1 // Pagination Parameters
+				// );
 
 				/**
 				 * Get all published properties and convert
 				 * them to draft either on update or new
 				 * membership.
 				 */
-				$properties 	= get_posts( $properties_args );
-				if ( ! empty( $properties ) ) {
-					foreach ( $properties as $property ) {
-						$property_args 		= array(
-							'ID' 			=> $property->ID,
-							'post_status'	=> 'pending'
-						);
-						wp_update_post( $property_args );
-					}
-				}
+				// $properties 	= get_posts( $properties_args );
+				// if ( ! empty( $properties ) ) {
+				// 	foreach ( $properties as $property ) {
+				// 		$property_args 		= array(
+				// 			'ID' 			=> $property->ID,
+				// 			'post_status'	=> 'pending'
+				// 		);
+				// 		wp_update_post( $property_args );
+				// 	}
+				// }
 
 			}
 
@@ -359,6 +380,15 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 				delete_user_meta( $user_id, 'ims_current_vendor' );
 			}
 
+			/**
+			 * Hook: To extend the functionality of deleting membership
+			 * to website.
+			 *
+			 * @param int $user_id - ID of the user deleting membership
+			 * @param int $membership_id - ID of the membership being deleted
+			 */
+			do_action( 'ims_delete_user_membership', $user_id, $membership_id );
+
 		}
 
 		/**
@@ -498,6 +528,27 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 			if ( is_email( $user_email ) ) {
 				IMS_Email::send_email( $user_email, $subject, $message );
 			}
+
+		}
+
+		/**
+		 * Method: Check if user has membership.
+		 *
+		 * @since 1.0.0
+		 */
+		public function user_has_membership( $user_id = 0 ) {
+
+			// Bail if user id is empty.
+			if ( empty( $user_id ) ) {
+				return false;
+			}
+
+			// Get membership id.
+			$membership_id = get_user_meta( $user_id, 'ims_current_membership', true );
+			if ( ! empty( $membership_id ) ) {
+				return true;
+			}
+			return false;
 
 		}
 

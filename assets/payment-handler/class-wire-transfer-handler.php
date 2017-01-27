@@ -110,6 +110,8 @@ if ( ! class_exists( 'IMS_Wire_Transfer_Handler' ) ) :
 		/**
 		 * Method: Activate membership via Wire Transfer.
 		 *
+		 * @param int $post_id - Receipt ID from where membership is activated
+		 * @param object $post - Receipt Post Object
 		 * @since 1.0.0
 		 */
 		public function activate_membership_via_wire( $post_id, $post ) {
@@ -146,10 +148,15 @@ if ( ! class_exists( 'IMS_Wire_Transfer_Handler' ) ) :
 			$vendor 		= $receipt_obj->get_vendor();
 			$payment_id	 	= ( isset( $_POST[ 'payment_id' ] ) && ! empty( $_POST[ 'payment_id' ] ) ) ? sanitize_text_field( $_POST[ 'payment_id' ] ) : false;
 
+			// Check if user has membership already.
+			$membership_methods	= new IMS_Membership_Method();
+			if ( $membership_methods->user_has_membership( $user_id ) ) {
+				return false;
+			}
+
 			if ( ! empty( $membership_id ) && ! empty( $user_id ) && ! empty( $status ) && ! empty( $vendor ) && 'wire' === $vendor ) {
 
 				// Add membership and mail to users.
-				$membership_methods	= new IMS_Membership_Method();
 				$membership_methods->add_user_membership( $user_id, $membership_id, $vendor );
 				$this->schedule_membership_end( $user_id, $membership_id );
 				$membership_methods->mail_user( $user_id, $membership_id, 'wire' );
