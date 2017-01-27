@@ -78,6 +78,7 @@ if ( ! class_exists( 'IMS_Receipt_Method' ) ) :
 					update_post_meta( $receipt_id, "{$prefix}purchase_date", $receipt->post_date );
 					update_post_meta( $receipt_id, "{$prefix}user_id", $user_id );
 					update_post_meta( $receipt_id, "{$prefix}payment_id", $payment_id );
+					update_post_meta( $receipt_id, "{$prefix}status", true );
 
 					// Set vendor.
 					if ( ! empty( $vendor ) && 'paypal' == $vendor ) {
@@ -125,6 +126,29 @@ if ( ! class_exists( 'IMS_Receipt_Method' ) ) :
 			} else {
 				$receipt_id = $this->generate_receipt( $user_id, $membership_id, 'paypal', $payment_id, true, false );
 			}
+			return $receipt_id;
+
+		}
+
+		/**
+		 * Method: Generate receipt for membership purchase via Wire Transfer.
+		 *
+		 * @since 1.0.0
+		 */
+		public function generate_wire_transfer_receipt( $user_id = 0, $membership_id = 0, $payment_id = 0 ) {
+
+			// Bail if paramters are empty.
+			if ( empty( $user_id ) || empty( $membership_id ) ) {
+				return false;
+			}
+
+			if ( empty( $payment_id ) ) {
+				$receipt_id = $this->generate_receipt( $user_id, $membership_id, 'wire', '', false, true );
+			} else {
+				$receipt_id = $this->generate_receipt( $user_id, $membership_id, 'wire', $payment_id, false, false );
+			}
+
+			update_post_meta( $receipt_id, 'ims_membership_status', false );
 			return $receipt_id;
 
 		}

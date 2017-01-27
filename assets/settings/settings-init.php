@@ -183,8 +183,8 @@ if ( class_exists( 'WP_OSA' ) ) {
 			'id'      => 'ims_stripe_webhook_url',
 			'type'    => 'text',
 			'name'    => __( 'Stripe WebHook URL', 'inspiry-memberships' ),
-			'desc'    => __( esc_url( get_bloginfo( 'url' ) ) . '/?ims_stripe=membership_event', 'inspiry-memberships' ),
-			'default' => __( esc_url( get_bloginfo( 'url' ) ) . '/?ims_stripe=membership_event', 'inspiry-memberships' ),
+			'desc'    => esc_url( get_bloginfo( 'url' ) ) . '/?ims_stripe=membership_event',
+			'default' => esc_url( get_bloginfo( 'url' ) ) . '/?ims_stripe=membership_event',
 		)
 	);
 
@@ -293,8 +293,8 @@ if ( class_exists( 'WP_OSA' ) ) {
 			'id'      => 'ims_paypal_ipn_url',
 			'type'    => 'text',
 			'name'    => __( 'PayPal IPN URL', 'inspiry-memberships' ),
-			'desc'    => __( esc_url( get_bloginfo( 'url' ) ) . '/?ims_paypal=notification', 'inspiry-memberships' ),
-			'default' => __( esc_url( get_bloginfo( 'url' ) ) . '/?ims_paypal=notification', 'inspiry-memberships' ),
+			'desc'    => esc_url( get_bloginfo( 'url' ) ) . '/?ims_paypal=notification',
+			'default' => esc_url( get_bloginfo( 'url' ) ) . '/?ims_paypal=notification',
 		)
 	);
 
@@ -329,9 +329,31 @@ if ( class_exists( 'WP_OSA' ) ) {
 			'type'    => 'textarea',
 			'name'    => __( 'Instructions for Wire Transfer', 'inspiry-memberships' ),
 			'desc'    => __( 'Enter the instructions for wire transfer.', 'inspiry-memberships' ),
-			'default' => 'Please include the following information on all wire transfers to our bank account:
-Account Name: Real Homes
-Account Number: 1111-2222-33333-44-5',
+			'default' => 'Please include the following information on all wire transfers to our bank account:',
+		)
+	);
+
+	// Field: Account Name
+	$ims_settings->add_field(
+		'ims_wire_settings',
+		array(
+			'id'      => 'ims_wire_account_name',
+			'type'    => 'text',
+			'name'    => __( 'Account Name', 'inspiry-memberships' ),
+			'desc'    => __( 'Enter your account name.', 'inspiry-memberships' ),
+			'default' => __( esc_html( get_bloginfo( 'name' ) ), 'inspiry-memberships' ),
+		)
+	);
+
+	// Field: Account Number
+	$ims_settings->add_field(
+		'ims_wire_settings',
+		array(
+			'id'      => 'ims_wire_account_number',
+			'type'    => 'text',
+			'name'    => __( 'Account Number', 'inspiry-memberships' ),
+			'desc'    => __( 'Enter your account number.', 'inspiry-memberships' ),
+			'default' => __( '1111-2222-33333-44-5', 'inspiry-memberships' ),
 		)
 	);
 

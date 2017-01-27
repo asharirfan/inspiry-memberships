@@ -48,7 +48,11 @@ if ( ! class_exists( 'IMS_Email' ) ) :
 			$email_message	= sprintf( '%s', $subject ) . "<br/><br/>";
 			$email_message	.= $message;
 
-			wp_mail( $to_email, $subject, $email_message, $headers );
+			if ( wp_mail( $to_email, $subject, $email_message, $headers ) ) {
+				return true;
+			} else {
+				return false;
+			}
 
 		}
 

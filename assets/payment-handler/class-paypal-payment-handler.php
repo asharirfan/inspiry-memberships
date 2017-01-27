@@ -567,7 +567,7 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 		public function paypal_membership_schedule_end( $user_id, $membership_id ) {
 
 			// Bail if user or membership id is empty.
-			if ( empty( $user_id) || empty( $membership_id ) ) {
+			if ( empty( $user_id ) || empty( $membership_id ) ) {
 				return;
 			}
 

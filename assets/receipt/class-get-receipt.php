@@ -56,6 +56,7 @@ if ( ! class_exists( 'IMS_Get_Receipt' ) ) :
 		 	'user_id'		=> 'ims_membership_user_id',
 		 	'vendor'		=> 'ims_membership_vendor',
 		 	'payment_id'	=> 'ims_membership_payment_id',
+		 	'status'		=> 'ims_membership_status',
 		 );
 
 		/**
@@ -209,6 +210,19 @@ if ( ! class_exists( 'IMS_Get_Receipt' ) ) :
 			    return false;
 			}
 			return $this->get_meta( $this->meta_keys[ 'payment_id' ] );
+		}
+
+		/**
+		 * Get Receipt: Status.
+		 *
+		 * @since 1.0.0
+		 */
+		public function get_status() {
+			// Returns false if ID is not present.
+			if ( ! $this->the_receipt_id ) {
+			    return false;
+			}
+			return $this->get_meta( $this->meta_keys[ 'status' ] );
 		}
 
 	}

@@ -76,7 +76,7 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 		 */
 		public function meta_box_content( $object, $box ) {
 
-			wp_nonce_field( basename( __FILE__ ), 'receipt_meta_box_nonce' );
+			wp_nonce_field( 'receipt-meta-box-nonce', 'receipt_meta_box_nonce' );
 			$prefix = 'ims_membership_'; ?>
 
 			<table class="form-table">
@@ -160,7 +160,7 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 								placeholder="Date of Purchase"
 								value="<?php echo esc_attr( get_post_meta( $object->ID, "{$prefix}purchase_date", true ) ); ?>"
 						/>
-						<p class="description"><?php _e( 'Format: YYYY-MM-DD H:M:S' ); ?></p>
+						<p class="description"><?php _e( 'Format: YYYY-MM-DD H:M:S', 'inspiry-memberships' ); ?></p>
 					</td>
 				</tr>
 
@@ -221,6 +221,23 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 					</td>
 				</tr>
 
+				<tr valign="top">
+					<th scope="row" valign="top">
+						<label for="status">
+							<?php _e( 'Membership Status', 'inspiry-membership' ); ?>
+						</label>
+					</th>
+					<td>
+						<?php $status = esc_attr( get_post_meta( $object->ID, "{$prefix}status", true ) ); ?>
+						<?php if ( empty( $status ) ) : ?>
+							<input 	type="checkbox" name="status" id="status" />
+							<p class="description"><?php _e( 'Select to activate the membership.', 'inspiry-membership' ); ?></p>
+						<?php else : ?>
+							<p class="description"><?php _e( 'Membership is active.', 'inspiry-membership' ); ?></p>
+						<?php endif; ?>
+					</td>
+				</tr>
+
 				<?php
 
 					/**
@@ -249,7 +266,7 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 		public function save_meta_box( $post_id, $post ) {
 
 			// Verify the nonce before proceeding.
-			if ( ! isset( $_POST[ 'receipt_meta_box_nonce' ] ) || ! wp_verify_nonce( $_POST[ 'receipt_meta_box_nonce' ], basename( __FILE__ ) ) ) {
+			if ( ! isset( $_POST[ 'receipt_meta_box_nonce' ] ) || ! wp_verify_nonce( $_POST[ 'receipt_meta_box_nonce' ], 'receipt-meta-box-nonce' ) ) {
 				return $post_id;
 			}
 
@@ -257,7 +274,7 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 			$post_type 	= get_post_type_object( $post->post_type );
 
 			// Check if the post type is membership.
-			if ( 'ims_receipt' != $post->post_type ) {
+			if ( 'ims_receipt' !== $post->post_type ) {
 				return $post_id;
 			}
 
@@ -270,13 +287,17 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 			// Get the posted data and sanitize it for use as an HTML class.
 			$ims_meta_value 					= array();
 			$ims_meta_value[ 'receipt_id' ] 	= ( ! empty( $post_id ) ) ? intval( $post_id ) : '';
-			$ims_meta_value[ 'receipt_for' ]	= ( isset( $_POST[ 'receipt_for' ] ) && ! empty( $_POST[ 'receipt_for' ] ) ) ? sanitize_text_field( $_POST[ 'receipt_for' ] ) : 'Normal';
+			$ims_meta_value[ 'receipt_for' ]	= ( isset( $_POST[ 'receipt_for' ] ) && ! empty( $_POST[ 'receipt_for' ] ) ) ? sanitize_text_field( $_POST[ 'receipt_for' ] ) : 'Normal Membership';
 			$ims_meta_value[ 'membership_id' ] 	= ( isset( $_POST[ 'membership_id' ] ) ) ? intval( $_POST[ 'membership_id' ] ) : '';
 			$ims_meta_value[ 'price' ] 			= ( isset( $_POST[ 'price' ] ) ) ? floatval( $_POST[ 'price' ] ) : '';
 			$ims_meta_value[ 'purchase_date' ] 	= ( isset( $_POST[ 'purchase_date' ] ) ) ? sanitize_text_field( $_POST[ 'purchase_date' ] ) : '';
 			$ims_meta_value[ 'user_id' ] 		= ( isset( $_POST[ 'user_id' ] ) ) ? intval( $_POST[ 'user_id' ] ) : '';
 			$ims_meta_value[ 'vendor' ] 		= ( isset( $_POST[ 'vendor' ] ) ) ? sanitize_text_field( $_POST[ 'vendor' ] ) : '';
-			$ims_meta_value[ 'payment_id' ] 		= ( isset( $_POST[ 'payment_id' ] ) ) ? sanitize_text_field( $_POST[ 'payment_id' ] ) : '';
+			$ims_meta_value[ 'payment_id' ] 	= ( isset( $_POST[ 'payment_id' ] ) ) ? sanitize_text_field( $_POST[ 'payment_id' ] ) : '';
+			$ims_meta_value[ 'status' ] 		= ( isset( $_POST[ 'status' ] ) ) ? true : false;
+
+			$membership_status			= get_post_meta( $post_id, 'ims_membership_status', true );
+			$ims_meta_value[ 'status' ]	= ( ! empty( $membership_status ) ) ? true : false;
 
 			// Meta data prefix.
 			$prefix = 'ims_membership_';
@@ -290,6 +311,7 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 			$this->save_meta_value( $post_id, "{$prefix}user_id", $ims_meta_value[ 'user_id' ] );
 			$this->save_meta_value( $post_id, "{$prefix}vendor", $ims_meta_value[ 'vendor' ] );
 			$this->save_meta_value( $post_id, "{$prefix}payment_id", $ims_meta_value[ 'payment_id' ] );
+			$this->save_meta_value( $post_id, "{$prefix}status", $ims_meta_value[ 'status' ] );
 
 			/**
 			 * `ims_receipt_save_meta_boxes`
@@ -342,7 +364,7 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 		public function add_styles() {
 
 			global $post_type;
-    		if ( 'ims_receipt' == $post_type ) {
+    		if ( 'ims_receipt' === $post_type ) {
     			wp_enqueue_style( 'ims-admin-styles', IMS_BASE_URL . 'assets/css/receipt.css', array(), IMS_VERSION );
     		}
 

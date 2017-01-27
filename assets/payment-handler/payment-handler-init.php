@@ -40,6 +40,15 @@ if ( file_exists( IMS_BASE_DIR . '/assets/payment-handler/class-paypal-payment-h
     require_once( IMS_BASE_DIR . '/assets/payment-handler/class-paypal-payment-handler.php' );
 }
 
+/**
+ * class-wire-transfer-handler.php.
+ *
+ * @since 1.0.0
+ */
+if ( file_exists( IMS_BASE_DIR . '/assets/payment-handler/class-wire-transfer-handler.php' ) ) {
+    require_once( IMS_BASE_DIR . '/assets/payment-handler/class-wire-transfer-handler.php' );
+}
+
 if ( class_exists( 'IMS_Payment_Handler' ) ) {
 
 	/**
@@ -84,5 +93,19 @@ if ( class_exists( 'IMS_PayPal_Payment_Handler' ) ) {
 	add_action( 'init', array( $ims_paypal_payment_handler, 'execute_recurring_paypal_payment' ) );
 
 	add_action( 'init', array( $ims_paypal_payment_handler, 'handle_paypal_ipn_event' ) );
+
+}
+
+if ( class_exists( 'IMS_Wire_Transfer_Handler' ) ) {
+
+	/**
+	 * If IMS_Wire_Transfer_Handler class exist then initialize the
+	 * class.
+	 */
+	$ims_wire_transfer_handler 	= new IMS_Wire_Transfer_Handler();
+
+	add_action( 'wp_ajax_ims_send_wire_receipt', array( $ims_wire_transfer_handler, 'send_wire_receipt' ) );
+
+	add_action( 'save_post', array( $ims_wire_transfer_handler, 'activate_membership_via_wire' ), 20, 2 );
 
 }

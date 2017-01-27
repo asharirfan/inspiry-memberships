@@ -105,7 +105,7 @@ jQuery( function( $ ) {
             $( '#ims-paypal' ).click( function( e ) {
 
                 e.preventDefault(); // Prevent the default event of link.
-                var recurring           = $( '#ims_recurring');
+                var recurring           = $( '#ims_recurring' );
 
                 if ( ! recurring.is( ':checked' ) ) {
                     ims_paypal_simple_payment_request();
@@ -186,6 +186,58 @@ jQuery( function( $ ) {
                 });
 
             }
+
+            /**
+             * Make request to send membership receipt to user.
+             *
+             * @author Ashar Irfan
+             * @since  1.0.0
+             */
+            $( '#ims-receipt' ).click( function( e ) {
+
+                e.preventDefault(); // Prevent the default event of link.
+                var recurring           = $( '#ims_recurring' );
+
+                if ( ! recurring.is( ':checked' ) ) {
+                    recurring   = false
+                } else {
+                    recurring   = true;
+                }
+
+                var membershipSelect    = $( '#ims-membership-select' ); // Membership select option.
+                var membership          = membershipSelect.val(); // Getting selected membership id.
+                var form_loader         = $( '.ims-membership_loader img' ); // Form Loader Image.
+                var response_div        = $( '#ims_select_membership > .error' ); // Error div.
+                response_div.empty();
+
+                form_loader.show(); // Show ajax loader GIF.
+
+                var send_receipt_request = $.ajax({
+                    url         : ajaxURL,
+                    type        : "POST",
+                    data        : {
+                        membership_id   : membership,
+                        action          : "ims_send_wire_receipt"
+                    },
+                    dataType    : "json"
+                });
+
+                send_receipt_request.done( function( response ) {
+                    form_loader.hide(); // Hide ajax loader GIF.
+                    if ( response.success ) {
+                        // console.log(response);
+                        response_div.text( response.message );
+                    } else {
+                        // console.log(response);
+                        response_div.text( response.message );
+                    }
+                } );
+
+                send_receipt_request.fail( function( jqXHR, textStatus ) {
+                    response_div.text( "Request failed: " + textStatus );
+                });
+
+            } );
 
         }
 

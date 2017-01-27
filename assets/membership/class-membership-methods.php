@@ -288,7 +288,7 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 
 				$message	= sprintf( __( 'A user successfully purchased %s package on your site.', 'inspiry-memberships' ), $membership_title ) . "<br/><br/>";
 				$message 	.= sprintf( __( 'Payment process completed %s.', 'inspiry-memberships' ), $vendor ) . "<br/><br/>";
-				$message 	.= __( 'To view the details, please visit ' . $receipt_title, 'inspiry-memberships' );
+				$message 	.= sprintf( __( 'To view the details, please visit $s', 'inspiry-memberships' ), $receipt_title );
 
 			} elseif ( ! empty( $recurring ) ) {
 
@@ -296,7 +296,7 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 
 				$message 	= sprintf( __( 'A user successfully updated %s membership package on your site.', 'inspiry-memberships' ), $membership_title ) . "<br/><br/>";
 				$message 	.= sprintf( __( 'Payment process completed %s.', 'inspiry-memberships' ), $vendor ) . "<br/><br/>";
-				$message 	.= __( 'To view the details, please visit ' . $receipt_title, 'inspiry-memberships' );
+				$message 	.= sprintf( __( 'To view the details, please visit $s', 'inspiry-memberships' ), $receipt_title );
 
 			}
 
@@ -320,6 +320,7 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 				return;
 			}
 
+			$user_id 		= intval( $user_id );
 			$membership_id 	= intval( $membership_id );
 
 			// Check membership id to confirm.

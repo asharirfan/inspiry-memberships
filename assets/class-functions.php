@@ -229,16 +229,44 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 						<img src="<?php echo IMS_BASE_URL; ?>assets/img/ajax-loader.gif">
 						<!-- Ajax Loader GIF -->
 					</div>
-					<!-- /.rh-membership_loader -->
+					<!-- /.ims-membership_loader -->
+
+					<div class="ims-button-option ims-stripe-button">
+					</div>
+					<!-- /.form-option ims-stripe-button -->
 
 					<div class="ims-button-option ims-paypal-button">
 						<a href="#" id="ims-paypal"><?php _e( 'Pay with PayPal', 'inspiry-memberships' ); ?></a>
 					</div>
-					<!-- /.form-option rh-paypal-button -->
+					<!-- /.form-option ims-paypal-button -->
 
-					<div class="ims-button-option ims-stripe-button">
+					<div class="ims-wire-transfer">
+						<h4><?php _e( 'Wire Transfer', 'inspiry-memberships' ); ?></h4>
+						<?php
+							// Get wire transfer settings.
+							$wire_settings	= get_option( 'ims_wire_settings' );
+							if ( isset( $wire_settings[ 'ims_wire_transfer_instructions' ] )
+								&& ! empty( $wire_settings[ 'ims_wire_transfer_instructions' ] ) ) {
+								echo '<p>' . esc_html( $wire_settings[ 'ims_wire_transfer_instructions' ] ) . '</p>';
+							}
+							if ( isset( $wire_settings[ 'ims_wire_account_name' ] )
+								&& ! empty( $wire_settings[ 'ims_wire_account_name' ] ) ) {
+								echo '<p>' . __( 'Account Name: ', 'inspiry-memberships' );
+								echo esc_html( $wire_settings[ 'ims_wire_account_name' ] ) . '</p>';
+							}
+							if ( isset( $wire_settings[ 'ims_wire_account_number' ] )
+								&& ! empty( $wire_settings[ 'ims_wire_account_number' ] ) ) {
+								echo '<p>' . __( 'Account Number: ', 'inspiry-memberships' );
+								echo esc_html( $wire_settings[ 'ims_wire_account_number' ] ) . '</p>';
+							}
+						?>
 					</div>
-					<!-- /.form-option rh-stripe-button -->
+					<!-- /.ims-wire-transfer -->
+
+					<div class="ims-button-option ims-receipt-button">
+						<a href="#" id="ims-receipt"><?php _e( 'Send Receipt', 'inspiry-memberships' ); ?></a>
+					</div>
+					<!-- /.form-option ims-paypal-button -->
 
 					<div class="ims-button-option error"></div>
 					<!-- /.ims-button-option error -->

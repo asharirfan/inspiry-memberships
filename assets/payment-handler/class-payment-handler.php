@@ -56,6 +56,10 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 					$ims_paypal_payment_handler = new IMS_PayPal_Payment_Handler();
 					$ims_paypal_payment_handler->cancel_paypal_membership( $user_id );
 
+				} elseif ( 'wire' === $vendor ) {
+
+					IMS_Wire_Transfer_Handler::cancel_wire_membership( $user_id );
+
 				}
 
 			}
