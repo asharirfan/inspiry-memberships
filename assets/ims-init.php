@@ -85,15 +85,6 @@ if ( file_exists( IMS_BASE_DIR . '/assets/js/class-scripts.php' ) ) {
 }
 
 /**
- * ajax-functions.php.
- *
- * @since 1.0.0
- */
-if ( file_exists( IMS_BASE_DIR . '/assets/js/ajax-functions.php' ) ) {
-    require_once( IMS_BASE_DIR . '/assets/js/ajax-functions.php' );
-}
-
-/**
  * class-functions.php.
  *
  * @since 1.0.0

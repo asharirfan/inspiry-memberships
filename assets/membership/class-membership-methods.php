@@ -37,13 +37,14 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 		 */
 		public function add_user_membership( $user_id = 0, $membership_id = 0, $vendor = NULL ) {
 
-			// Bail if membership or user id is empty.
-			if ( empty( $membership_id ) || empty( $user_id ) ) {
+			// Bail if paramters are empty.
+			if ( empty( $membership_id ) || empty( $user_id ) || empty( $vendor ) ) {
 				return;
 			}
 
 			// Get membership object.
-			$membership_obj		= ims_get_membership_object( $membership_id );
+			$membership_id	= intval( $membership_id );
+			$membership_obj	= ims_get_membership_object( $membership_id );
 
 			// Get current membership of user.
 			$current_membership	= get_user_meta( $user_id, 'ims_current_membership', true );
@@ -94,7 +95,7 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 
 			} else {
 				// Update membership package if there is another package present before.
-				self::update_user_membership( $user_id, $membership_id, $vendor );
+				$this->update_user_membership( $user_id, $membership_id, $vendor );
 			}
 
 		}
@@ -109,22 +110,14 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 		 */
 		public function update_user_membership( $user_id = 0, $membership_id = 0, $vendor = NULL ) {
 
-			// Bail if membership or user id is empty.
-			if ( empty( $membership_id ) || empty( $user_id ) ) {
+			// Bail if parameters are empty.
+			if ( empty( $membership_id ) || empty( $user_id ) || empty( $vendor ) ) {
 				return;
 			}
 
 			// Get current membership details.
-			$current_membership 		= get_user_meta( $user_id, 'ims_current_membership', true );
-			$current_membership_id 		= intval( $current_membership ); // Current Membership ID.
-
-			$current_membership_obj	= ims_get_membership_object( $current_membership_id ); // Current Membership Object.
-
-			$current_properties 	= get_user_meta( $user_id, 'ims_current_properties', true );
-			$current_properties 	= intval( $current_properties ); // Current Properties.
-
-			$current_featured_props	= get_user_meta( $user_id, 'ims_current_featured_props', true );
-			$current_featured_props	= intval( $current_properties ); // Current Featured Properties.
+			$current_membership 	= get_user_meta( $user_id, 'ims_current_membership', true );
+			$current_membership_id	= intval( $current_membership ); // Current Membership ID.
 
 			// Get new membership details.
 			$new_membership_id 	= intval( $membership_id ); // New Membership ID.
@@ -179,35 +172,86 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 				 */
 				do_action( 'ims_update_user_membership', $user_id, $prev_membership_id, $membership_id );
 
-				/**
-				 * The WordPress Query class.
-				 * @link http://codex.wordpress.org/Function_Reference/WP_Query
-				 *
-				 */
-				// $properties_args		= array(
-				// 	'author'      		=> $user_id, // Author Parameters
-				// 	'post_type'   		=> 'property', // Type & Status Parameters
-				// 	'post_status' 		=> 'publish',
-				// 	'posts_per_page'	=> -1 // Pagination Parameters
-				// );
+			}
 
-				/**
-				 * Get all published properties and convert
-				 * them to draft either on update or new
-				 * membership.
-				 */
-				// $properties 	= get_posts( $properties_args );
-				// if ( ! empty( $properties ) ) {
-				// 	foreach ( $properties as $property ) {
-				// 		$property_args 		= array(
-				// 			'ID' 			=> $property->ID,
-				// 			'post_status'	=> 'pending'
-				// 		);
-				// 		wp_update_post( $property_args );
-				// 	}
-				// }
+		}
+
+		/**
+		 * Method: Cancel membership function.
+		 *
+		 * @param int $user_id - ID of the user requesting to cancel
+		 * @param int $membership_id - ID of the membership being cancelled
+		 * @since 1.0.0
+		 */
+		public function cancel_user_membership( $user_id = 0, $membership_id = 0 ) {
+
+			// Bail if user id is empty.
+			if ( empty( $user_id ) || empty( $membership_id ) ) {
+				return;
+			}
+
+			$user_id 		= intval( $user_id );
+			$membership_id 	= intval( $membership_id );
+
+			// Check membership id to confirm.
+			$current_membership_id	= get_user_meta( $user_id, 'ims_current_membership', true );
+			$current_membership_id 	= intval( $current_membership_id );
+
+			if ( $current_membership_id !== $membership_id ) {
+				return;
+			}
+
+			// Delete membership details from user meta.
+			delete_user_meta( $user_id, 'ims_current_membership' );
+
+			// Add number of properties available.
+			delete_user_meta( $user_id, 'ims_package_properties' );
+			delete_user_meta( $user_id, 'ims_current_properties' );
+			delete_user_meta( $user_id, 'ims_package_featured_props' );
+			delete_user_meta( $user_id, 'ims_current_featured_props' );
+			delete_user_meta( $user_id, 'ims_current_duration' );
+			delete_user_meta( $user_id, 'ims_current_duration_unit' );
+			delete_user_meta( $user_id, 'ims_membership_due_date' );
+
+			// Delete meta related to vendors.
+			$vendor 	= get_user_meta( $user_id, 'ims_current_vendor', true );
+
+			if ( 'stripe' === $vendor ) {
+
+				delete_user_meta( $user_id, 'ims_current_vendor' );
+				delete_user_meta( $user_id, 'ims_current_stripe_plan_id' );
+				delete_user_meta( $user_id, 'ims_stripe_subscription_id' );
+				delete_user_meta( $user_id, 'ims_stripe_subscription_due' );
+				delete_user_meta( $user_id, 'ims_stripe_customer_id' );
+
+				// Clear schedule hook.
+				wp_clear_scheduled_hook( 'ims_stripe_schedule_membership_end', array( $user_id, $membership_id ) );
+
+			} elseif ( 'paypal' === $vendor ) {
+
+				delete_user_meta( $user_id, 'ims_current_vendor' );
+				delete_user_meta( $user_id, 'ims_paypal_profile_id' );
+
+				// Clear schedule hook.
+				wp_clear_scheduled_hook( 'ims_paypal_membership_schedule_end', array( $user_id, $membership_id ) );
+
+			} elseif ( 'wire' === $vendor ) {
+
+				delete_user_meta( $user_id, 'ims_current_vendor' );
+
+				// Clear schedule hook.
+				wp_clear_scheduled_hook( 'ims_wire_membership_schedule_end', array( $user_id, $membership_id ) );
 
 			}
+
+			/**
+			 * Hook: To extend the functionality of deleting membership
+			 * to website.
+			 *
+			 * @param int $user_id - ID of the user deleting membership
+			 * @param int $membership_id - ID of the membership being deleted
+			 */
+			do_action( 'ims_delete_user_membership', $user_id, $membership_id );
 
 		}
 
@@ -309,7 +353,7 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 
 				$message	= sprintf( __( 'A user successfully purchased %s package on your site.', 'inspiry-memberships' ), $membership_title ) . "<br/><br/>";
 				$message 	.= sprintf( __( 'Payment process completed %s.', 'inspiry-memberships' ), $vendor ) . "<br/><br/>";
-				$message 	.= sprintf( __( 'To view the details, please visit $s', 'inspiry-memberships' ), $receipt_title );
+				$message 	.= sprintf( __( 'To view the details, please visit %s', 'inspiry-memberships' ), $receipt_title );
 
 			} elseif ( ! empty( $recurring ) ) {
 
@@ -317,77 +361,13 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 
 				$message 	= sprintf( __( 'A user successfully updated %s membership package on your site.', 'inspiry-memberships' ), $membership_title ) . "<br/><br/>";
 				$message 	.= sprintf( __( 'Payment process completed %s.', 'inspiry-memberships' ), $vendor ) . "<br/><br/>";
-				$message 	.= sprintf( __( 'To view the details, please visit $s', 'inspiry-memberships' ), $receipt_title );
+				$message 	.= sprintf( __( 'To view the details, please visit %s', 'inspiry-memberships' ), $receipt_title );
 
 			}
 
 			if ( is_email( $admin_email ) ) {
 				IMS_Email::send_email( $admin_email, $subject, $message );
 			}
-
-		}
-
-		/**
-		 * Method: Cancel membership function.
-		 *
-		 * @param int $user_id - ID of the user requesting to cancel
-		 * @param int $membership_id - ID of the membership being cancelled
-		 * @since 1.0.0
-		 */
-		public function cancel_user_membership( $user_id = 0, $membership_id = 0 ) {
-
-			// Bail if user id is empty.
-			if ( empty( $user_id ) || empty( $membership_id ) ) {
-				return;
-			}
-
-			$user_id 		= intval( $user_id );
-			$membership_id 	= intval( $membership_id );
-
-			// Check membership id to confirm.
-			$current_membership_id	= get_user_meta( $user_id, 'ims_current_membership', true );
-			$current_membership_id 	= intval( $current_membership_id );
-
-			if ( $current_membership_id !== $membership_id ) {
-				return;
-			}
-
-			// Delete membership details from user meta.
-			delete_user_meta( $user_id, 'ims_current_membership' );
-
-			// Add number of properties available.
-			delete_user_meta( $user_id, 'ims_package_properties' );
-			delete_user_meta( $user_id, 'ims_current_properties' );
-			delete_user_meta( $user_id, 'ims_package_featured_props' );
-			delete_user_meta( $user_id, 'ims_current_featured_props' );
-			delete_user_meta( $user_id, 'ims_current_duration' );
-			delete_user_meta( $user_id, 'ims_current_duration_unit' );
-			delete_user_meta( $user_id, 'ims_membership_due_date' );
-
-			// Delete meta related to vendors.
-			$vendor 	= get_user_meta( $user_id, 'ims_current_vendor', true );
-
-			if ( 'stripe' === $vendor ) {
-				delete_user_meta( $user_id, 'ims_current_vendor' );
-				delete_user_meta( $user_id, 'ims_current_stripe_plan_id' );
-				delete_user_meta( $user_id, 'ims_stripe_subscription_id' );
-				delete_user_meta( $user_id, 'ims_stripe_subscription_due' );
-				delete_user_meta( $user_id, 'ims_stripe_customer_id' );
-			} elseif ( 'paypal' === $vendor ) {
-				delete_user_meta( $user_id, 'ims_current_vendor' );
-				delete_user_meta( $user_id, 'ims_paypal_profile_id' );
-			} elseif ( 'wire' === $vendor ) {
-				delete_user_meta( $user_id, 'ims_current_vendor' );
-			}
-
-			/**
-			 * Hook: To extend the functionality of deleting membership
-			 * to website.
-			 *
-			 * @param int $user_id - ID of the user deleting membership
-			 * @param int $membership_id - ID of the membership being deleted
-			 */
-			do_action( 'ims_delete_user_membership', $user_id, $membership_id );
 
 		}
 

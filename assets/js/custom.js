@@ -16,6 +16,13 @@ jQuery( function( $ ) {
 
             var ajaxURL = removeQueryStringParameters( jsData.ajaxURL );
 
+            $( '#ims-stripe' ).click( function( e ) {
+
+                e.preventDefault(); // Prevent the default event of link.
+                $( '#ims_select_membership > .error' ).text( 'Please select a membership.' );
+
+            } );
+
     		/**
              * Generate Stripe Button for different memberships.
              *
@@ -30,7 +37,6 @@ jQuery( function( $ ) {
                 var error_div       = $( '#ims_select_membership > .error' ); // Error div.
 
                 error_div.empty(); // Empty the error div.
-    			stripe_button.empty(); // Empty the previous button.
     			ims_stripe_load.show(); // Show the ajax loader GIF.
 
     			var membership_stripe_button_request = $.ajax({
@@ -46,6 +52,8 @@ jQuery( function( $ ) {
                 membership_stripe_button_request.done( function( response ) {
                     ims_stripe_load.hide( 'fa-spin' ); // Hide ajax loader GIF.
                     if ( response.success ) {
+
+                        stripe_button.empty(); // Empty the previous button.
 
                         // Stripe Payment Button
                         var stripe_pay  = jQuery( '<script></script>' );

@@ -50,6 +50,17 @@ if ( class_exists( 'WP_OSA' ) ) {
 		)
 	);
 
+	// Field: Recurring Membership Check
+    $ims_settings->add_field(
+		'ims_basic_settings',
+		array(
+			'id'   => 'ims_recurring_memberships_enable',
+			'type' => 'checkbox',
+			'name' => __( 'Enable Recurring Memberships', 'inspiry-memberships' ),
+			'desc' => __( 'Check this to enable recurring memberships on your website.', 'inspiry-memberships' ),
+		)
+	);
+
     // Field: Currency Code.
 	$ims_settings->add_field(
 		'ims_basic_settings',
@@ -110,6 +121,18 @@ if ( class_exists( 'WP_OSA' ) ) {
 			'type' => 'checkbox',
 			'name' => __( 'Enable Stripe', 'inspiry-memberships' ),
 			'desc' => __( 'Check this to enable Stripe payments.', 'inspiry-memberships' ),
+		)
+	);
+
+	// Field: Stripe Button Label
+    $ims_settings->add_field(
+		'ims_stripe_settings',
+		array(
+			'id'   		=> 'ims_stripe_btn_label',
+			'type' 		=> 'text',
+			'name' 		=> __( 'Stripe Button Label', 'inspiry-memberships' ),
+			'default'	=> 'Pay with Card',
+			// 'desc' => __( 'Check this to enable Stripe payments.', 'inspiry-memberships' ),
 		)
 	);
 

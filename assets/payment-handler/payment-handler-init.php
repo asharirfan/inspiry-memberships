@@ -68,9 +68,9 @@ if ( class_exists( 'IMS_Stripe_Payment_Handler' ) ) {
 	 */
 	$ims_stripe_payment_handler = new IMS_Stripe_Payment_Handler();
 
-	add_action( 'init', array( $ims_stripe_payment_handler, 'process_stripe_payment' ) ); // Stripe Payment Process Init.
+	add_action( 'wp_ajax_ims_stripe_button', array( $ims_stripe_payment_handler, 'ims_display_stripe_button' ) );
 
-	// add_action( 'init', array( $ims_stripe_payment_handler, 'cancel_user_subscription_request' ) ); // Cancel User Membership Request.
+	add_action( 'init', array( $ims_stripe_payment_handler, 'process_stripe_payment' ) ); // Stripe Payment Process Init.
 
 	add_action( 'init', array( $ims_stripe_payment_handler, 'handle_stripe_subscription_event' ), 1 ); // Hande stripe events for memberships.
 

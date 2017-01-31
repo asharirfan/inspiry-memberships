@@ -69,7 +69,7 @@ if ( ! class_exists( 'IMS_CPT_Membership' ) ) :
 				'can_export'          => true,
 				'rewrite'             => array( 'slug' => __( 'membership', 'inspiry-memberships' ) ),
 				'capability_type'     => 'post',
-				'supports'            => array( 'title', 'thumbnail', 'excerpt' )
+				'supports'            => array( 'title', 'thumbnail' )
 			);
 
 			register_post_type( 'ims_membership', $args );

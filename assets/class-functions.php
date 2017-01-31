@@ -26,6 +26,14 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 	class IMS_Functions {
 
 		/**
+		 * Single Instance of Class.
+		 *
+		 * @var 	IMS_Functions
+		 * @since 	1.0.0
+		 */
+		protected static $_instance;
+
+		/**
 		 * $basic_settings.
 		 *
 		 * @var 	array
@@ -39,17 +47,19 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 		 * @var 	array
 		 * @since 	1.0.0
 		 */
-		 public $stripe_settings;
+		public $stripe_settings;
 
 		/**
-		 * Constructor.
+		 * Method: Provides a single instance of the class.
 		 *
 		 * @since 1.0.0
 		 */
-		public function __construct() {
+		public static function instance() {
 
-			$this->basic_settings  	= get_option( 'ims_basic_settings' );
-			$this->stripe_settings 	= get_option( 'ims_stripe_settings' );
+			if ( is_null( self::$_instance ) ) {
+				self::$_instance = new self();
+			}
+			return self::$_instance;
 
 		}
 
@@ -58,9 +68,12 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 		 *
 		 * @since 1.0.0
 		 */
-		public function is_memberships() {
+		public static function is_memberships() {
 
-			if ( 'on' == $this->basic_settings[ 'ims_memberships_enable' ] ) {
+			// Get settings.
+			$plugin_settings 	= get_option( 'ims_basic_settings' );
+
+			if ( 'on' === $plugin_settings[ 'ims_memberships_enable' ] ) {
 				return true;
 			}
 			return false;
@@ -105,12 +118,12 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 			 * @link http://codex.wordpress.org/Function_Reference/WP_Query
 			 *
 			 */
-			$membership_args = array(
-				'post_type'=> 'ims_membership',
-				'post_status' => 'publish',
-				'posts_per_page'=> -1
+			$membership_args	= array(
+				'post_type'			=> 'ims_membership',
+				'post_status' 		=> 'publish',
+				'posts_per_page'	=> -1
 			);
-			$memberships_query = new WP_Query( $membership_args );
+			$memberships_query	= new WP_Query( $membership_args );
 
 			// Membership Data array.
 			$memberships_data 	= array();
@@ -132,7 +145,6 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 						'duration_unit'	=> $membership_obj->get_duration_unit()
 					);
 				}
-
 				return $memberships_data;
 			} else {
 				return false;
@@ -188,13 +200,25 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 		}
 
 		/**
-		 * Display Stripe Buy button form memberships.
+		 * Display membership selection form.
 		 *
 		 * @since 1.0.0
 		 */
-		public static function ims_display_stripe_form() {
+		public static function ims_display_membership_form() {
 
 			$ims_memberships 	= self::ims_get_all_memberships();
+
+			// Get plugin settings.
+			$basic_settings		= get_option( 'ims_basic_settings' );
+			$stripe_settings	= get_option( 'ims_stripe_settings' );
+			$paypal_settings	= get_option( 'ims_paypal_settings' );
+			$wire_settings		= get_option( 'ims_wire_settings' );
+
+			// Strip button label.
+			$ims_button_label 		= 'Pay with Card';
+			if ( ! empty( $stripe_settings[ 'ims_stripe_btn_label' ] ) ) {
+				$ims_button_label	= $stripe_settings[ 'ims_stripe_btn_label' ];
+			}
 
 			if ( is_array( $ims_memberships ) && ! empty( $ims_memberships ) ) : ?>
 
@@ -217,10 +241,12 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 
 						<input type="hidden" name="redirect" value="<?php echo esc_url( get_bloginfo( 'url' ) ); ?>"/>
 
-						<input type="checkbox" name="ims_recurring" id="ims_recurring" />
-						<label for="ims_recurring" id="ims_recurring_label">
-							<?php _e( 'Recurring Membership?', 'inspiry-memberships' ); ?>
-						</label>
+						<?php if ( 'on' === $basic_settings[ 'ims_recurring_memberships_enable' ] ) : ?>
+							<input type="checkbox" name="ims_recurring" id="ims_recurring" />
+							<label for="ims_recurring" id="ims_recurring_label">
+								<?php _e( 'Recurring Membership?', 'inspiry-memberships' ); ?>
+							</label>
+						<?php endif; ?>
 
 					</div>
 					<!-- /.form-option -->
@@ -231,42 +257,47 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 					</div>
 					<!-- /.ims-membership_loader -->
 
-					<div class="ims-button-option ims-stripe-button">
-					</div>
-					<!-- /.form-option ims-stripe-button -->
+					<?php if ( 'on' === $stripe_settings[ 'ims_stripe_enable' ] ) : ?>
+						<div class="ims-button-option ims-stripe-button">
+							<a href="#" id="ims-stripe"><?php esc_html_e( $ims_button_label, 'inspiry-memberships' ); ?></a>
+						</div>
+						<!-- /.form-option ims-stripe-button -->
+					<?php endif; ?>
 
-					<div class="ims-button-option ims-paypal-button">
-						<a href="#" id="ims-paypal"><?php _e( 'Pay with PayPal', 'inspiry-memberships' ); ?></a>
-					</div>
-					<!-- /.form-option ims-paypal-button -->
+					<?php if ( 'on' === $paypal_settings[ 'ims_paypal_enable' ] ) : ?>
+						<div class="ims-button-option ims-paypal-button">
+							<a href="#" id="ims-paypal"><?php _e( 'Pay with PayPal', 'inspiry-memberships' ); ?></a>
+						</div>
+						<!-- /.form-option ims-paypal-button -->
+					<?php endif; ?>
 
-					<div class="ims-wire-transfer">
-						<h4><?php _e( 'Wire Transfer', 'inspiry-memberships' ); ?></h4>
-						<?php
-							// Get wire transfer settings.
-							$wire_settings	= get_option( 'ims_wire_settings' );
-							if ( isset( $wire_settings[ 'ims_wire_transfer_instructions' ] )
-								&& ! empty( $wire_settings[ 'ims_wire_transfer_instructions' ] ) ) {
-								echo '<p>' . esc_html( $wire_settings[ 'ims_wire_transfer_instructions' ] ) . '</p>';
-							}
-							if ( isset( $wire_settings[ 'ims_wire_account_name' ] )
-								&& ! empty( $wire_settings[ 'ims_wire_account_name' ] ) ) {
-								echo '<p>' . __( 'Account Name: ', 'inspiry-memberships' );
-								echo esc_html( $wire_settings[ 'ims_wire_account_name' ] ) . '</p>';
-							}
-							if ( isset( $wire_settings[ 'ims_wire_account_number' ] )
-								&& ! empty( $wire_settings[ 'ims_wire_account_number' ] ) ) {
-								echo '<p>' . __( 'Account Number: ', 'inspiry-memberships' );
-								echo esc_html( $wire_settings[ 'ims_wire_account_number' ] ) . '</p>';
-							}
-						?>
-					</div>
-					<!-- /.ims-wire-transfer -->
+					<?php if ( 'on' === $wire_settings[ 'ims_wire_enable' ] ) : ?>
+						<div class="ims-wire-transfer">
+							<h4><?php _e( 'Wire Transfer', 'inspiry-memberships' ); ?></h4>
+							<?php
+								if ( isset( $wire_settings[ 'ims_wire_transfer_instructions' ] )
+									&& ! empty( $wire_settings[ 'ims_wire_transfer_instructions' ] ) ) {
+									echo '<p>' . esc_html( $wire_settings[ 'ims_wire_transfer_instructions' ] ) . '</p>';
+								}
+								if ( isset( $wire_settings[ 'ims_wire_account_name' ] )
+									&& ! empty( $wire_settings[ 'ims_wire_account_name' ] ) ) {
+									echo '<p>' . __( 'Account Name: ', 'inspiry-memberships' );
+									echo esc_html( $wire_settings[ 'ims_wire_account_name' ] ) . '</p>';
+								}
+								if ( isset( $wire_settings[ 'ims_wire_account_number' ] )
+									&& ! empty( $wire_settings[ 'ims_wire_account_number' ] ) ) {
+									echo '<p>' . __( 'Account Number: ', 'inspiry-memberships' );
+									echo esc_html( $wire_settings[ 'ims_wire_account_number' ] ) . '</p>';
+								}
+							?>
+						</div>
+						<!-- /.ims-wire-transfer -->
 
-					<div class="ims-button-option ims-receipt-button">
-						<a href="#" id="ims-receipt"><?php _e( 'Send Receipt', 'inspiry-memberships' ); ?></a>
-					</div>
-					<!-- /.form-option ims-paypal-button -->
+						<div class="ims-button-option ims-receipt-button">
+							<a href="#" id="ims-receipt"><?php _e( 'Send Receipt', 'inspiry-memberships' ); ?></a>
+						</div>
+						<!-- /.form-option ims-paypal-button -->
+					<?php endif; ?>
 
 					<div class="ims-button-option error"></div>
 					<!-- /.ims-button-option error -->
@@ -296,8 +327,8 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 
 				<form action="" method="POST" id="ims-cancel-user-membership">
 					<h4 class="title"><?php _e( 'Are you sure?', 'inspiry-memberships' ); ?></h4>
-					<button class="ims-btn" id="ims-btn-confirm" type="submit"><?php _e( 'Yes', 'inspiry-memberships' ); ?></button>
-					<button class="ims-btn" id="ims-btn-close" type="button"><?php _e( 'No', 'inspiry-memberships' ); ?></button>
+					<button class="ims-btn" id="ims-btn-confirm" type="submit"><?php _e( 'Confirm', 'inspiry-memberships' ); ?></button>
+					<button class="ims-btn" id="ims-btn-close" type="button"><?php _e( 'Cancel', 'inspiry-memberships' ); ?></button>
 					<input type="hidden" name="action" value="ims_cancel_user_membership" />
 					<input type="hidden" name="user_id" value="<?php echo esc_attr( $user_id ); ?>" />
 					<input type="hidden" name="ims_cancel_membership_nonce" value="<?php echo wp_create_nonce( 'ims-cancel-membership-nonce' ); ?>" />
@@ -311,17 +342,3 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 	}
 
 endif;
-
-
-if ( ! function_exists( 'ims_functions_obj' ) ) {
-
-	/**
-	 * Get an object of IMS_Functions.
-	 *
-	 * @since 1.0.0
-	 */
-	function ims_functions_obj() {
-		return new IMS_Functions();
-	}
-
-}
