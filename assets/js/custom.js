@@ -1,3 +1,9 @@
+/**
+ * Plugin JS file
+ *
+ * @since 1.0.0
+ */
+
 jQuery( function( $ ) {
 
 	$( document ).ready( function() {

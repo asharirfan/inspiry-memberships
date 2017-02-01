@@ -14,16 +14,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Inspiry_Memberships_Activator.
+ * IMS_Activator.
  *
  * This class contains functions which run on activating the plugin.
  *
  * @since 1.0.0
  */
 
-if ( ! class_exists( 'Inspiry_Memberships_Activator' ) ) :
+if ( ! class_exists( 'IMS_Activator' ) ) :
 
-	class Inspiry_Memberships_Activator {
+	class IMS_Activator {
 
 		/**
 		 * activate.
@@ -31,6 +31,9 @@ if ( ! class_exists( 'Inspiry_Memberships_Activator' ) ) :
 		 * @since 1.0.0
 		 */
 		public static function activate() {
+
+			// Transient max age is 60 seconds.
+			set_transient( '_welcome_redirect_ims', true, 60 );
 
 		}
 

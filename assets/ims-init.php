@@ -31,6 +31,15 @@ if ( ! function_exists( 'inspiry_log' ) ) {
 }
 
 /**
+ * welcome-init.php.
+ *
+ * @since 1.0.0
+ */
+if ( file_exists( IMS_BASE_DIR . '/assets/welcome/welcome-init.php' ) ) {
+    require_once( IMS_BASE_DIR . '/assets/welcome/welcome-init.php' );
+}
+
+/**
  * class-ims-email.php.
  *
  * @since 1.0.0

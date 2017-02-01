@@ -73,7 +73,9 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 			// Get settings.
 			$plugin_settings 	= get_option( 'ims_basic_settings' );
 
-			if ( 'on' === $plugin_settings[ 'ims_memberships_enable' ] ) {
+			if ( empty( $plugin_settings ) ) {
+				return false;
+			} elseif ( 'on' === $plugin_settings[ 'ims_memberships_enable' ] ) {
 				return true;
 			}
 			return false;

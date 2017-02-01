@@ -74,10 +74,10 @@ function activate_inspiry_memberships() {
 	 *
 	 * @since 1.0.0
 	 */
-	if ( file_exists( IMS_BASE_DIR . '/assets/includes/class-im-activator.php' ) ) {
-	    require_once( IMS_BASE_DIR . '/assets/includes/class-im-activator.php' );
+	if ( file_exists( IMS_BASE_DIR . '/assets/includes/class-ims-activator.php' ) ) {
+	    require_once( IMS_BASE_DIR . '/assets/includes/class-ims-activator.php' );
 	}
-	Inspiry_Memberships_Activator::activate();
+	IMS_Activator::activate();
 
 }
 
@@ -94,10 +94,10 @@ function deactivate_inspiry_memberships() {
 	 *
 	 * @since 1.0.0
 	 */
-	if ( file_exists( IMS_BASE_DIR . '/assets/includes/class-im-deactivator.php' ) ) {
-	    require_once( IMS_BASE_DIR . '/assets/includes/class-im-deactivator.php' );
+	if ( file_exists( IMS_BASE_DIR . '/assets/includes/class-ims-deactivator.php' ) ) {
+	    require_once( IMS_BASE_DIR . '/assets/includes/class-ims-deactivator.php' );
 	}
-	Inspiry_Memberships_Deactivator::deactivate();
+	IMS_Deactivator::deactivate();
 
 }
 

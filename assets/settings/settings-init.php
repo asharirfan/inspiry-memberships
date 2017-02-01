@@ -206,8 +206,8 @@ if ( class_exists( 'WP_OSA' ) ) {
 			'id'      => 'ims_stripe_webhook_url',
 			'type'    => 'text',
 			'name'    => __( 'Stripe WebHook URL', 'inspiry-memberships' ),
-			'desc'    => esc_url( get_bloginfo( 'url' ) ) . '/?ims_stripe=membership_event',
-			'default' => esc_url( get_bloginfo( 'url' ) ) . '/?ims_stripe=membership_event',
+			'desc'    => esc_url( add_query_arg( array( 'ims_stripe' => 'membership_event' ), home_url( '/' ) ) ),
+			'default' => esc_url( add_query_arg( array( 'ims_stripe' => 'membership_event' ), home_url( '/' ) ) ),
 		)
 	);
 
@@ -313,11 +313,11 @@ if ( class_exists( 'WP_OSA' ) ) {
 	$ims_settings->add_field(
 		'ims_paypal_settings',
 		array(
-			'id'      => 'ims_paypal_ipn_url',
-			'type'    => 'text',
-			'name'    => __( 'PayPal IPN URL', 'inspiry-memberships' ),
-			'desc'    => esc_url( get_bloginfo( 'url' ) ) . '/?ims_paypal=notification',
-			'default' => esc_url( get_bloginfo( 'url' ) ) . '/?ims_paypal=notification',
+			'id'      	=> 'ims_paypal_ipn_url',
+			'type'    	=> 'text',
+			'name'    	=> __( 'PayPal IPN URL', 'inspiry-memberships' ),
+			'desc'		=> esc_url( add_query_arg( array( 'ims_paypal' => 'notification' ), home_url( '/' ) ) ),
+			'default'	=> esc_url( add_query_arg( array( 'ims_paypal' => 'notification' ), home_url( '/' ) ) ),
 		)
 	);
 
