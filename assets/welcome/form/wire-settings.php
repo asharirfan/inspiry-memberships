@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<?php _e( 'Step 4: Wire Transfer Settings', 'inspiry-memberships' ); ?>
 </h3>
 
-<form action="#" class="ims-wire-settings">
+<div class="ims-wire-settings">
 	<table class="form-table">
 
 		<tr>
@@ -105,5 +105,5 @@ if ( ! defined( 'ABSPATH' ) ) {
 	</p>
 	<!-- /.ims__description -->
 
-</form>
+</div>
 <!-- /.ims-wire-settings -->

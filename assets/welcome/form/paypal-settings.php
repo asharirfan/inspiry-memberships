@@ -20,7 +20,7 @@ $api_credentials	= 'https://developer.paypal.com/docs/classic/api/apiCredentials
 	<?php _e( 'Step 3: PayPal Settings', 'inspiry-memberships' ); ?>
 </h3>
 
-<form class="ims-paypal-settings">
+<div class="ims-paypal-settings">
 	<p class="ims__description">
 		<strong><?php _e( 'Important: ', 'inspiry-memberships' ); ?></strong>
 		<?php _e( 'Please get your PayPal API keys from your PayPal account.', 'inspiry-memberships' ); ?>
@@ -197,4 +197,4 @@ $api_credentials	= 'https://developer.paypal.com/docs/classic/api/apiCredentials
 	</p>
 	<!-- /.ims__description -->
 
-</form>
+</div>

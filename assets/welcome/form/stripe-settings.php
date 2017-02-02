@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<?php _e( 'Step 2: Stripe Settings', 'inspiry-memberships' ); ?>
 </h3>
 
-<form class="ims-stripe-settings">
+<div class="ims-stripe-settings">
 	<p class="ims__description">
 		<strong><?php _e( 'Important: ', 'inspiry-memberships' ); ?></strong>
 		<?php _e( 'Please get your Stripe API keys from the Stripe Dashboard.', 'inspiry-memberships' ); ?>
@@ -174,4 +174,4 @@ if ( ! defined( 'ABSPATH' ) ) {
 	</p>
 	<!-- /.ims__description -->
 
-</form>
+</div>

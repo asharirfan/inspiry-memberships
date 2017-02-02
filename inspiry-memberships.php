@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:		Inspiry Memberships
- * Description: 	A simple plugin to create memberships portal on your WordPress site.
+ * Description: 	Inspiry Memberships lets you create membership packages for your Real-Estate website so that you can take your Real-Estate website to the next level.
  * Plugin URI: 		https://github.com/InspiryThemes/inspiry-memberships
  * Author: 			mrasharirfan
  * Author URI: 		https://inspirythemes.com

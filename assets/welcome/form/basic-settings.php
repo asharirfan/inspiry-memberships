@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<?php _e( 'Step 1: Basic Settings', 'inspiry-memberships' ); ?>
 </h3>
 
-<form action="#" class="ims-basic-settings">
+<div class="ims-basic-settings">
 	<table class="form-table">
 
 		<tr>
@@ -125,5 +125,5 @@ if ( ! defined( 'ABSPATH' ) ) {
 	</p>
 	<!-- /.ims__description -->
 
-</form>
+</div>
 <!-- /.ims-basic-settings -->

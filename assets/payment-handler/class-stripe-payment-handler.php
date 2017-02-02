@@ -585,7 +585,6 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 
 				// If customer stripe id does not exist then exit.
 				if ( empty( $cus_stripe_id ) ) {
-					http_response_code( 300 );
 					exit();
 				}
 
