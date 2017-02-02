@@ -26,18 +26,6 @@ if ( ! class_exists( 'IMS_Membership_Meta_Boxes' ) ) :
 	class IMS_Membership_Meta_Boxes {
 
 		/**
-		 * Constructor.
-		 *
-		 * @since 1.0.0
-		 */
-		public function __construct() {
-
-			// add_action( 'load-post.php', array( $this, 'setup_meta_box' ) );
-			// add_action( 'load-post-new.php', array( $this, 'setup_meta_box' ) );
-
-		}
-
-		/**
 		 * setup_meta_box.
 		 *
 		 * @since 1.0.0
@@ -65,7 +53,8 @@ if ( ! class_exists( 'IMS_Membership_Meta_Boxes' ) ) :
 				'high'        											 		// Priority
 			);
 
-			do_action( 'ims_membership_extend_meta_boxes' );
+			// Membership meta box added action hook.
+			do_action( 'ims_membership_meta_boxes_added' );
 
 		}
 
@@ -74,10 +63,10 @@ if ( ! class_exists( 'IMS_Membership_Meta_Boxes' ) ) :
 		 *
 		 * @since 1.0.0
 		 */
-		public function meta_box_content( $object, $box ) {
+		public function meta_box_content( $membership, $box ) {
 
 			wp_nonce_field( basename( __FILE__ ), 'membership_meta_box_nonce' );
-			$prefix = 'ims_membership_'; ?>
+			$prefix = apply_filters( 'ims_meta_prefix', 'ims_membership_' ); ?>
 
 			<table class="form-table">
 
@@ -91,7 +80,7 @@ if ( ! class_exists( 'IMS_Membership_Meta_Boxes' ) ) :
 						<input 	type="number"
 								name="allowed_properties"
 								id="allowed_properties"
-								value="<?php echo esc_attr( get_post_meta( $object->ID, "{$prefix}allowed_properties", true ) ); ?>"
+								value="<?php echo esc_attr( get_post_meta( $membership->ID, "{$prefix}allowed_properties", true ) ); ?>"
 						/>
 						<p class="description"><?php _e( 'Enter the number of properties allowed in this membership. Example: 50', 'inspiry-membership' ); ?></p>
 					</td>
@@ -107,7 +96,7 @@ if ( ! class_exists( 'IMS_Membership_Meta_Boxes' ) ) :
 						<input 	type="number"
 								name="featured_properties"
 								id="featured_properties"
-								value="<?php echo esc_attr( get_post_meta( $object->ID, "{$prefix}featured_properties", true ) ); ?>"
+								value="<?php echo esc_attr( get_post_meta( $membership->ID, "{$prefix}featured_properties", true ) ); ?>"
 						/>
 						<p class="description"><?php _e( 'Enter the number of featured properties allowed in this membership. Example: 20', 'inspiry-membership' ); ?></p>
 					</td>
@@ -123,7 +112,7 @@ if ( ! class_exists( 'IMS_Membership_Meta_Boxes' ) ) :
 						<input 	type="text"
 								name="price"
 								id="price"
-								value="<?php echo esc_attr( get_post_meta( $object->ID, "{$prefix}price", true ) ); ?>"
+								value="<?php echo esc_attr( get_post_meta( $membership->ID, "{$prefix}price", true ) ); ?>"
 						/>
 						<p class="description"><?php _e( 'Enter the price of this membership. Example: 20', 'inspiry-membership' ); ?></p>
 					</td>
@@ -139,9 +128,9 @@ if ( ! class_exists( 'IMS_Membership_Meta_Boxes' ) ) :
 						<input 	type="number"
 								name="duration"
 								id="duration"
-								value="<?php echo esc_attr( get_post_meta( $object->ID, "{$prefix}duration", true ) ); ?>"
+								value="<?php echo esc_attr( get_post_meta( $membership->ID, "{$prefix}duration", true ) ); ?>"
 						/>
-						<?php $duration_unit = get_post_meta( $object->ID, "{$prefix}duration_unit", true ); ?>
+						<?php $duration_unit = get_post_meta( $membership->ID, "{$prefix}duration_unit", true ); ?>
 						<select	name="duration_unit" id="duration_unit">
 							<option value="" <?php echo ( '' == $duration_unit ) ? 'selected' : ''; ?> disabled>
 								<?php _e( 'None', 'inspiry-memberships' ); ?>
@@ -173,13 +162,13 @@ if ( ! class_exists( 'IMS_Membership_Meta_Boxes' ) ) :
 						<input 	type="text"
 								name="stripe_plan_id"
 								id="stripe_plan_id"
-								value="<?php echo esc_attr( get_post_meta( $object->ID, "{$prefix}stripe_plan_id", true ) ); ?>"
+								value="<?php echo esc_attr( get_post_meta( $membership->ID, "{$prefix}stripe_plan_id", true ) ); ?>"
 						/>
 						<p class="description"><?php _e( 'Enter the stripe plan ID for this membership. Example: professional-plan', 'inspiry-membership' ); ?></p>
 					</td>
 				</tr>
 
-				<?php do_action( 'ims_membership_add_meta_boxes', $object->ID ); ?>
+				<?php do_action( 'ims_membership_add_meta_box', $membership->ID ); // Membership meta box action hook. ?>
 
 			</table>
 
@@ -192,24 +181,24 @@ if ( ! class_exists( 'IMS_Membership_Meta_Boxes' ) ) :
 		 *
 		 * @since 1.0.0
 		 */
-		public function save_meta_box( $post_id, $post ) {
+		public function save_meta_box( $membership_id, $membership ) {
 
 			// Verify the nonce before proceeding.
 			if ( ! isset( $_POST[ 'membership_meta_box_nonce' ] ) || ! wp_verify_nonce( $_POST[ 'membership_meta_box_nonce' ], basename( __FILE__ ) ) ) {
-				return $post_id;
+				return $membership_id;
 			}
 
 			// Get the post type object.
-			$post_type 	= get_post_type_object( $post->post_type );
+			$post_type 	= get_post_type_object( $membership->post_type );
 
 			// Check if the post type is membership.
-			if ( 'ims_membership' != $post->post_type ) {
-				return $post_id;
+			if ( 'ims_membership' != $membership->post_type ) {
+				return $membership_id;
 			}
 
 			// Check if the current user has permission to edit the post.
-			if ( ! current_user_can( $post_type->cap->edit_post, $post_id ) ) {
-				return $post_id;
+			if ( ! current_user_can( $post_type->cap->edit_post, $membership_id ) ) {
+				return $membership_id;
 			}
 
 			// Get the posted data and sanitize it for use as an HTML class.
@@ -221,18 +210,22 @@ if ( ! class_exists( 'IMS_Membership_Meta_Boxes' ) ) :
 			$ims_meta_value[ 'duration_unit' ]			= ( isset( $_POST[ 'duration_unit' ] ) ) ? sanitize_text_field( $_POST[ 'duration_unit' ] ) : '';
 			$ims_meta_value[ 'stripe_plan_id' ]			= ( isset( $_POST[ 'stripe_plan_id' ] ) ) ? sanitize_text_field( $_POST[ 'stripe_plan_id' ] ) : '';
 
+			// Filter the values of meta data being saved by membership post type.
+			$ims_meta_value		= apply_filters( 'ims_membership_before_save_meta_values', $ims_meta_value, $membership_id );
+
 			// Meta data prefix.
-			$prefix = 'ims_membership_';
+			$prefix = apply_filters( 'ims_meta_prefix', 'ims_membership_' );
 
 			// Save the meta values.
-			$this->save_meta_value( $post_id, "{$prefix}allowed_properties", $ims_meta_value[ 'allowed_properties' ] );
-			$this->save_meta_value( $post_id, "{$prefix}featured_properties", $ims_meta_value[ 'featured_properties' ] );
-			$this->save_meta_value( $post_id, "{$prefix}price", $ims_meta_value[ 'price' ] );
-			$this->save_meta_value( $post_id, "{$prefix}duration", $ims_meta_value[ 'duration' ] );
-			$this->save_meta_value( $post_id, "{$prefix}duration_unit", $ims_meta_value[ 'duration_unit' ] );
-			$this->save_meta_value( $post_id, "{$prefix}stripe_plan_id", $ims_meta_value[ 'stripe_plan_id' ] );
+			$this->save_meta_value( $membership_id, "{$prefix}allowed_properties", $ims_meta_value[ 'allowed_properties' ] );
+			$this->save_meta_value( $membership_id, "{$prefix}featured_properties", $ims_meta_value[ 'featured_properties' ] );
+			$this->save_meta_value( $membership_id, "{$prefix}price", $ims_meta_value[ 'price' ] );
+			$this->save_meta_value( $membership_id, "{$prefix}duration", $ims_meta_value[ 'duration' ] );
+			$this->save_meta_value( $membership_id, "{$prefix}duration_unit", $ims_meta_value[ 'duration_unit' ] );
+			$this->save_meta_value( $membership_id, "{$prefix}stripe_plan_id", $ims_meta_value[ 'stripe_plan_id' ] );
 
-			do_action( 'ims_membership_save_meta_boxes', $post_id, $_POST );
+			// After save meta box values action hook.
+			$ims_meta_value		= apply_filters( 'ims_membership_after_save_meta_values', $ims_meta_value, $membership_id );
 
 		}
 
@@ -273,7 +266,7 @@ if ( ! class_exists( 'IMS_Membership_Meta_Boxes' ) ) :
 		public function add_styles() {
 
 			global $post_type;
-    		if ( 'ims_membership' == $post_type ) {
+    		if ( 'ims_membership' === $post_type ) {
     			wp_enqueue_style( 'ims-admin-styles', IMS_BASE_URL . 'assets/css/membership.css', array(), IMS_VERSION );
     		}
 

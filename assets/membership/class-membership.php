@@ -78,7 +78,7 @@ if ( ! class_exists( 'IMS_Membership' ) ) :
 				'display' 	=> __( 'Once Yearly', 'inspiry-memberships' )
 			);
 
-			return $schedules;
+			return apply_filters( 'ims_create_crons_scedules', $schedules );
 
 		}
 

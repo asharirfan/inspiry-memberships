@@ -1,14 +1,18 @@
 <?php
 /**
  * Plugin Name:		Inspiry Memberships
- * Description: 	Inspiry Memberships lets you create membership packages for your Real-Estate website so that you can take your Real-Estate website to the next level.
  * Plugin URI: 		https://github.com/InspiryThemes/inspiry-memberships
- * Author: 			mrasharirfan
- * Author URI: 		https://inspirythemes.com
+ * Description: 	Inspiry Memberships lets you create membership packages for your Real-Estate website so that you can take your Real-Estate website to the next level.
  * Version: 		1.0.0
+ * Author: 			mrasharirfan, Inspiry Themes
+ * Author URI: 		https://inspirythemes.com
  * License: 		GPL-2.0+
+ *
+ * Requires at least: 	4.7
+ * Tested up to: 		4.7
+ *
  * Text Domain:		inspiry-memberships
- * Domain Path:		/languages/
+ * Domain Path:		languages
  *
  * @link 			https://github.com/InspiryThemes/inspiry-memberships
  * @since 			1.0.0
@@ -41,76 +45,154 @@ if ( ! defined( 'WPINC' ) ) {
 
 
 /**
- * Constants and Globals
+ * Inspiry_Memberships.
+ *
+ * Plugin Core Class.
  *
  * @since 1.0.0
  */
-if ( ! defined( 'IMS_VERSION' ) ) {
-    define( 'IMS_VERSION', '1.0.0' );
-}
 
-if ( ! defined( 'IMS_BASE_NAME' ) ) {
-	define( 'IMS_BASE_NAME', plugin_basename( __FILE__ ) );
-}
+if ( ! class_exists( 'Inspiry_Memberships' ) ) :
 
-if ( ! defined( 'IMS_BASE_URL' ) ) {
-	define( 'IMS_BASE_URL', plugin_dir_url( __FILE__ ) );
-}
+	class Inspiry_Memberships {
 
-if ( ! defined( 'IMS_BASE_DIR' ) ) {
-	define( 'IMS_BASE_DIR', dirname( __FILE__ ) );
-}
+		/**
+		 * Version.
+		 *
+		 * @var 	string
+		 * @since 	1.0.0
+		 */
+		 public $version = '1.0.0';
 
+		/**
+		 * Inspiry Memberships Instance.
+		 *
+		 * @var 	Inspiry_Memberships
+		 * @since 	1.0.0
+		 */
+		 protected static $_instance;
 
-/**
- * activate_inspiry_memberships.
- *
- * @since 1.0.0
- */
-function activate_inspiry_memberships() {
+		/**
+		 * Method: Creates an instance of the class.
+		 *
+		 * @since 1.0.0
+		 */
+		public static function instance() {
 
-	/**
-	 * class-im-activator.
-	 *
-	 * @since 1.0.0
-	 */
-	if ( file_exists( IMS_BASE_DIR . '/assets/includes/class-ims-activator.php' ) ) {
-	    require_once( IMS_BASE_DIR . '/assets/includes/class-ims-activator.php' );
+			if ( is_null( self::$_instance ) ) {
+				self::$_instance	= new self();
+			}
+			return self::$_instance;
+
+		}
+
+		/**
+		 * Method: Contructor.
+		 *
+		 * @since 1.0.0
+		 */
+		public function __construct() {
+
+			// Get started here.
+			$this->define_constants();
+			$this->include_files();
+			$this->init_hooks();
+
+			// Plugin is loaded.
+			do_action( 'ims_loaded' );
+
+		}
+
+		/**
+		 * Method: Define constants.
+		 *
+		 * @since 1.0.0
+		 */
+		public function define_constants() {
+
+			// Plugin version
+			if ( ! defined( 'IMS_VERSION' ) ) {
+			    define( 'IMS_VERSION', $this->version );
+			}
+
+			// Plugin Name
+			if ( ! defined( 'IMS_BASE_NAME' ) ) {
+				define( 'IMS_BASE_NAME', plugin_basename( __FILE__ ) );
+			}
+
+			// Plugin Directory URL
+			if ( ! defined( 'IMS_BASE_URL' ) ) {
+				define( 'IMS_BASE_URL', plugin_dir_url( __FILE__ ) );
+			}
+
+			// Plugin Directory Path
+			if ( ! defined( 'IMS_BASE_DIR' ) ) {
+				define( 'IMS_BASE_DIR', plugin_dir_path( __FILE__ ) );
+			}
+
+		}
+
+		/**
+		 * Method: Include files.
+		 *
+		 * @since 1.0.0
+		 */
+		public function include_files() {
+
+			/**
+			 * class-ims-install.
+			 *
+			 * @since 1.0.0
+			 */
+			if ( file_exists( IMS_BASE_DIR . '/assets/includes/class-ims-install.php' ) ) {
+			    require_once( IMS_BASE_DIR . '/assets/includes/class-ims-install.php' );
+			}
+
+			/**
+			 * class-ims-uninstall.
+			 *
+			 * @since 1.0.0
+			 */
+			if ( file_exists( IMS_BASE_DIR . '/assets/includes/class-ims-uninstall.php' ) ) {
+			    require_once( IMS_BASE_DIR . '/assets/includes/class-ims-uninstall.php' );
+			}
+
+			/**
+			 * ims-init.php.
+			 *
+			 * @since 1.0.0
+			 */
+			if ( file_exists( IMS_BASE_DIR . '/assets/ims-init.php' ) ) {
+			    require_once( IMS_BASE_DIR . '/assets/ims-init.php' );
+			}
+
+		}
+
+		/**
+		 * Method: Initialization hooks.
+		 *
+		 * @since 1.0.0
+		 */
+		public function init_hooks() {
+
+			register_activation_hook( __FILE__, array( 'IMS_Install', 'install' ) );
+			register_deactivation_hook( __FILE__, array( 'IMS_Uninstall', 'uninstall' ) );
+
+			// add_action( 'init', array( __CLASS__, 'init' ) );
+
+		}
+
 	}
-	IMS_Activator::activate();
 
-}
-
-
-/**
- * deactivate_inspiry_memberships.
- *
- * @since 1.0.0
- */
-function deactivate_inspiry_memberships() {
-
-	/**
-	 * class-im-deactivator.
-	 *
-	 * @since 1.0.0
-	 */
-	if ( file_exists( IMS_BASE_DIR . '/assets/includes/class-ims-deactivator.php' ) ) {
-	    require_once( IMS_BASE_DIR . '/assets/includes/class-ims-deactivator.php' );
-	}
-	IMS_Deactivator::deactivate();
-
-}
-
-
-register_activation_hook( __FILE__, 'activate_inspiry_memberships' );
-register_deactivation_hook( __FILE__, 'deactivate_inspiry_memberships' );
+endif;
 
 
 /**
- * ims-init.php.
+ * Returns the main instance of Inspiry_Memberships.
  *
  * @since 1.0.0
  */
-if ( file_exists( IMS_BASE_DIR . '/assets/ims-init.php' ) ) {
-    require_once( IMS_BASE_DIR . '/assets/ims-init.php' );
+function IMS() {
+	return Inspiry_Memberships::instance();
 }
+IMS();

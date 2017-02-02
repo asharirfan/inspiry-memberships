@@ -100,16 +100,23 @@ if ( class_exists( 'IMS_Membership_Meta_Boxes' ) ) {
 
 if ( class_exists( 'IMS_Membership_Custom_Columns' ) ) {
 
-	// Object: IMS_Membership_Custom_Columns class.
-	$ims_membership_custom_columns = new IMS_Membership_Custom_Columns();
+	if ( is_admin() ) {
 
-	// Add custom columns.
-	add_filter( 'manage_edit-ims_membership_columns', array( $ims_membership_custom_columns, 'register_columns' ) );
+		global $pagenow;
 
-	// Display custom columns values.
-	add_action( 'manage_ims_membership_posts_custom_column', array( $ims_membership_custom_columns, 'display_column_values' ) );
+		if ( 'edit.php' === $pagenow && isset( $_GET[ 'post_type' ] ) && 'ims_membership' === esc_attr( $_GET[ 'post_type' ] ) ) {
 
-	// Sortable Columns.
-	add_filter( 'manage_edit-ims_membership_sortable_columns', array( $ims_membership_custom_columns, 'sortable_price' ) );
+			// Object: IMS_Membership_Custom_Columns class.
+			$ims_membership_custom_columns = new IMS_Membership_Custom_Columns();
+
+			// Add custom columns.
+			add_filter( 'manage_edit-ims_membership_columns', array( $ims_membership_custom_columns, 'register_columns' ) );
+
+			// Display custom columns values.
+			add_action( 'manage_ims_membership_posts_custom_column', array( $ims_membership_custom_columns, 'display_column_values' ) );
+
+		}
+
+	}
 
 }

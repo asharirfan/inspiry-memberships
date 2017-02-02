@@ -35,6 +35,10 @@ if ( ! class_exists( 'IMS_CPT_Membership' ) ) :
 		*/
 		public function register() {
 
+			if ( post_type_exists( 'ims_membership' ) ) {
+				return;
+			}
+
 			$labels = array(
 				'name'                => __( 'Memberships', 'inspiry-memberships' ),
 				'singular_name'       => __( 'Membership', 'inspiry-memberships' ),
@@ -50,10 +54,17 @@ if ( ! class_exists( 'IMS_CPT_Membership' ) ) :
 				'menu_name'           => __( 'Memberships', 'inspiry-memberships' ),
 			);
 
+			$rewrite = array(
+				'slug'       => apply_filters( 'ims_membership_post_type_slug', __( 'membership', 'inspiry-memberships' ) ),
+				'with_front' => true,
+				'pages'      => true,
+				'feeds'      => true,
+			);
+
 			$args = array(
-				'labels'              => $labels,
+				'labels'              => apply_filters( 'ims_membership_post_type_labels', $labels ),
 				'hierarchical'        => false,
-				'description'         => __( 'Memberships', 'inspiry-memberships' ),
+				'description'         => __( 'Represents a membership package.', 'inspiry-memberships' ),
 				// 'taxonomies'          => array(),
 				'public'              => true,
 				'show_ui'             => true,
@@ -67,12 +78,16 @@ if ( ! class_exists( 'IMS_CPT_Membership' ) ) :
 				'has_archive'         => true,
 				'query_var'           => true,
 				'can_export'          => true,
-				'rewrite'             => array( 'slug' => __( 'membership', 'inspiry-memberships' ) ),
+				'rewrite'             => apply_filters( 'ims_membership_post_type_rewrite', $rewrite ),
 				'capability_type'     => 'post',
-				'supports'            => array( 'title', 'thumbnail' )
+				'supports'            => apply_filters( 'ims_membership_post_type_supports', array( 'title', 'thumbnail' ) )
 			);
 
-			register_post_type( 'ims_membership', $args );
+			register_post_type( 'ims_membership', apply_filters( 'ims_membership_post_type_args', $args ) );
+
+			// Membership post type registered action hook.
+			do_action( 'ims_membership_post_type_registered' );
+
 		}
 
 	}

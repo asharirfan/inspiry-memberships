@@ -32,14 +32,14 @@ if ( ! class_exists( 'IMS_Membership_Custom_Columns' ) ) :
 		 */
 		public function register_columns( $columns ) {
 
-			$columns = array(
+			$columns = apply_filters( 'ims_membership_custom_column_name', array(
 	            'cb' 			=> "<input type=\"checkbox\" />",
 	            'title' 		=> __( 'Membership Title', 'inspiry-stripe' ),
 	            'properties'	=> __( 'Properties Allowed', 'inspiry-stripe' ),
 	            'featured' 		=> __( 'Featured Properties', 'inspiry-stripe' ),
 	            'price' 		=> __( 'Price', 'inspiry-stripe' ),
 	            'duration' 		=> __( 'Duration', 'inspiry-stripe' )
-	        );
+	        ) );
 
 	        /**
 		     * Reverse the array for RTL
@@ -62,9 +62,10 @@ if ( ! class_exists( 'IMS_Membership_Custom_Columns' ) ) :
 			global $post;
 
 			// Meta data prefix
-			$prefix = 'ims_membership_';
+			$prefix = apply_filters( 'ims_meta_prefix', 'ims_membership_' );
 
 			switch ( $column ) {
+
 				case 'properties':
 					$properties = get_post_meta( $post->ID, "{$prefix}allowed_properties", true );
 					if ( ! empty( $properties ) ) {
@@ -112,21 +113,10 @@ if ( ! class_exists( 'IMS_Membership_Custom_Columns' ) ) :
 					}
 					break;
 
+				default:
+					break;
+
 			}
-
-		}
-
-		/**
-		 * sortable_price.
-		 *
-		 * @since 1.0.0
-		 */
-		public function sortable_price( $columns ) {
-
-			$columns['properties']	= 'properties';
-			$columns['featured'] 	= 'featured';
-			$columns['price'] 		= 'price';
-			return $columns;
 
 		}
 
