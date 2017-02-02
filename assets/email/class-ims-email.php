@@ -37,11 +37,21 @@ if ( ! class_exists( 'IMS_Email' ) ) :
 			 * we want to reverse this for the plain text arena of emails.
 			 */
 			$website_name	= wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
+			$site_url   	= home_url();
+			$site_url   	= explode( "/", $site_url );
+			$website_url	= ( isset( $site_url[2] ) ) ? $site_url[2] : false;
 
 			/**
 		     * Email Headers ( Reply To and Content Type )
 		     */
 			$headers 		= array();
+
+			if ( ! empty( $website_url ) ) {
+				$headers[]	= "From: {$website_name} <no-reply@{$website_url}>";
+			} else {
+				$headers[]	= "From: {$website_name}";
+			}
+
 			$headers[] 		= "Content-Type: text/html; charset=UTF-8";
 			$headers 		= apply_filters( 'ims_email_header', $headers );
 

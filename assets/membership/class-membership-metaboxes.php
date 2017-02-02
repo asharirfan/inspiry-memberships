@@ -54,7 +54,7 @@ if ( ! class_exists( 'IMS_Membership_Meta_Boxes' ) ) :
 			);
 
 			// Membership meta box added action hook.
-			do_action( 'ims_membership_meta_boxes_added' );
+			do_action( 'ims_membership_meta_box_added' );
 
 		}
 
@@ -66,7 +66,7 @@ if ( ! class_exists( 'IMS_Membership_Meta_Boxes' ) ) :
 		public function meta_box_content( $membership, $box ) {
 
 			wp_nonce_field( basename( __FILE__ ), 'membership_meta_box_nonce' );
-			$prefix = apply_filters( 'ims_meta_prefix', 'ims_membership_' ); ?>
+			$prefix = apply_filters( 'ims_membership_meta_prefix', 'ims_membership_' ); ?>
 
 			<table class="form-table">
 
@@ -214,7 +214,7 @@ if ( ! class_exists( 'IMS_Membership_Meta_Boxes' ) ) :
 			$ims_meta_value		= apply_filters( 'ims_membership_before_save_meta_values', $ims_meta_value, $membership_id );
 
 			// Meta data prefix.
-			$prefix = apply_filters( 'ims_meta_prefix', 'ims_membership_' );
+			$prefix = apply_filters( 'ims_membership_meta_prefix', 'ims_membership_' );
 
 			// Save the meta values.
 			$this->save_meta_value( $membership_id, "{$prefix}allowed_properties", $ims_meta_value[ 'allowed_properties' ] );

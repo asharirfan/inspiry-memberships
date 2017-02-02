@@ -50,14 +50,21 @@ if ( ! class_exists( 'IMS_CPT_Receipt' ) ) :
 				'menu_name'           => __( 'Receipts', 'inspiry-memberships' ),
 			);
 
+			$rewrite = array(
+				'slug'       => apply_filters( 'ims_receipt_post_type_slug', __( 'receipt', 'inspiry-memberships' ) ),
+				'with_front' => true,
+				'pages'      => true,
+				'feeds'      => true,
+			);
+
 			$args = array(
-				'labels'              => $labels,
+				'labels'              => apply_filters( 'ims_receipt_post_type_labels', $labels ),
 				'hierarchical'        => false,
-				'description'         => __( 'Receipts', 'inspiry-memberships' ),
+				'description'         => __( 'Represents a receipt of membership.', 'inspiry-memberships' ),
 				// 'taxonomies'          => array(),
 				'public'              => true,
 				'show_ui'             => true,
-				'show_in_menu'        => 'false',
+				'show_in_menu'        => false,
 				'show_in_admin_bar'   => true,
 				'menu_position'       => 10,
 				// 'menu_icon'           => 'dashicons-smiley',
@@ -67,12 +74,16 @@ if ( ! class_exists( 'IMS_CPT_Receipt' ) ) :
 				'has_archive'         => true,
 				'query_var'           => true,
 				'can_export'          => true,
-				'rewrite'             => array( 'slug' => __( 'receipt', 'inspiry-memberships' ) ),
+				'rewrite'             => apply_filters( 'ims_receipt_post_type_rewrite', $rewrite ),
 				'capability_type'     => 'post',
-				'supports'            => array( 'title' )
+				'supports'            => apply_filters( 'ims_receipt_post_type_supports', array( 'title' ) )
 			);
 
-			register_post_type( 'ims_receipt', $args );
+			register_post_type( 'ims_receipt', apply_filters( 'ims_receipt_post_type_args', $args ) );
+
+			// Membership post type registered action hook.
+			do_action( 'ims_receipt_post_type_registered' );
+
 		}
 
 	}

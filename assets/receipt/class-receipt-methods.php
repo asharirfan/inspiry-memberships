@@ -59,7 +59,7 @@ if ( ! class_exists( 'IMS_Receipt_Method' ) ) :
 				if ( $receipt_id > 0 ) {
 
 					$receipt 	= get_post( $receipt_id );
-					$prefix 	= 'ims_membership_';
+					$prefix 	= apply_filters( 'ims_receipt_meta_prefix', 'ims_receipt_' );
 
 					$membership_obj 	= ims_get_membership_object( $membership_id );
 
@@ -103,10 +103,17 @@ if ( ! class_exists( 'IMS_Receipt_Method' ) ) :
 					}
 					update_user_meta( $user_id, 'ims_receipts', $user_receipts );
 
+					// Receipt generated action hook.
+					do_action( 'ims_receipt_generated', $receipt_id );
+
 					return $receipt_id;
+
 				}
+
 			}
+
 			return false;
+
 		}
 
 		/**

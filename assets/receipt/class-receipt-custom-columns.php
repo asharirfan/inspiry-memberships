@@ -32,7 +32,7 @@ if ( ! class_exists( 'IMS_Receipt_Custom_Columns' ) ) :
 		 */
 		public function register_columns( $columns ) {
 
-			$columns = array(
+			$columns = apply_filters( 'ims_receipt_custom_column_names', array(
 	            'cb' 			=> "<input type=\"checkbox\" />",
 	            'title' 		=> __( 'Receipt', 'inspiry-stripe' ),
 	            'receipt_for'	=> __( 'Receipt For', 'inspiry-stripe' ),
@@ -41,7 +41,7 @@ if ( ! class_exists( 'IMS_Receipt_Custom_Columns' ) ) :
 	            'user_id' 		=> __( 'User', 'inspiry-stripe' ),
 	            'vendor' 		=> __( 'Vendor', 'inspiry-stripe' ),
 	            'purchase_date'	=> __( 'Date of Purchase', 'inspiry-stripe' )
-	        );
+	        ) );
 
 	        /**
 		     * Reverse the array for RTL
@@ -64,9 +64,10 @@ if ( ! class_exists( 'IMS_Receipt_Custom_Columns' ) ) :
 			global $post;
 
 			// Meta data prefix
-			$prefix = 'ims_membership_';
+			$prefix = apply_filters( 'ims_receipt_meta_prefix', 'ims_receipt_' );
 
 			switch ( $column ) {
+
 				case 'receipt_for':
 					$receipt_for = get_post_meta( $post->ID, "{$prefix}receipt_for", true );
 					if ( ! empty( $receipt_for ) ) {
@@ -138,18 +139,11 @@ if ( ! class_exists( 'IMS_Receipt_Custom_Columns' ) ) :
 						_e( 'Not Available', 'inspiry-memberships' );
 					}
 					break;
+
+				default :
+					break;
+
 			}
-
-		}
-
-		/**
-		 * sortable_price.
-		 *
-		 * @since 1.0.0
-		 */
-		public function sortable_price( $columns ) {
-
-			return $columns;
 
 		}
 

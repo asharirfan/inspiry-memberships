@@ -47,17 +47,7 @@ if ( ! class_exists( 'IMS_Get_Receipt' ) ) :
 		 * @var 	array
 		 * @since 	1.0.0
 		 */
-		 public $meta_keys = array(
-		 	'receipt_id'	=> 'ims_membership_receipt_id',
-		 	'receipt_for'	=> 'ims_membership_receipt_for',
-		 	'membership_id'	=> 'ims_membership_membership_id',
-		 	'price'			=> 'ims_membership_price',
-		 	'purchase_date'	=> 'ims_membership_purchase_date',
-		 	'user_id'		=> 'ims_membership_user_id',
-		 	'vendor'		=> 'ims_membership_vendor',
-		 	'payment_id'	=> 'ims_membership_payment_id',
-		 	'status'		=> 'ims_membership_status',
-		 );
+		 public $meta_keys;
 
 		/**
 		 * Constructor.
@@ -65,6 +55,8 @@ if ( ! class_exists( 'IMS_Get_Receipt' ) ) :
 		 * @since 1.0.0
 		 */
 		public function __construct( $the_receipt_id = NULL ) {
+
+			$this->set_meta_keys();
 
 			// Check if $the_receipt_id is not empty.
 			if ( ! empty( $the_receipt_id ) ) {
@@ -77,6 +69,30 @@ if ( ! class_exists( 'IMS_Get_Receipt' ) ) :
 				$this->the_receipt_id	= $the_receipt_id;
 				$this->the_meta_data	= get_post_custom( $the_receipt_id );
 			}
+
+		}
+
+		/**
+		 * Method: Set meta keys.
+		 *
+		 * @since 1.0.0
+		 */
+		public function set_meta_keys() {
+
+			// Meta data prefix
+			$prefix = apply_filters( 'ims_receipt_meta_prefix', 'ims_receipt_' );
+
+			$this->meta_keys = array(
+			 	'receipt_id'	=> "{$prefix}receipt_id",
+			 	'receipt_for'	=> "{$prefix}receipt_for",
+			 	'membership_id'	=> "{$prefix}membership_id",
+			 	'price'			=> "{$prefix}price",
+			 	'purchase_date'	=> "{$prefix}purchase_date",
+			 	'user_id'		=> "{$prefix}user_id",
+			 	'vendor'		=> "{$prefix}vendor",
+			 	'payment_id'	=> "{$prefix}payment_id",
+			 	'status'		=> "{$prefix}status",
+			);
 
 		}
 

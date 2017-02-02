@@ -27,6 +27,9 @@ if ( class_exists( 'WP_OSA' ) ) {
 	// New Settings Menu.
 	$ims_settings = new WP_OSA();
 
+	// Before adding settings hook.
+	do_action( 'ims_before_settings_loaded', $ims_settings );
+
 	/**
 	 * Section: Basic Settings.
 	 *
@@ -379,5 +382,8 @@ if ( class_exists( 'WP_OSA' ) ) {
 			'default' => __( '1111-2222-33333-44-5', 'inspiry-memberships' ),
 		)
 	);
+
+	// After adding settings hook.
+	do_action( 'ims_after_settings_loaded', $ims_settings );
 
 }

@@ -47,6 +47,7 @@ if ( ! class_exists( 'WP_OSA' ) ) :
 		 * @since  1.0.0
 		 */
 		public function __construct() {
+
 			// Enqueue the admin scripts.
 		    add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
 

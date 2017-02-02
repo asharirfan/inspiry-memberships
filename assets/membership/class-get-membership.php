@@ -47,14 +47,7 @@ if ( ! class_exists( 'IMS_Get_Membership' ) ) :
 		 * @var 	array
 		 * @since 	1.0.0
 		 */
-		 public $meta_keys = array(
-		 	'properties'			=> 'ims_membership_allowed_properties',
-		 	'featured_properties'	=> 'ims_membership_featured_properties',
-		 	'price'					=> 'ims_membership_price',
-		 	'duration'				=> 'ims_membership_duration',
-		 	'duration_unit'			=> 'ims_membership_duration_unit',
-		 	'stripe_plan_id'		=> 'ims_membership_stripe_plan_id'
-		 );
+		 public $meta_keys;
 
 		/**
 		 * Constructor.
@@ -62,6 +55,8 @@ if ( ! class_exists( 'IMS_Get_Membership' ) ) :
 		 * @since 1.0.0
 		 */
 		public function __construct( $the_membership_id = NULL ) {
+
+			$this->set_meta_keys();
 
 			// Check if $the_membership_id is not empty.
 			if ( ! empty( $the_membership_id ) ) {
@@ -74,6 +69,25 @@ if ( ! class_exists( 'IMS_Get_Membership' ) ) :
 				$this->the_membership_id	= $the_membership_id;
 				$this->the_meta_data		= get_post_custom( $the_membership_id );
 			}
+
+		}
+
+		/**
+		 * Method: Set meta keys.
+		 *
+		 * @since 1.0.0
+		 */
+		public function set_meta_keys() {
+
+			$prefix 	= apply_filters( 'ims_membership_meta_prefix', 'ims_membership_' );
+			$this->meta_keys	= array(
+				'properties'			=> "{$prefix}allowed_properties",
+			 	'featured_properties'	=> "{$prefix}featured_properties",
+			 	'price'					=> "{$prefix}price",
+			 	'duration'				=> "{$prefix}duration",
+			 	'duration_unit'			=> "{$prefix}duration_unit",
+			 	'stripe_plan_id'		=> "{$prefix}stripe_plan_id"
+			);
 
 		}
 

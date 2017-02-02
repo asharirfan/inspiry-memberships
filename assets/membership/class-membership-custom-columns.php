@@ -62,7 +62,7 @@ if ( ! class_exists( 'IMS_Membership_Custom_Columns' ) ) :
 			global $post;
 
 			// Meta data prefix
-			$prefix = apply_filters( 'ims_meta_prefix', 'ims_membership_' );
+			$prefix = apply_filters( 'ims_membership_meta_prefix', 'ims_membership_' );
 
 			switch ( $column ) {
 

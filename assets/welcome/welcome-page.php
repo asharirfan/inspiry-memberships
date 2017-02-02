@@ -141,7 +141,7 @@ $the_version = IMS_VERSION;
 	<div class="feature-section two-col">
 		<div class="col">
 			<div class="wp-video" style="width:640px;">
-				<iframe src="//giphy.com/embed/d3mm1QcY5cjsbYHu" width="100%" height="300" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
+				<iframe src="//giphy.com/embed/26xBI0wcCes3UD4cw" width="100%" height="300" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
 			</div>
 			<!-- /.wp-video -->
 		</div>
