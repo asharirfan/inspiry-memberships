@@ -268,7 +268,9 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 
 					<?php if ( 'on' === $paypal_settings[ 'ims_paypal_enable' ] ) : ?>
 						<div class="ims-button-option ims-paypal-button">
-							<a href="#" id="ims-paypal"><?php _e( 'Pay with PayPal', 'inspiry-memberships' ); ?></a>
+							<a href="#" id="ims-paypal">
+								<img src="<?php echo IMS_BASE_URL; ?>assets/img/checkout-paypal.png">
+							</a>
 						</div>
 						<!-- /.form-option ims-paypal-button -->
 					<?php endif; ?>
