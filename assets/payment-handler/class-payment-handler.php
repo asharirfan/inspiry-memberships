@@ -44,9 +44,6 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 					return;
 				}
 
-				// Add action hook before cancelling user membership.
-				do_action( 'ims_pre_user_cancel_membership', $user_id );
-
 				// Get current vendor.
 				$vendor = get_user_meta( $user_id, 'ims_current_vendor', true );
 
@@ -64,9 +61,6 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 					IMS_Wire_Transfer_Handler::cancel_wire_membership( $user_id );
 
 				}
-
-				// Add action hook after cancelling user membership.
-				do_action( 'ims_user_membership_cancelled', $user_id );
 
 			}
 

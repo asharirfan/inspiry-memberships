@@ -201,6 +201,15 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 				return;
 			}
 
+			/**
+			 * Hook: To extend the functionality of deleting membership
+			 * for a website.
+			 *
+			 * @param int $user_id - ID of the user deleting membership
+			 * @param int $membership_id - ID of the membership being deleted
+			 */
+			do_action( 'ims_pre_delete_user_membership', $user_id, $membership_id );
+
 			// Delete membership details from user meta.
 			delete_user_meta( $user_id, 'ims_current_membership' );
 
@@ -243,6 +252,8 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 				wp_clear_scheduled_hook( 'ims_wire_membership_schedule_end', array( $user_id, $membership_id ) );
 
 			}
+
+			$this->membership_cancel_email( $user_id, $membership_id );
 
 			/**
 			 * Hook: To extend the functionality of deleting membership
@@ -297,6 +308,8 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 				$message 	.= sprintf( __( 'Your payment process completed successfully %s.', 'inspiry-memberships' ), $vendor ) . "<br/><br/>";
 				$message 	.= __( 'To view the details, please visit your profile page on our website.', 'inspiry-memberships' );
 
+				$message	= apply_filters( 'ims_membership_user_mail', $message, $user_id, $membership_id, $vendor );
+
 			} elseif ( ! empty( $recurring ) ) {
 
 				// Update Membership Mail.
@@ -305,6 +318,8 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 				$message 	= sprintf( __( 'Your membership package: %s has been successfully updated on our site.', 'inspiry-memberships' ), $membership_title ) . "<br/><br/>";
 				$message 	.= sprintf( __( 'Your payment process completed successfully %s.', 'inspiry-memberships' ), $vendor ) . "<br/><br/>";
 				$message 	.= __( 'To view the details, please visit your profile page on our website.', 'inspiry-memberships' );
+
+				$message	= apply_filters( 'ims_recurring_membership_user_mail', $message, $user_id, $membership_id, $vendor );
 
 			}
 
@@ -355,6 +370,8 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 				$message 	.= sprintf( __( 'Payment process completed %s.', 'inspiry-memberships' ), $vendor ) . "<br/><br/>";
 				$message 	.= sprintf( __( 'To view the details, please visit %s', 'inspiry-memberships' ), $receipt_title );
 
+				$message	= apply_filters( 'ims_membership_admin_mail', $message, $user_id, $membership_id, $vendor );
+
 			} elseif ( ! empty( $recurring ) ) {
 
 				$subject	= __( 'Membership Updated.', 'inspiry-memberships' );
@@ -362,6 +379,8 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 				$message 	= sprintf( __( 'A user successfully updated %s membership package on your site.', 'inspiry-memberships' ), $membership_title ) . "<br/><br/>";
 				$message 	.= sprintf( __( 'Payment process completed %s.', 'inspiry-memberships' ), $vendor ) . "<br/><br/>";
 				$message 	.= sprintf( __( 'To view the details, please visit %s', 'inspiry-memberships' ), $receipt_title );
+
+				$message	= apply_filters( 'ims_recurring_membership_admin_mail', $message, $user_id, $membership_id, $vendor );
 
 			}
 
@@ -505,6 +524,8 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 			$message 	.= __( 'Otherwise your membership will be cancelled.', 'inspiry-memberships' ) . "<br/><br/>";
 			$message 	.= '<a target="_blank" href="' . $site_url . '">' . $site_name . '</a>';
 
+			$message	= apply_filters( 'ims_membership_reminder_mail', $message, $user_id, $membership_id );
+
 			if ( is_email( $user_email ) ) {
 				IMS_Email::send_email( $user_email, $subject, $message );
 			}
@@ -529,6 +550,43 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 				return true;
 			}
 			return false;
+
+		}
+
+		/**
+		 * Method: Send email to user about membership cancellation.
+		 *
+		 * @since 1.0.0
+		 */
+		public function membership_cancel_email( $user_id = 0, $membership_id = 0 ) {
+
+			// Bail if parameters are empty.
+			if ( empty( $user_id ) || empty( $membership_id ) ) {
+				return false;
+			}
+
+			// Get user.
+			$user	= get_user_by( 'id', $user_id );
+			if ( ! empty( $user ) ) {
+				$user_email	= $user->user_email;
+			}
+
+			$site_name 		= esc_html( get_bloginfo( 'name' ) );
+			$site_url		= esc_url( get_bloginfo( 'url' ) );
+			$membership 	= esc_html( get_the_title( $membership_id ) );
+
+			$subject		= __( 'Membership Cancelled', 'inspiry-memberships' );
+
+			$message 	= sprintf( __( 'Your membership package: %s has been cancelled.', 'inspiry-memberships' ), $membership ) . "<br/><br/>";
+			$message 	.= __( 'Please visit ', 'inspiry-memberships' ) . " ";
+			$message 	.= '<a target="_blank" href="' . $site_url . '">' . $site_name . '</a>';
+			$message 	.= __( ' for more details.', 'inspiry-memberships' );
+
+			$message	= apply_filters( 'ims_membership_cancelled_mail', $message, $user_id, $membership_id );
+
+			if ( is_email( $user_email ) ) {
+				IMS_Email::send_email( $user_email, $subject, $message );
+			}
 
 		}
 
