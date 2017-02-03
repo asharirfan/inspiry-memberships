@@ -26,12 +26,28 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 	class IMS_Stripe_Payment_Handler {
 
 		/**
+		 * Single instance of this class.
+		 *
+		 * @var 	object
+		 * @since 	1.0.0
+		 */
+		 protected static $_instance;
+
+		/**
 		 * Stripe Secret Key.
 		 *
 		 * @var 	string
 		 * @since 	1.0.0
 		 */
 		 protected $secret_key;
+
+		/**
+		 * Stripe Publishable Key.
+		 *
+		 * @var 	string
+		 * @since 	1.0.0
+		 */
+		 protected $publishable_key;
 
 		/**
 		 * $currency_code.
@@ -58,6 +74,20 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 		 protected $customer_details;
 
 		/**
+		 * Method: Returns a single instance of this class.
+		 *
+		 * @since 1.0.0
+		 */
+		public static function instance() {
+
+			if ( is_null( self::$_instance ) ) {
+				self::$_instance = new self();
+			}
+			return self::$_instance;
+
+		}
+
+		/**
 		 * Constructor.
 		 *
 		 * @since 1.0.0
@@ -66,8 +96,10 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 
 			$this->set_variables();
 
-			// Require Stripe library.
-			include( IMS_BASE_DIR . '/assets/stripe/stripe-init.php' );
+			// Require Stripe library if it is not already exists.
+			if ( ! class_exists( '\Stripe\Stripe' ) ) {
+				include( IMS_BASE_DIR . '/assets/stripe/stripe-init.php' );
+			}
 
 			/**
 			 * Action to run event on
@@ -116,17 +148,32 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 			// Get stripe settings.
 			$stripe_settings 		= get_option( 'ims_stripe_settings' );
 
-			// Check if we are using test mode.
-			if ( isset( $stripe_settings[ 'ims_test_mode' ] ) && ! empty( $stripe_settings[ 'ims_test_mode' ] ) ) {
+			// Set the secret key.
+			if ( isset( $stripe_settings[ 'ims_test_mode' ] ) && ( 'on' === $stripe_settings[ 'ims_test_mode' ] ) ) {
 
 				if ( isset( $stripe_settings[ 'ims_test_secret' ] ) && ! empty( $stripe_settings[ 'ims_test_secret' ] ) ) {
 					$this->secret_key 	= $stripe_settings[ 'ims_test_secret' ];
 				}
 
-			} elseif ( ! isset( $stripe_settings[ 'ims_test_mode' ] ) && empty( $stripe_settings[ 'ims_test_mode' ] ) ) {
+			} elseif ( isset( $stripe_settings[ 'ims_test_mode' ] ) && ( 'off' === $stripe_settings[ 'ims_test_mode' ] ) ) {
 
 				if ( isset( $stripe_settings[ 'ims_live_secret' ] ) && ! empty( $stripe_settings[ 'ims_live_secret' ] ) ) {
 					$this->secret_key 	= $stripe_settings[ 'ims_live_secret' ];
+				}
+
+			}
+
+			// Set the publishable key.
+			if ( isset( $stripe_settings[ 'ims_test_mode' ] ) && ( 'on' === $stripe_settings[ 'ims_test_mode' ] ) ) {
+
+				if ( isset( $stripe_settings[ 'ims_test_publishable' ] ) && ! empty( $stripe_settings[ 'ims_test_publishable' ] ) ) {
+					$this->publishable_key 	= $stripe_settings[ 'ims_test_publishable' ];
+				}
+
+			} elseif ( isset( $stripe_settings[ 'ims_test_mode' ] ) && ( 'off' === $stripe_settings[ 'ims_test_mode' ] ) ) {
+
+				if ( isset( $stripe_settings[ 'ims_live_publishable' ] ) && ! empty( $stripe_settings[ 'ims_live_publishable' ] ) ) {
+					$this->publishable_key 	= $stripe_settings[ 'ims_live_publishable' ];
 				}
 
 			}
@@ -148,19 +195,16 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 		public function ims_display_stripe_button() {
 
 			// Check if the membership variable is set.
-			if ( isset( $_POST[ 'membership' ] ) ) {
+			if ( isset( $_POST[ 'nonce' ] )
+    			&& wp_verify_nonce( $_POST[ 'nonce' ], 'membership-select-nonce' )
+				&& isset( $_POST[ 'membership' ] ) ) {
+
+				$this->stripe_routine_checks();
 
 				// Set membership id.
 				$membership_id = intval( $_POST[ 'membership' ] );
 
 				if ( ! empty( $membership_id ) ) {
-
-					// Get currency code.
-					$ims_basic_settings 	= get_option( 'ims_basic_settings' );
-					$ims_currency_code 		= $ims_basic_settings[ 'ims_currency_code' ];
-					if ( empty( $ims_currency_code ) ) {
-						$ims_currency_code 	= 'USD';
-					}
 
 					// Get Stripe settings.
 					$ims_stripe_settings 	= get_option( 'ims_stripe_settings' );
@@ -171,16 +215,9 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 						$ims_button_label	= $ims_stripe_settings[ 'ims_stripe_btn_label' ];
 					}
 
-					// Check if we are using test mode.
-					if ( isset( $ims_stripe_settings[ 'ims_test_mode' ] ) && $ims_stripe_settings[ 'ims_test_mode' ] ) {
-						$ims_publishable_key	= $ims_stripe_settings[ 'ims_test_publishable' ];
-					} else {
-						$ims_publishable_key 	= $ims_stripe_settings[ 'ims_live_publishable' ];
-					}
-
 					$membership_obj 	= ims_get_membership_object( $membership_id );
 
-					echo json_encode( array(
+					$stripe_button_arr	= apply_filters( 'ims_stripe_button_args', array(
 						'success'			=> true,
 						'blog_name'			=> get_bloginfo( 'name' ),
 						'desc'				=> __( 'Membership Payment', 'inspiry-stripe' ),
@@ -188,11 +225,13 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 						'membership' 		=> get_the_title( $membership_id ),
 						'membership_id'		=> $membership_id,
 						'price'				=> $membership_obj->get_price() * 100,
-						'publishable_key'	=> $ims_publishable_key,
-						'currency_code'		=> $ims_currency_code,
+						'publishable_key'	=> $this->publishable_key,
+						'currency_code'		=> $this->currency_code,
 						'button_label'		=> $ims_button_label,
 						'payment_nonce'		=> wp_create_nonce( 'ims-stripe-nonce' )
 					) );
+					echo json_encode( $stripe_button_arr );
+
 				} else {
 					echo json_encode( array (
 						'success'		=> false,
@@ -296,11 +335,12 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 				try {
 
 					\Stripe\Stripe::setApiKey( $this->secret_key );
-					$ims_stripe_membership_charge = \Stripe\Charge::create( array(
+					$stripe_charge_args	= apply_filters( 'ims_stripe_charge_args', array(
 						'amount'	=> $membership_price,
 						'currency'	=> $this->currency_code,
 						'source'	=> $this->stripe_token
 					) );
+					$ims_stripe_membership_charge = \Stripe\Charge::create( $stripe_charge_args );
 
 					$membership_methods	= new IMS_Membership_Method();
 					$receipt_methods 	= new IMS_Receipt_Method();
@@ -320,16 +360,30 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 						$membership_methods->mail_admin( $membership_id, $receipt_id, 'stripe' );
 
 						// Redirect on sucessful membership.
-						$redirect_url	= add_query_arg( 'membership', 'successful', $redirect );
+						$successful_redirect	= apply_filters( 'ims_stripe_simple_success_redirect_args', array(
+							'membership'	=> 'successful'
+						) );
+						$redirect_url	= add_query_arg( $successful_redirect, $redirect );
 
 					} else {
 						// Redirect on empty receipt id.
 						$redirect_url 	= $redirect;
 					}
 
+					// Add action hook after stripe payment is done.
+					do_action( 'ims_stripe_simple_payment_success', $user_id, $membership_id, $receipt_id );
+
 				} catch ( Exception $e ) {
+
 					// Redirect on empty token or membership id.
-					$redirect_url	= add_query_arg( 'membership', 'failed', $redirect );
+					$failed_redirect	= apply_filters( 'ims_stripe_simple_failed_redirect_args', array(
+						'membership'	=> 'failed'
+					) );
+					$redirect_url	= add_query_arg( $failed_redirect, $redirect );
+
+					// Add action hook after stripe payment is done.
+					do_action( 'ims_stripe_simple_payment_failed', $user_id, $membership_id, $receipt_id );
+
 				}
 
 			} else {
@@ -358,7 +412,10 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 			if ( empty( $user_id ) || empty( $membership_id ) || empty( $membership_price ) ) {
 
 				// Redirect on empty token or membership id.
-				$redirect_url = add_query_arg( 'membership', 'failed', $redirect );
+				$failed_redirect	= apply_filters( 'ims_stripe_recurring_failed_redirect_args', array(
+					'membership'	=> 'failed'
+				) );
+				$redirect_url	= add_query_arg( $failed_redirect, $redirect );
 				wp_redirect( $redirect_url );
 				exit;
 
@@ -373,17 +430,16 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 
 				\Stripe\Stripe::setApiKey( $this->secret_key );
 
-				$customer_args 	= array(
+				$customer_args 	= apply_filters( 'ims_stripe_customer_args', array(
 					'email'		=> $this->customer_details[ 'email' ],
 					'source'	=> $this->stripe_token
-				);
+				) );
 				$customer 		= \Stripe\Customer::create( $customer_args );
 
-				$subscription_args	= array(
+				$subscription_args	= apply_filters( 'ims_stripe_subscription_args', array(
 					"customer"		=> $customer->id,
 					"plan"			=> $membership_stripe_plan
-				);
-
+				) );
 				$subscription 	= \Stripe\Subscription::create( $subscription_args );
 
 				update_user_meta( $user_id, 'ims_stripe_customer_id', $customer->id ); // Stripe Customer ID.
@@ -394,13 +450,25 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 
 				$membership_methods->add_user_membership( $user_id, $membership_id, 'stripe' );
 
-				// Redirect on empty token or membership id.
-				$redirect_url	= add_query_arg( 'membership', 'successful', $redirect );
+				// Redirect on successful payment.
+				$successful_redirect	= apply_filters( 'ims_stripe_recurring_success_redirect_args', array(
+					'membership'	=> 'successful'
+				) );
+				$redirect_url	= add_query_arg( $successful_redirect, $redirect );
+
+				// Add action hook after stripe payment is done.
+				do_action( 'ims_stripe_recurring_payment_success', $user_id, $membership_id, $receipt_id );
 
 			} catch ( Exception $e ) {
 
 				// Redirect on empty token or membership id.
-				$redirect_url	= add_query_arg( 'membership', 'failed', $redirect );
+				$failed_redirect	= apply_filters( 'ims_stripe_recurring_failed_redirect_args', array(
+					'membership'	=> 'failed'
+				) );
+				$redirect_url	= add_query_arg( $failed_redirect, $redirect );
+
+				// Add action hook after stripe payment is done.
+				do_action( 'ims_stripe_recurring_payment_failed', $user_id, $membership_id, $receipt_id );
 
 			}
 
@@ -453,6 +521,9 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 			 */
 			wp_schedule_single_event( current_time( 'timestamp' ) + $time_duration, 'ims_stripe_schedule_membership_end', $schedule_args );
 
+			// Membership schedulled action hook.
+			do_action( 'ims_stripe_membership_schedulled', $user_id, $membership_id );
+
 		}
 
 		/**
@@ -498,13 +569,13 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 			$secret_key = '';
 
 			// Check if we are using test mode.
-			if ( isset( $stripe_settings[ 'ims_test_mode' ] ) && ! empty( $stripe_settings[ 'ims_test_mode' ] ) ) {
+			if ( isset( $stripe_settings[ 'ims_test_mode' ] ) && ( 'on' === $stripe_settings[ 'ims_test_mode' ] ) ) {
 
 				if ( isset( $stripe_settings[ 'ims_test_secret' ] ) && ! empty( $stripe_settings[ 'ims_test_secret' ] ) ) {
 					$secret_key	= $stripe_settings[ 'ims_test_secret' ];
 				}
 
-			} elseif ( ! isset( $stripe_settings[ 'ims_test_mode' ] ) && empty( $stripe_settings[ 'ims_test_mode' ] ) ) {
+			} elseif ( isset( $stripe_settings[ 'ims_test_mode' ] ) && ( 'off' === $stripe_settings[ 'ims_test_mode' ] ) ) {
 
 				if ( isset( $stripe_settings[ 'ims_live_secret' ] ) && ! empty( $stripe_settings[ 'ims_live_secret' ] ) ) {
 					$secret_key	= $stripe_settings[ 'ims_live_secret' ];
@@ -520,7 +591,8 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 				if ( ! empty( $stripe_subscription ) ) {
 
 					$subscription 		= \Stripe\Subscription::retrieve( $stripe_subscription );
-					$subscription->cancel( array( 'at_period_end' => true ) );
+					$subscription_cancel_args	= apply_filters( 'ims_subscription_cancel_args', array( 'at_period_end' => true ) );
+					$subscription->cancel( $subscription_cancel_args );
 
 				} else {
 
@@ -531,14 +603,14 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 				}
 
 			} catch ( Exception $e ) {
-				// Redirect on empty token or membership id.
-				$redirect = add_query_arg( 'request', 'failed', esc_url( get_bloginfo( 'url' ) ) );
+				// Redirect on failing request.
+				$redirect = add_query_arg( 'request', 'failed', esc_url( home_url() ) );
 				wp_redirect( $redirect );
 				exit;
 			}
 
-			// Redirect on empty token or membership id.
-			$redirect = add_query_arg( 'request', 'submitted', esc_url( get_bloginfo( 'url' ) ) );
+			// Redirect on successful request.
+			$redirect = add_query_arg( 'request', 'submitted', esc_url( home_url() ) );
 			wp_redirect( $redirect );
 			exit;
 
@@ -697,3 +769,13 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 	}
 
 endif;
+
+
+/**
+ * Returns the main instance of IMS_Stripe_Payment_Handler.
+ *
+ * @since 1.0.0
+ */
+function IMS_Stripe_Payment_Handler() {
+	return IMS_Stripe_Payment_Handler::instance();
+}

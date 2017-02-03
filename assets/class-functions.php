@@ -244,6 +244,8 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 
 						</select>
 
+						<?php wp_nonce_field( 'membership-select-nonce', 'membership_select_nonce' ); ?>
+
 						<input type="hidden" name="redirect" value="<?php echo esc_url( home_url() ); ?>"/>
 
 						<?php if ( 'on' === $basic_settings[ 'ims_recurring_memberships_enable' ] ) : ?>

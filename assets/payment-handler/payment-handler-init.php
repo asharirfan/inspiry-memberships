@@ -63,10 +63,9 @@ if ( class_exists( 'IMS_Payment_Handler' ) ) {
 if ( class_exists( 'IMS_Stripe_Payment_Handler' ) ) {
 
 	/**
-	 * If IMS_Stripe_Payment_Handler class exists then initialize
-	 * it to make it available to init hook.
+	 * If IMS_Stripe_Payment_Handler class exists then initialize it.
 	 */
-	$ims_stripe_payment_handler = new IMS_Stripe_Payment_Handler();
+	$ims_stripe_payment_handler = IMS_Stripe_Payment_Handler();
 
 	add_action( 'wp_ajax_ims_stripe_button', array( $ims_stripe_payment_handler, 'ims_display_stripe_button' ) );
 

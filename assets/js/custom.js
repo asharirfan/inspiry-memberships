@@ -41,6 +41,7 @@ jQuery( function( $ ) {
     			var ims_stripe_load	= $( '.ims-membership_loader img' ); // Form Loader Image.
     			var stripe_button 	= $( '.ims-stripe-button' ); // Stripe button div.
                 var error_div       = $( '#ims_select_membership > .error' ); // Error div.
+                var select_nonce    = $( '#membership_select_nonce' ).val(); // Membership select nonce.
 
                 error_div.empty(); // Empty the error div.
     			ims_stripe_load.show(); // Show the ajax loader GIF.
@@ -50,7 +51,8 @@ jQuery( function( $ ) {
     				type        : "POST",
                     data        : {
                         membership		: membership_id,
-                        action			: "ims_stripe_button"
+                        action			: "ims_stripe_button",
+                        nonce           : select_nonce
                     },
                     dataType    : "json"
                 });
