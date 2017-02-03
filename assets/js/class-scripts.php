@@ -26,11 +26,44 @@ if ( ! class_exists( 'IMS_Scripts' ) ) :
 	class IMS_Scripts {
 
 		/**
+		 * Instance.
+		 *
+		 * @var 	object
+		 * @since 	1.0.0
+		 */
+		 protected static $_instance;
+
+		/**
+		 * Method: Create and return instance of the class.
+		 *
+		 * @since 1.0.0
+		 */
+		public static function instance() {
+
+			if ( is_null( self::$_instance ) ) {
+				self::$_instance = new self();
+			}
+			return self::$_instance;
+
+		}
+
+		/**
+		 * Method: Constructor.
+		 *
+		 * @since 1.0.0
+		 */
+		public function __construct() {
+
+			add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
+
+		}
+
+		/**
 		 * load_scripts.
 		 *
 		 * @since 1.0.0
 		 */
-		public static function load_scripts() {
+		public function load_scripts() {
 
 			if ( ! is_admin() ) {
 
@@ -60,6 +93,12 @@ if ( ! class_exists( 'IMS_Scripts' ) ) :
 endif;
 
 
-if ( class_exists( 'IMS_Scripts' ) ) {
-	add_action( 'wp_enqueue_scripts', array( 'IMS_Scripts' , 'load_scripts' ) );
+/**
+ * Returns the instance of IMS_Scripts.
+ *
+ * @since 1.0.0
+ */
+function IMS_Scripts() {
+	return IMS_Scripts::instance();
 }
+IMS_Scripts();

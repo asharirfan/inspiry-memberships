@@ -162,9 +162,11 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 		public static function ims_get_membership_by_user( $user ) {
 
 			// Get user id.
-			if ( is_object( $user ) ) {
-				$user_id 	= $user->ID;
+			if ( ! is_object( $user ) ) {
+				return false;
 			}
+
+			$user_id 	= $user->ID;
 
 			// Get current membership details.
 			$membership_id 			= get_user_meta( $user_id, 'ims_current_membership', true );
@@ -176,6 +178,7 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 			$membership_data 	= array();
 
 			if ( ! empty( $membership_id ) ) {
+
 				// Get membership object.
 				$membership_id 		= intval( $membership_id );
 				$membership_obj 	= ims_get_membership_object( $membership_id );
@@ -193,11 +196,11 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 					'duration_unit'		=> $membership_obj->get_duration_unit(),
 					'due_date'			=> $membership_due_date
 				);
+				return $membership_data;
+
 			} else {
 				return false;
 			}
-
-			return $membership_data;
 
 		}
 
@@ -241,7 +244,7 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 
 						</select>
 
-						<input type="hidden" name="redirect" value="<?php echo esc_url( get_bloginfo( 'url' ) ); ?>"/>
+						<input type="hidden" name="redirect" value="<?php echo esc_url( home_url() ); ?>"/>
 
 						<?php if ( 'on' === $basic_settings[ 'ims_recurring_memberships_enable' ] ) : ?>
 							<input type="checkbox" name="ims_recurring" id="ims_recurring" />
@@ -346,3 +349,14 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 	}
 
 endif;
+
+
+/**
+ * Returns the main instance of IMS_Functions.
+ *
+ * @since 1.0.0
+ */
+function IMS_Functions() {
+	return IMS_Functions::instance();
+}
+IMS_Functions();
