@@ -669,20 +669,8 @@ if ( ! class_exists( 'WP_OSA' ) ) :
 		 * @param string $capability
 		 * @param string $menu_slug
 		 * @param callable $function = ''
-		 * @author Ahmad Awais
-		 * @since  [version]
 		 */
-
-		// public function admin_menu( $page_title = 'Page Title', $menu_title = 'Menu Title', $capability = 'manage_options', $menu_slug = 'settings_page', $callable = 'plugin_page' ) {
 		public function admin_menu() {
-			// add_options_page( $page_title, $menu_title, $capability, $menu_slug, array( $this, $callable ) );
-		    // add_options_page(
-		    // 	'WP OSA',
-		    // 	'WP OSA',
-		    // 	'manage_options',
-		    // 	'wp_osa_settings',
-		    // 	array( $this, 'plugin_page' )
-		    // );
 		    add_submenu_page(
 				'inspiry_memberships',
 				__( 'Settings', 'inspiry-memberships' ),
@@ -695,7 +683,7 @@ if ( ! class_exists( 'WP_OSA' ) ) :
 
 		public function plugin_page() {
 		    echo '<div class="wrap">';
-		    	echo '<h1>Inspiry Memberships Settings</h1>';
+		    	echo '<h1>' . __( 'Inspiry Memberships Settings', 'inspiry-memberships' ) . '</h1>';
 			    $this->show_navigation();
 			    $this->show_forms();
 		    echo '</div>';
