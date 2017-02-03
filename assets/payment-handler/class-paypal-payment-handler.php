@@ -114,6 +114,14 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 		 private $express_checkout_url;
 
 		/**
+		 * Currency Code.
+		 *
+		 * @var 	string
+		 * @since 	1.0.0
+		 */
+		 public $currency_code = 'USD';
+
+		/**
 		 * Constructor.
 		 *
 		 * @since 1.0.0
@@ -165,12 +173,19 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 		 */
 		private function paypal_routine_check() {
 
+			// Get basic settings.
+			$ims_basic_settings	= get_option( 'ims_basic_settings' );
+			$currency_code		= ( isset( $ims_basic_settings[ 'ims_currency_code' ] ) ) ? $ims_basic_settings[ 'ims_currency_code' ] : false;
+			if ( ! empty( $currency_code ) ) {
+				$this->currency_code	= $currency_code;
+			}
+
 			// Get PayPal settings.
 			$paypal_settings		= get_option( 'ims_paypal_settings' );
 
 			// Set the variables.
 			if ( isset( $paypal_settings[ 'ims_paypal_client_id' ] ) && ! empty( $paypal_settings[ 'ims_paypal_client_id' ] ) ) {
-				$this->client_ID		= $paypal_settings[ 'ims_paypal_client_id' ];
+				$this->client_ID	= $paypal_settings[ 'ims_paypal_client_id' ];
 			}
 
 			if ( isset( $paypal_settings[ 'ims_paypal_client_secret' ] ) && ! empty( $paypal_settings[ 'ims_paypal_client_secret' ] ) ) {
@@ -201,6 +216,23 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 		 */
 		public function process_simple_paypal_payment() {
 
+			if ( ! isset( $_POST[ 'nonce' ] )
+				|| ! wp_verify_nonce( $_POST[ 'nonce' ], 'membership-paypal-nonce' ) ) {
+				echo json_encode( array (
+					'success'	=> false,
+					'message'	=> __( 'Nonce verification failed.', 'inspiry-memberships' )
+				) );
+				die();
+			}
+
+			if ( ! isset( $_POST[ 'membership_id' ] ) ) {
+				echo json_encode( array (
+					'success'	=> false,
+					'message'	=> __( 'Please select a membership to continue.', 'inspiry-memberships' )
+				) );
+				die();
+			}
+
 			// Get membership id.
 			$membership_id 	= intval( $_POST[ 'membership_id' ] );
 
@@ -211,13 +243,6 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 			if ( ! empty( $membership_id ) && ! empty( $user_id ) ) {
 
 				$this->paypal_routine_check();
-
-				// Get currency code.
-				$ims_basic_settings	= get_option( 'ims_basic_settings' );
-				$currency_code		= $ims_basic_settings[ 'ims_currency_code' ];
-				if ( empty( $currency_code ) ) {
-					$currency_code 	= 'USD';
-				}
 
 				// Get membership object.
 				$membership 	= ims_get_membership_object( $membership_id );
@@ -246,24 +271,24 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 
         			$paypal_payment_uri	= $paypal_url . "payments/payment";
 
-        			$return_url 		= esc_url( add_query_arg( 'paypal_payment', 'success', get_bloginfo( 'url' ) ) );
-        			$cancel_url 		= esc_url( add_query_arg( 'paypal_payment', 'failed', get_bloginfo( 'url' ) ) );
+        			$return_url 		= esc_url( add_query_arg( array( 'paypal_payment' => 'success' ), home_url() ) );
+        			$cancel_url 		= esc_url( add_query_arg( array( 'paypal_payment' => 'failed' ), home_url() ) );
         			$memberships_title 	= esc_html( get_the_title( $membership_id ) );
 
-        			$payment_args 	= array(
+        			$payment_args 	= apply_filters( 'ims_paypal_simple_payment_args', array(
         				"intent"		=> "sale",
         				"redirect_urls"	=> array(
         					"return_url"	=> $return_url,
-        					"cancel_url"	=> $return_url
+        					"cancel_url"	=> $cancel_url
         				),
         				"payer"			=> array(
         					"payment_method"	=> "paypal"
         				),
         				"transactions"	=> array(
-        					0	=> array(
+        					array(
         						"amount"		=> array(
         							"total"			=> $price,
-        							"currency"		=> $currency_code,
+        							"currency"		=> $this->currency_code,
         							"details"		=> array(
 										"subtotal"		=> $price,
 										"tax"			=> "0.00",
@@ -272,22 +297,22 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 									)
         						),
         						"description"	=> __( 'Payment for ', 'inspiry-memberships' ) . $memberships_title,
-        						"item_list"	=> array(
-        							"items" 		=> array(
-        								0 				=> array(
+        						"item_list"		=> array(
+        							"items"			=> array(
+        								array(
         									"name" 			=> $memberships_title,
         									"description"	=> __( 'Payment for ', 'inspiry-memberships' ) . $memberships_title,
         									"quantity" 		=> "1",
 	                                        "price"			=> $price,
 	                                        "tax"			=> "0.00",
 	                                        "sku" 			=> $memberships_title,
-	                                        "currency"		=> $currency_code
+	                                        "currency"		=> $this->currency_code
         								)
         							)
         						)
         					)
         				)
-        			);
+        			) );
 
 					$payment_json_args	= json_encode( $payment_args );
 
@@ -492,21 +517,26 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 						// Schedule the end of membership.
 						$this->paypal_user_membership_end_schedule( $current_user->ID, $membership_id );
 
-						$redirect_url 	= add_query_arg( 'membership', 'purchased', esc_url( get_bloginfo( 'url' ) ) );
-						wp_redirect( $redirect_url );
-						exit();
+						$redirect_url 	= add_query_arg( array( 'membership' => 'purchased' ), esc_url( get_bloginfo( 'url' ) ) );
+
+						// Add action hook after paypal payment is done.
+						do_action( 'ims_paypal_simple_payment_success', $user_id, $membership_id, $receipt_id );
 
 					} else {
 
-						$redirect_url 	= add_query_arg( 'membership', 'failed', esc_url( get_bloginfo( 'url' ) ) );
-						wp_redirect( $redirect_url );
-						exit();
+						$redirect_url 	= add_query_arg( array( 'membership' => 'failed' ), esc_url( get_bloginfo( 'url' ) ) );
+
+						// Add action hook after paypal payment is failed.
+						do_action( 'ims_paypal_simple_payment_failed' );
 
 					}
 
+					wp_redirect( $redirect_url );
+					exit();
+
 				}
 
-				$redirect_url 	= add_query_arg( 'membership', 'failed', esc_url( get_bloginfo( 'url' ) ) );
+				$redirect_url 	= add_query_arg( array( 'membership' => 'failed' ), esc_url( get_bloginfo( 'url' ) ) );
 				wp_redirect( $redirect_url );
 				exit();
 
@@ -554,6 +584,9 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 			 */
 			wp_schedule_single_event( time() + $time_duration, 'ims_paypal_membership_schedule_end', $schedule_args );
 
+			// Membership schedulled action hook.
+			do_action( 'ims_paypal_membership_schedulled', $user_id, $membership_id );
+
 		}
 
 		/**
@@ -583,6 +616,23 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 		 */
 		public function process_recurring_paypal_payment() {
 
+			if ( ! isset( $_POST[ 'nonce' ] )
+				|| ! wp_verify_nonce( $_POST[ 'nonce' ], 'membership-paypal-nonce' ) ) {
+				echo json_encode( array (
+					'success'	=> false,
+					'message'	=> __( 'Nonce verification failed.', 'inspiry-memberships' )
+				) );
+				die();
+			}
+
+			if ( ! isset( $_POST[ 'membership_id' ] ) ) {
+				echo json_encode( array (
+					'success'	=> false,
+					'message'	=> __( 'Please select a membership to continue.', 'inspiry-memberships' )
+				) );
+				die();
+			}
+
 			// Get membership id.
 			$membership_id 	= intval( $_POST[ 'membership_id' ] );
 
@@ -594,13 +644,6 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 
 				$this->paypal_routine_check();
 
-				// Get currency code.
-				$ims_basic_settings	= get_option( 'ims_basic_settings' );
-				$currency_code		= $ims_basic_settings[ 'ims_currency_code' ];
-				if ( empty( $currency_code ) ) {
-					$currency_code 	= 'USD';
-				}
-
 				// Get membership object.
 				$membership 	= ims_get_membership_object( $membership_id );
 				$price 			= $membership->get_price();
@@ -611,10 +654,11 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 				$paypal_settings 	= get_option( 'ims_paypal_settings' );
 				$sandbox_mode 		= $paypal_settings[ 'ims_paypal_test_mode' ];
 
-				$return_url		= esc_url( add_query_arg( 'paypal_recurring_payment', 'success', get_bloginfo( 'url' ) ) );
-        		$cancel_url		= esc_url( add_query_arg( 'paypal_recurring_payment', 'failed', get_bloginfo( 'url' ) ) );
+				$return_url		= esc_url( add_query_arg( array( 'paypal_recurring_payment' => 'success' ), home_url() ) );
+        		$cancel_url		= esc_url( add_query_arg( array( 'paypal_recurring_payment' => 'failed' ), home_url() ) );
 
-				$response 	= $this->callExpressCheckout( $price, $currency_code, "Sale", $return_url, $cancel_url, $description );
+				$response 	= $this->callExpressCheckout( $price, $this->currency_code, "Sale", $return_url, $cancel_url, $description );
+
 				if ( ! empty( $response ) ) {
 
 					// Redirect to PayPal with token.
@@ -678,20 +722,26 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 					$membership_id	= $payment_data[ $user_id ][ 'membership_id' ];
 				}
 
-				if ( ! empty( $user_id ) && ! empty( $membership_id ) ) {
+				// Clear the general option.
+				$payment_data 	= array(
+					$user_id	= array()
+				);
+				update_option( 'ims_paypal_recurring_payment_details', $payment_data );
+
+				if ( ! empty( $current_user->ID ) && ! empty( $membership_id ) ) {
 
 					$this->paypal_routine_check();
 
 					$shipping_details	= $this->getShippingDetails( $token );
 					// $billing_agreement 	= $this->confirm_payment( $token, $payerID, $membership_id );
-					$profile 			= $this->createRecurringPaymentsProfile( $shipping_details, $membership_id, $user_id );
+					$profile 			= $this->createRecurringPaymentsProfile( $shipping_details, $membership_id, $current_user->ID );
 
 					if ( ! empty( $profile ) ) {
 
 						$profile_id	= ( isset( $profile[ "PROFILEID" ] ) && ! empty( $profile[ "PROFILEID" ] ) ) ? $profile[ "PROFILEID" ] : false;
 
 						// Store the profile id in user meta.
-						update_user_meta( $user_id, 'ims_paypal_profile_id', $profile_id );
+						update_user_meta( $current_user->ID, 'ims_paypal_profile_id', $profile_id );
 
 						$membership_methods	= new IMS_Membership_Method();
 						$receipt_methods 	= new IMS_Receipt_Method();
@@ -704,15 +754,26 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 							$membership_methods->mail_admin( $membership_id, $receipt_id, 'paypal' );
 						}
 
-						$redirect_url 	= add_query_arg( 'membership', 'success', esc_url( get_bloginfo( 'url' ) ) );
-						wp_redirect( $redirect_url );
-						exit();
+						$redirect_url 	= esc_url( add_query_arg( array( 'membership' => 'success' ), home_url() ) );
+
+						// Add action hook after paypal payment is done.
+						do_action( 'ims_paypal_recurring_payment_success', $current_user->ID, $membership_id, $receipt_id );
+
+					} else {
+
+						$redirect_url 	= esc_url( add_query_arg( array( 'membership' => 'failed' ), home_url() ) );
+
+						// Add action hook after paypal payment failed.
+						do_action( 'ims_paypal_recurring_payment_failed' );
 
 					}
 
+					wp_redirect( $redirect_url );
+					exit();
+
 				} else {
 
-					$redirect_url 	= add_query_arg( 'membership', 'failed', esc_url( get_bloginfo( 'url' ) ) );
+					$redirect_url 	= esc_url( add_query_arg( array( 'membership' => 'failed' ), home_url() ) );
 					wp_redirect( $redirect_url );
 					exit();
 
@@ -884,7 +945,7 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 
 			// Get membership object.
 			$membership 	= ims_get_membership_object( $membership_id );
-			$title 			= get_the_title( $membership_id );
+			$title 			= esc_html( get_the_title( $membership_id ) );
 			$description	= __( 'Payment for ', 'inspiry-memberships' ) . $title;
 			$price 			= $membership->get_price();
 			$duration 		= $membership->get_duration();
@@ -899,13 +960,6 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 				$period 	= "Year";
 			}
 
-			// Get currency code.
-			$ims_basic_settings	= get_option( 'ims_basic_settings' );
-			$currency_code		= $ims_basic_settings[ 'ims_currency_code' ];
-			if ( empty( $currency_code ) ) {
-				$currency_code 	= 'USD';
-			}
-
 		    /**
 		     * Build a second API request to PayPal, using the token
 		     * as the ID to get the details on the payment authorization.
@@ -913,7 +967,7 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 			$nvpstr =	"TOKEN=" . $token;
 			$nvpstr .=	"&SUBSCRIBERNAME=" . urlencode( get_bloginfo( 'name' ) );
 			$nvpstr	.=	"&PAYERID=" . $payer_id;
-			$nvpstr	.=	"&EMAIL=" . urlencode( $user_email );
+			$nvpstr	.=	"&EMAIL=" . $user_email;
 			$nvpstr	.=	"&SHIPTONAME=" . $shipToName;
 			$nvpstr	.=	"&SHIPTOSTREET=" . $shipToStreet;
 			$nvpstr	.=	"&SHIPTOCITY=" . $shipToCity;
@@ -926,7 +980,7 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 			$nvpstr	.=	"&BILLINGFREQUENCY=" . urlencode( $duration );
 			$nvpstr	.=	"&AMT=" . urlencode( $price );
 			// $nvpstr .= 	"&INITAMT=" . urlencode( $price );
-			$nvpstr	.=	"&CURRENCYCODE=" . urlencode( $currency_code );
+			$nvpstr	.=	"&CURRENCYCODE=" . urlencode( $this->currency_code );
 			$nvpstr	.=	"&IPADDRESS=" . $_SERVER['REMOTE_ADDR'];
 			$nvpstr .= 	"&MAXFAILEDPAYMENTS=1";
 			$nvpstr .= 	"&AUTOBILLOUTAMT=AddToNextBilling";
@@ -1080,7 +1134,7 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 				$membership_methods->cancel_user_membership( $user_id, $current_membership );
 
 				// Redirect on success.
-				$redirect = add_query_arg( 'request', 'submitted', esc_url( get_bloginfo( 'url' ) ) );
+				$redirect = esc_url( add_query_arg( array( 'request' => 'submitted' ), home_url() ) );
 				wp_redirect( $redirect );
 				exit;
 
@@ -1099,12 +1153,16 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 			if ( "SUCCESS" == $ack || "SUCCESSWITHWARNING" == $ack ) {
 
 				// Redirect on success.
-				$redirect = add_query_arg( 'request', 'submitted', esc_url( get_bloginfo( 'url' ) ) );
+				$redirect = esc_url( add_query_arg( array( 'request' => 'submitted' ), home_url() ) );
 				wp_redirect( $redirect );
 				exit;
 
 			}
-			return false;
+
+			// Redirect on success.
+			$redirect = esc_url( add_query_arg( array( 'request' => 'failed' ), home_url() ) );
+			wp_redirect( $redirect );
+			exit;
 
 		}
 

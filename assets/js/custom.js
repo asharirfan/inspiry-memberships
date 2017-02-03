@@ -137,6 +137,7 @@ jQuery( function( $ ) {
                 var membership          = membershipSelect.val(); // Getting selected membership id.
                 var form_loader         = $( '.ims-membership_loader img' ); // Form Loader Image.
                 var error_div           = $( '#ims_select_membership > .error' ); // Error div.
+                var paypal_nonce        = $( '#membership_paypal_nonce' ).val(); // Membership paypal nonce.
                 error_div.empty();
 
                 form_loader.show(); // Show ajax loader GIF.
@@ -146,7 +147,8 @@ jQuery( function( $ ) {
                     type        : "POST",
                     data        : {
                         membership_id   : membership,
-                        action          : "ims_paypal_simple_payment"
+                        action          : "ims_paypal_simple_payment",
+                        nonce           : paypal_nonce
                     },
                     dataType    : "json"
                 });
@@ -172,6 +174,7 @@ jQuery( function( $ ) {
                 var membership          = membershipSelect.val(); // Getting selected membership id.
                 var form_loader         = $( '.ims-membership_loader img' ); // Form Loader Image.
                 var error_div           = $( '#ims_select_membership > .error' ); // Error div.
+                var paypal_nonce        = $( '#membership_paypal_nonce' ).val(); // Membership paypal nonce.
                 error_div.empty();
 
                 form_loader.show(); // Show ajax loader GIF.
@@ -181,7 +184,8 @@ jQuery( function( $ ) {
                     type        : "POST",
                     data        : {
                         membership_id   : membership,
-                        action          : "ims_paypal_recurring_payment"
+                        action          : "ims_paypal_recurring_payment",
+                        nonce           : paypal_nonce
                     },
                     dataType    : "json"
                 });

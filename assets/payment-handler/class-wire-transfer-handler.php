@@ -79,6 +79,7 @@ if ( ! class_exists( 'IMS_Wire_Transfer_Handler' ) ) :
 
 			$message 	= 	sprintf( __( 'You have successfully applied for %s package on our site.', 'inspiry-memberships' ), $membership_title ) . "<br/><br/>";
 			$message 	.= 	__( 'Your chose to pay via Wire Transfer.', 'inspiry-memberships' ) . "<br/><br/>";
+			$message 	.= 	sprintf( __( 'Please send a payment of %s to the account mentioned on the website.', 'inspiry-memberships' ), $formatted_price ) . "<br/><br/>";
 			$message 	.= 	sprintf( __( 'Please include the receipt name, Receipt %s, in the payment details.', 'inspiry-memberships' ), $receipt_id ) . "<br/><br/>";
 			$message 	.= 	__( 'We will activate your membership as soon as we get confirmation of your payment.', 'inspiry-memberships' );
 
@@ -144,7 +145,7 @@ if ( ! class_exists( 'IMS_Wire_Transfer_Handler' ) ) :
 			$receipt_id		= $post_id;
 			$membership_id	= intval( $receipt_obj->get_membership_id() );
 			$user_id 		= intval( $receipt_obj->get_user_id() );
-			$status 		= ( isset( $_POST[ 'status' ] ) && ! empty( $_POST[ 'status' ] ) ) ? true : false;
+			$status 		= ( ! empty( $_POST[ 'status' ] ) && ( 'on' === $_POST[ 'status' ] ) ) ? true : false;
 			$vendor 		= $receipt_obj->get_vendor();
 			$payment_id	 	= ( isset( $_POST[ 'payment_id' ] ) && ! empty( $_POST[ 'payment_id' ] ) ) ? sanitize_text_field( $_POST[ 'payment_id' ] ) : false;
 
@@ -163,7 +164,7 @@ if ( ! class_exists( 'IMS_Wire_Transfer_Handler' ) ) :
 				$membership_methods->mail_admin( $membership_id, $receipt_id, 'wire' );
 
 				// Update receipt meta.
-				$prefix 	= "ims_membership_";
+				$prefix	= apply_filters( 'ims_receipt_meta_prefix', 'ims_receipt_' );
 
 				update_post_meta( $receipt_id, "{$prefix}status", true );
 
@@ -171,8 +172,14 @@ if ( ! class_exists( 'IMS_Wire_Transfer_Handler' ) ) :
 					update_post_meta( $receipt_id, "{$prefix}payment_id", $payment_id );
 				}
 
+				// Add action hook after wire payment is done.
+				do_action( 'ims_wire_payment_success', $user_id, $membership_id, $receipt_id );
+
 				return true;
 			}
+
+			// Add action hook after wire payment failed.
+			do_action( 'ims_wire_payment_failed' );
 			return false;
 
 		}
@@ -217,6 +224,9 @@ if ( ! class_exists( 'IMS_Wire_Transfer_Handler' ) ) :
 			 */
 			wp_schedule_single_event( time() + $time_duration, 'ims_wire_membership_schedule_end', $schedule_args );
 
+			// Membership schedulled action hook.
+			do_action( 'ims_wire_membership_schedulled', $user_id, $membership_id );
+
 		}
 
 		/**
@@ -259,7 +269,7 @@ if ( ! class_exists( 'IMS_Wire_Transfer_Handler' ) ) :
 			$ims_membership_methods->cancel_user_membership( $user_id, $membership_id );
 
 			// Redirect on success.
-			$redirect = add_query_arg( 'request', 'submitted', esc_url( get_bloginfo( 'url' ) ) );
+			$redirect = esc_url( add_query_arg( array( 'request' => 'submitted' ), home_url() ) );
 			wp_redirect( $redirect );
 			exit;
 

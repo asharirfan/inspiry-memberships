@@ -360,10 +360,7 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 						$membership_methods->mail_admin( $membership_id, $receipt_id, 'stripe' );
 
 						// Redirect on sucessful membership.
-						$successful_redirect	= apply_filters( 'ims_stripe_simple_success_redirect_args', array(
-							'membership'	=> 'successful'
-						) );
-						$redirect_url	= add_query_arg( $successful_redirect, $redirect );
+						$redirect_url	= add_query_arg( array( 'membership' => 'successful' ), $redirect );
 
 					} else {
 						// Redirect on empty receipt id.
@@ -376,10 +373,7 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 				} catch ( Exception $e ) {
 
 					// Redirect on empty token or membership id.
-					$failed_redirect	= apply_filters( 'ims_stripe_simple_failed_redirect_args', array(
-						'membership'	=> 'failed'
-					) );
-					$redirect_url	= add_query_arg( $failed_redirect, $redirect );
+					$redirect_url	= add_query_arg( array( 'membership' => 'failed' ), $redirect );
 
 					// Add action hook after stripe payment is done.
 					do_action( 'ims_stripe_simple_payment_failed', $user_id, $membership_id, $receipt_id );
@@ -388,7 +382,7 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 
 			} else {
 				// Redirect on empty token or membership id.
-				$redirect_url	= add_query_arg( 'membership', 'failed', $redirect );
+				$redirect_url	= add_query_arg( array( 'membership' => 'failed' ), $redirect );
 			}
 
 			// Redirect back to our previous page with the added query variable.
@@ -412,10 +406,7 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 			if ( empty( $user_id ) || empty( $membership_id ) || empty( $membership_price ) ) {
 
 				// Redirect on empty token or membership id.
-				$failed_redirect	= apply_filters( 'ims_stripe_recurring_failed_redirect_args', array(
-					'membership'	=> 'failed'
-				) );
-				$redirect_url	= add_query_arg( $failed_redirect, $redirect );
+				$redirect_url	= add_query_arg( array( 'membership' => 'failed' ), $redirect );
 				wp_redirect( $redirect_url );
 				exit;
 
@@ -451,10 +442,7 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 				$membership_methods->add_user_membership( $user_id, $membership_id, 'stripe' );
 
 				// Redirect on successful payment.
-				$successful_redirect	= apply_filters( 'ims_stripe_recurring_success_redirect_args', array(
-					'membership'	=> 'successful'
-				) );
-				$redirect_url	= add_query_arg( $successful_redirect, $redirect );
+				$redirect_url	= add_query_arg( array( 'membership' => 'successful' ), $redirect );
 
 				// Add action hook after stripe payment is done.
 				do_action( 'ims_stripe_recurring_payment_success', $user_id, $membership_id, $receipt_id );
@@ -462,13 +450,10 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 			} catch ( Exception $e ) {
 
 				// Redirect on empty token or membership id.
-				$failed_redirect	= apply_filters( 'ims_stripe_recurring_failed_redirect_args', array(
-					'membership'	=> 'failed'
-				) );
-				$redirect_url	= add_query_arg( $failed_redirect, $redirect );
+				$redirect_url	= add_query_arg( array( 'membership' => 'failed' ), $redirect );
 
 				// Add action hook after stripe payment is done.
-				do_action( 'ims_stripe_recurring_payment_failed', $user_id, $membership_id, $receipt_id );
+				do_action( 'ims_stripe_recurring_payment_failed' );
 
 			}
 

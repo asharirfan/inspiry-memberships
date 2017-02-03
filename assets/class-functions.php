@@ -95,7 +95,7 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 			$formatted_price 	= '';
 
 			if ( ! empty( $price ) ) {
-				if ( 'after' == $currency_position ) {
+				if ( 'after' === $currency_position ) {
 					$formatted_price 	= $price . $currency_settings[ 'ims_currency_symbol' ];
 				} else {
 					$formatted_price 	= $currency_settings[ 'ims_currency_symbol' ] . $price;
@@ -272,6 +272,7 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 					<?php endif; ?>
 
 					<?php if ( 'on' === $paypal_settings[ 'ims_paypal_enable' ] ) : ?>
+						<?php wp_nonce_field( 'membership-paypal-nonce', 'membership_paypal_nonce' ); ?>
 						<div class="ims-button-option ims-paypal-button">
 							<a href="#" id="ims-paypal">
 								<img src="<?php echo IMS_BASE_URL; ?>assets/img/checkout-paypal.png">

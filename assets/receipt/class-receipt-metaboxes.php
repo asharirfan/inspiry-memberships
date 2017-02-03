@@ -219,9 +219,10 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 					<td>
 						<?php $status = esc_attr( get_post_meta( $receipt->ID, "{$prefix}status", true ) ); ?>
 						<?php if ( empty( $status ) ) : ?>
-							<input 	type="checkbox" name="status" id="status" />
+							<input type="checkbox" name="status" id="status" />
 							<p class="description"><?php _e( 'Select to activate the membership.', 'inspiry-membership' ); ?></p>
 						<?php else : ?>
+							<input type="hidden" name="status" id="status" value="true" />
 							<p class="description"><?php _e( 'Membership is active.', 'inspiry-membership' ); ?></p>
 						<?php endif; ?>
 					</td>
@@ -282,10 +283,9 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 			$ims_meta_value[ 'user_id' ] 		= ( isset( $_POST[ 'user_id' ] ) && ! empty( $_POST[ 'user_id' ] ) ) ? intval( $_POST[ 'user_id' ] ) : '';
 			$ims_meta_value[ 'vendor' ] 		= ( isset( $_POST[ 'vendor' ] ) ) && ! empty( $_POST[ 'vendor' ] ) ? sanitize_text_field( $_POST[ 'vendor' ] ) : '';
 			$ims_meta_value[ 'payment_id' ] 	= ( isset( $_POST[ 'payment_id' ] ) && ! empty( $_POST[ 'payment_id' ] ) ) ? sanitize_text_field( $_POST[ 'payment_id' ] ) : '';
-			$ims_meta_value[ 'status' ] 		= ( isset( $_POST[ 'status' ] ) && ! empty( $_POST[ 'status' ] ) ) ? true : false;
+			$ims_meta_value[ 'status' ] 		= ( ! empty( $_POST[ 'status' ] ) && ( 'true' === $_POST[ 'status' ] ) ) ? true : false;
 
-			$membership_status			= get_post_meta( $receipt_id, 'ims_membership_status', true );
-			$ims_meta_value[ 'status' ]	= ( ! empty( $membership_status ) ) ? true : false;
+			$membership_status	= get_post_meta( $receipt_id, 'ims_membership_status', true );
 
 			// Filter the values of meta data being saved by receipt post type.
 			$ims_meta_value		= apply_filters( 'ims_receipt_before_save_meta_values', $ims_meta_value, $receipt_id );
@@ -302,7 +302,10 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 			$this->save_meta_value( $receipt_id, "{$prefix}user_id", $ims_meta_value[ 'user_id' ] );
 			$this->save_meta_value( $receipt_id, "{$prefix}vendor", $ims_meta_value[ 'vendor' ] );
 			$this->save_meta_value( $receipt_id, "{$prefix}payment_id", $ims_meta_value[ 'payment_id' ] );
-			$this->save_meta_value( $receipt_id, "{$prefix}status", $ims_meta_value[ 'status' ] );
+
+			if ( empty( $membership_status ) ) {
+				$this->save_meta_value( $receipt_id, "{$prefix}status", $ims_meta_value[ 'status' ] );
+			}
 
 			// After save meta box values action hook.
 			$ims_meta_value		= apply_filters( 'ims_receipt_after_save_meta_values', $ims_meta_value, $receipt_id );

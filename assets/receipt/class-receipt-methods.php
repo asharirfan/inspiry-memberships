@@ -155,7 +155,8 @@ if ( ! class_exists( 'IMS_Receipt_Method' ) ) :
 				$receipt_id = $this->generate_receipt( $user_id, $membership_id, 'wire', $payment_id, false, false );
 			}
 
-			update_post_meta( $receipt_id, 'ims_membership_status', false );
+			$prefix	= apply_filters( 'ims_receipt_meta_prefix', 'ims_receipt_' );
+			update_post_meta( $receipt_id, "{$prefix}status", false );
 			return $receipt_id;
 
 		}
