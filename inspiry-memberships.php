@@ -17,9 +17,8 @@
  */
 
 
-// If this file is called directly, abort.
-if ( ! defined( 'WPINC' ) ) {
-	die;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
 }
 
 
@@ -38,18 +37,18 @@ if ( ! class_exists( 'Inspiry_Memberships' ) ) :
 		/**
 		 * Version.
 		 *
-		 * @var 	string
-		 * @since 	1.0.0
+		 * @var    string
+		 * @since    1.0.0
 		 */
-		 public $version = '1.0.0';
+		public $version = '1.0.0';
 
 		/**
 		 * Inspiry Memberships Instance.
 		 *
-		 * @var 	Inspiry_Memberships
-		 * @since 	1.0.0
+		 * @var    Inspiry_Memberships
+		 * @since    1.0.0
 		 */
-		 protected static $_instance;
+		protected static $_instance;
 
 		/**
 		 * Method: Creates an instance of the class.
@@ -59,8 +58,9 @@ if ( ! class_exists( 'Inspiry_Memberships' ) ) :
 		public static function instance() {
 
 			if ( is_null( self::$_instance ) ) {
-				self::$_instance	= new self();
+				self::$_instance = new self();
 			}
+
 			return self::$_instance;
 
 		}
@@ -91,7 +91,7 @@ if ( ! class_exists( 'Inspiry_Memberships' ) ) :
 
 			// Plugin version
 			if ( ! defined( 'IMS_VERSION' ) ) {
-			    define( 'IMS_VERSION', $this->version );
+				define( 'IMS_VERSION', $this->version );
 			}
 
 			// Plugin Name
@@ -124,7 +124,7 @@ if ( ! class_exists( 'Inspiry_Memberships' ) ) :
 			 * @since 1.0.0
 			 */
 			if ( file_exists( IMS_BASE_DIR . '/assets/includes/class-ims-install.php' ) ) {
-			    require_once( IMS_BASE_DIR . '/assets/includes/class-ims-install.php' );
+				require_once( IMS_BASE_DIR . '/assets/includes/class-ims-install.php' );
 			}
 
 			/**
@@ -133,7 +133,7 @@ if ( ! class_exists( 'Inspiry_Memberships' ) ) :
 			 * @since 1.0.0
 			 */
 			if ( file_exists( IMS_BASE_DIR . '/assets/includes/class-ims-uninstall.php' ) ) {
-			    require_once( IMS_BASE_DIR . '/assets/includes/class-ims-uninstall.php' );
+				require_once( IMS_BASE_DIR . '/assets/includes/class-ims-uninstall.php' );
 			}
 
 			/**
@@ -142,7 +142,7 @@ if ( ! class_exists( 'Inspiry_Memberships' ) ) :
 			 * @since 1.0.0
 			 */
 			if ( file_exists( IMS_BASE_DIR . '/assets/ims-init.php' ) ) {
-			    require_once( IMS_BASE_DIR . '/assets/ims-init.php' );
+				require_once( IMS_BASE_DIR . '/assets/ims-init.php' );
 			}
 
 		}
@@ -174,4 +174,5 @@ endif;
 function IMS() {
 	return Inspiry_Memberships::instance();
 }
+
 IMS();
