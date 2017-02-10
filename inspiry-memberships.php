@@ -1,41 +1,20 @@
 <?php
 /**
- * Plugin Name:		Inspiry Memberships
- * Plugin URI: 		https://github.com/InspiryThemes/inspiry-memberships
- * Description: 	Inspiry Memberships lets you create membership packages for your Real-Estate website so that you can take your Real-Estate website to the next level.
- * Version: 		1.0.0
- * Author: 			mrasharirfan, Inspiry Themes
- * Author URI: 		https://inspirythemes.com
- * License: 		GPL-2.0+
+ * Plugin Name:     Inspiry Memberships
+ * Plugin URI:      https://github.com/InspiryThemes/inspiry-memberships
+ * Description:     Provides functionality to create membership packages for real estate themes by Inspiry Themes
+ * Version:         1.0.0
+ * Author:          Inspiry Themes
+ * Author URI:      https://inspirythemes.com
+ * License:         GPL-2.0+
+ * License URI:     http://www.gnu.org/licenses/gpl-2.0.txt
+ * Text Domain:     inspiry-memberships
+ * Domain Path:     languages
  *
- * Requires at least: 	4.7
- * Tested up to: 		4.7
- *
- * Text Domain:		inspiry-memberships
- * Domain Path:		languages
- *
- * @link 			https://github.com/InspiryThemes/inspiry-memberships
- * @since 			1.0.0
- * @package 		IMS
+ * @link             https://github.com/InspiryThemes/inspiry-memberships
+ * @since            1.0.0
+ * @package          IMS
  */
-
-/*
-
-    Copyright (C) 2017  mrasharirfan  mrasharirfan@gmail.com
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License, version 2, as
-    published by the Free Software Foundation.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-*/
 
 
 // If this file is called directly, abort.
