@@ -55,7 +55,7 @@ if ( ! defined('WPOSA_URL' ) ) {
  * @since 1.0.0
  */
 if ( file_exists( WPOSA_DIR . '/class-wposa.php' ) ) {
-    require_once( WPOSA_DIR . '/class-wposa.php' );
+    include_once( WPOSA_DIR . '/class-wposa.php' );
 }
 
 

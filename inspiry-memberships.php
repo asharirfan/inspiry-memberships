@@ -124,7 +124,7 @@ if ( ! class_exists( 'Inspiry_Memberships' ) ) :
 			 * @since 1.0.0
 			 */
 			if ( file_exists( IMS_BASE_DIR . '/resources/includes/class-ims-install.php' ) ) {
-				require_once( IMS_BASE_DIR . '/resources/includes/class-ims-install.php' );
+				include_once( IMS_BASE_DIR . '/resources/includes/class-ims-install.php' );
 			}
 
 			/**
@@ -133,7 +133,7 @@ if ( ! class_exists( 'Inspiry_Memberships' ) ) :
 			 * @since 1.0.0
 			 */
 			if ( file_exists( IMS_BASE_DIR . '/resources/includes/class-ims-uninstall.php' ) ) {
-				require_once( IMS_BASE_DIR . '/resources/includes/class-ims-uninstall.php' );
+				include_once( IMS_BASE_DIR . '/resources/includes/class-ims-uninstall.php' );
 			}
 
 			/**
@@ -142,7 +142,7 @@ if ( ! class_exists( 'Inspiry_Memberships' ) ) :
 			 * @since 1.0.0
 			 */
 			if ( file_exists( IMS_BASE_DIR . '/resources/ims-init.php' ) ) {
-				require_once( IMS_BASE_DIR . '/resources/ims-init.php' );
+				include_once( IMS_BASE_DIR . '/resources/ims-init.php' );
 			}
 
 		}

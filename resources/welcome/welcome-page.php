@@ -50,7 +50,7 @@ $the_version = IMS_VERSION;
 						 * @since 1.0.0
 						 */
 						if ( file_exists( IMS_BASE_DIR . '/resources/welcome/form/basic-settings.php' ) ) {
-							require_once( IMS_BASE_DIR . '/resources/welcome/form/basic-settings.php' );
+							include_once( IMS_BASE_DIR . '/resources/welcome/form/basic-settings.php' );
 						}
 						?>
 					</div>
@@ -65,7 +65,7 @@ $the_version = IMS_VERSION;
 						 * @since 1.0.0
 						 */
 						if ( file_exists( IMS_BASE_DIR . '/resources/welcome/form/stripe-settings.php' ) ) {
-							require_once( IMS_BASE_DIR . '/resources/welcome/form/stripe-settings.php' );
+							include_once( IMS_BASE_DIR . '/resources/welcome/form/stripe-settings.php' );
 						}
 						?>
 					</div>
@@ -80,7 +80,7 @@ $the_version = IMS_VERSION;
 						 * @since 1.0.0
 						 */
 						if ( file_exists( IMS_BASE_DIR . '/resources/welcome/form/paypal-settings.php' ) ) {
-							require_once( IMS_BASE_DIR . '/resources/welcome/form/paypal-settings.php' );
+							include_once( IMS_BASE_DIR . '/resources/welcome/form/paypal-settings.php' );
 						}
 						?>
 					</div>
@@ -95,7 +95,7 @@ $the_version = IMS_VERSION;
 						 * @since 1.0.0
 						 */
 						if ( file_exists( IMS_BASE_DIR . '/resources/welcome/form/wire-settings.php' ) ) {
-							require_once( IMS_BASE_DIR . '/resources/welcome/form/wire-settings.php' );
+							include_once( IMS_BASE_DIR . '/resources/welcome/form/wire-settings.php' );
 						}
 						?>
 					</div>

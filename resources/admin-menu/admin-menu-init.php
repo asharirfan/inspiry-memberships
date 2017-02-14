@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.0.0
  */
 if ( file_exists( IMS_BASE_DIR . '/resources/admin-menu/class-ims-admin-menu.php' ) ) {
-    require_once( IMS_BASE_DIR . '/resources/admin-menu/class-ims-admin-menu.php' );
+    include_once( IMS_BASE_DIR . '/resources/admin-menu/class-ims-admin-menu.php' );
 }
 
 if ( class_exists( 'IMS_Admin_Menu' ) ) {

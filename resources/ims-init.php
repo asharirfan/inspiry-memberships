@@ -36,7 +36,7 @@ if ( ! function_exists( 'inspiry_log' ) ) {
  * @since 1.0.0
  */
 if ( file_exists( IMS_BASE_DIR . '/resources/welcome/welcome-init.php' ) ) {
-    require_once( IMS_BASE_DIR . '/resources/welcome/welcome-init.php' );
+    include_once( IMS_BASE_DIR . '/resources/welcome/welcome-init.php' );
 }
 
 /**
@@ -45,7 +45,7 @@ if ( file_exists( IMS_BASE_DIR . '/resources/welcome/welcome-init.php' ) ) {
  * @since 1.0.0
  */
 if ( file_exists( IMS_BASE_DIR . '/resources/email/class-ims-email.php' ) ) {
-    require_once( IMS_BASE_DIR . '/resources/email/class-ims-email.php' );
+    include_once( IMS_BASE_DIR . '/resources/email/class-ims-email.php' );
 }
 
 /**
@@ -54,7 +54,7 @@ if ( file_exists( IMS_BASE_DIR . '/resources/email/class-ims-email.php' ) ) {
  * @since 1.0.0
  */
 if ( file_exists( IMS_BASE_DIR . '/resources/membership/membership-init.php' ) ) {
-    require_once( IMS_BASE_DIR . '/resources/membership/membership-init.php' );
+    include_once( IMS_BASE_DIR . '/resources/membership/membership-init.php' );
 }
 
 /**
@@ -63,7 +63,7 @@ if ( file_exists( IMS_BASE_DIR . '/resources/membership/membership-init.php' ) )
  * @since 1.0.0
  */
 if ( file_exists( IMS_BASE_DIR . '/resources/receipt/receipt-init.php' ) ) {
-    require_once( IMS_BASE_DIR . '/resources/receipt/receipt-init.php' );
+    include_once( IMS_BASE_DIR . '/resources/receipt/receipt-init.php' );
 }
 
 /**
@@ -72,7 +72,7 @@ if ( file_exists( IMS_BASE_DIR . '/resources/receipt/receipt-init.php' ) ) {
  * @since 1.0.0
  */
 if ( file_exists( IMS_BASE_DIR . '/resources/admin-menu/admin-menu-init.php' ) ) {
-    require_once( IMS_BASE_DIR . '/resources/admin-menu/admin-menu-init.php' );
+    include_once( IMS_BASE_DIR . '/resources/admin-menu/admin-menu-init.php' );
 }
 
 /**
@@ -81,7 +81,7 @@ if ( file_exists( IMS_BASE_DIR . '/resources/admin-menu/admin-menu-init.php' ) )
  * @since 1.0.0
  */
 if ( file_exists( IMS_BASE_DIR . '/resources/settings/settings-init.php' ) ) {
-    require_once( IMS_BASE_DIR . '/resources/settings/settings-init.php' );
+    include_once( IMS_BASE_DIR . '/resources/settings/settings-init.php' );
 }
 
 /**
@@ -90,7 +90,7 @@ if ( file_exists( IMS_BASE_DIR . '/resources/settings/settings-init.php' ) ) {
  * @since 1.0.0
  */
 if ( file_exists( IMS_BASE_DIR . '/resources/js/class-scripts.php' ) ) {
-    require_once( IMS_BASE_DIR . '/resources/js/class-scripts.php' );
+    include_once( IMS_BASE_DIR . '/resources/js/class-scripts.php' );
 }
 
 /**
@@ -99,7 +99,7 @@ if ( file_exists( IMS_BASE_DIR . '/resources/js/class-scripts.php' ) ) {
  * @since 1.0.0
  */
 if ( file_exists( IMS_BASE_DIR . '/resources/class-functions.php' ) ) {
-    require_once( IMS_BASE_DIR . '/resources/class-functions.php' );
+    include_once( IMS_BASE_DIR . '/resources/class-functions.php' );
 }
 
 /**
@@ -108,5 +108,5 @@ if ( file_exists( IMS_BASE_DIR . '/resources/class-functions.php' ) ) {
  * @since 1.0.0
  */
 if ( file_exists( IMS_BASE_DIR . '/resources/payment-handler/payment-handler-init.php' ) ) {
-    require_once( IMS_BASE_DIR . '/resources/payment-handler/payment-handler-init.php' );
+    include_once( IMS_BASE_DIR . '/resources/payment-handler/payment-handler-init.php' );
 }

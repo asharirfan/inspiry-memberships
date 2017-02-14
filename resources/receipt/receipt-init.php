@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.0.0
  */
 if ( file_exists( IMS_BASE_DIR . '/resources/receipt/cpt-receipt.php' ) ) {
-    require_once( IMS_BASE_DIR . '/resources/receipt/cpt-receipt.php' );
+    include_once( IMS_BASE_DIR . '/resources/receipt/cpt-receipt.php' );
 }
 
 /**
@@ -28,7 +28,7 @@ if ( file_exists( IMS_BASE_DIR . '/resources/receipt/cpt-receipt.php' ) ) {
  * @since 1.0.0
  */
 if ( file_exists( IMS_BASE_DIR . '/resources/receipt/class-receipt.php' ) ) {
-    require_once( IMS_BASE_DIR . '/resources/receipt/class-receipt.php' );
+    include_once( IMS_BASE_DIR . '/resources/receipt/class-receipt.php' );
 }
 
 /**
@@ -37,7 +37,7 @@ if ( file_exists( IMS_BASE_DIR . '/resources/receipt/class-receipt.php' ) ) {
  * @since 1.0.0
  */
 if ( file_exists( IMS_BASE_DIR . '/resources/receipt/class-receipt-metaboxes.php' ) ) {
-    require_once( IMS_BASE_DIR . '/resources/receipt/class-receipt-metaboxes.php' );
+    include_once( IMS_BASE_DIR . '/resources/receipt/class-receipt-metaboxes.php' );
 }
 
 /**
@@ -46,7 +46,7 @@ if ( file_exists( IMS_BASE_DIR . '/resources/receipt/class-receipt-metaboxes.php
  * @since 1.0.0
  */
 if ( file_exists( IMS_BASE_DIR . '/resources/receipt/class-receipt-custom-columns.php' ) ) {
-    require_once( IMS_BASE_DIR . '/resources/receipt/class-receipt-custom-columns.php' );
+    include_once( IMS_BASE_DIR . '/resources/receipt/class-receipt-custom-columns.php' );
 }
 
 /**
@@ -55,7 +55,7 @@ if ( file_exists( IMS_BASE_DIR . '/resources/receipt/class-receipt-custom-column
  * @since 1.0.0
  */
 if ( file_exists( IMS_BASE_DIR . '/resources/receipt/class-get-receipt.php' ) ) {
-    require_once( IMS_BASE_DIR . '/resources/receipt/class-get-receipt.php' );
+    include_once( IMS_BASE_DIR . '/resources/receipt/class-get-receipt.php' );
 }
 
 /**
@@ -64,7 +64,7 @@ if ( file_exists( IMS_BASE_DIR . '/resources/receipt/class-get-receipt.php' ) ) 
  * @since 1.0.0
  */
 if ( file_exists( IMS_BASE_DIR . '/resources/receipt/methods-get-receipt.php' ) ) {
-    require_once( IMS_BASE_DIR . '/resources/receipt/methods-get-receipt.php' );
+    include_once( IMS_BASE_DIR . '/resources/receipt/methods-get-receipt.php' );
 }
 
 /**
@@ -73,7 +73,7 @@ if ( file_exists( IMS_BASE_DIR . '/resources/receipt/methods-get-receipt.php' ) 
  * @since 1.0.0
  */
 if ( file_exists( IMS_BASE_DIR . '/resources/receipt/class-receipt-methods.php' ) ) {
-    require_once( IMS_BASE_DIR . '/resources/receipt/class-receipt-methods.php' );
+    include_once( IMS_BASE_DIR . '/resources/receipt/class-receipt-methods.php' );
 }
 
 if ( class_exists( 'IMS_Membership' ) ) {

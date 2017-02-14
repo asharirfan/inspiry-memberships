@@ -94,7 +94,7 @@ if ( ! class_exists( 'IMS_Welcome_Page' ) ) :
 			 * @since 1.0.0
 			 */
 			if ( file_exists( IMS_BASE_DIR . '/resources/welcome/welcome-page.php' ) ) {
-			    require_once( IMS_BASE_DIR . '/resources/welcome/welcome-page.php' );
+			    include_once( IMS_BASE_DIR . '/resources/welcome/welcome-page.php' );
 			}
 
 		}

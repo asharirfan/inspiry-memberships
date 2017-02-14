@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.0.0
  */
 if ( file_exists( IMS_BASE_DIR . '/resources/welcome/class-welcome-page.php' ) ) {
-    require_once( IMS_BASE_DIR . '/resources/welcome/class-welcome-page.php' );
+    include_once( IMS_BASE_DIR . '/resources/welcome/class-welcome-page.php' );
 }
 
 /**
@@ -28,7 +28,7 @@ if ( file_exists( IMS_BASE_DIR . '/resources/welcome/class-welcome-page.php' ) )
  * @since 1.0.0
  */
 if ( file_exists( IMS_BASE_DIR . '/resources/welcome/class-welcome-functions.php' ) ) {
-    require_once( IMS_BASE_DIR . '/resources/welcome/class-welcome-functions.php' );
+    include_once( IMS_BASE_DIR . '/resources/welcome/class-welcome-functions.php' );
 }
 
 if ( class_exists( 'IMS_Welcome_Page' ) ) {
