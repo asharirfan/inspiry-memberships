@@ -1,2 +1,2 @@
 # Inspiry Memberships
-A simple plugin to create memberships portal on your WordPress site.
+This plugin facilitates you to create membership packages for your real estate website based on real estate themes from [Inspiry Themes](https://inspirythemes.com).
