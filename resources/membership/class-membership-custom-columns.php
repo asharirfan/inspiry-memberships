@@ -71,7 +71,7 @@ if ( ! class_exists( 'IMS_Membership_Custom_Columns' ) ) :
 					if ( ! empty( $properties ) ) {
 						echo esc_html( $properties );
 					} else {
-						_e( 'Not Available', 'inspiry-memberships' );
+						esc_html_e( 'Not Available', 'inspiry-memberships' );
 					}
 					break;
 
@@ -80,7 +80,7 @@ if ( ! class_exists( 'IMS_Membership_Custom_Columns' ) ) :
 					if ( ! empty( $featured ) ) {
 						echo esc_html( $featured );
 					} else {
-						_e( 'Not Available', 'inspiry-memberships' );
+						esc_html_e( 'Not Available', 'inspiry-memberships' );
 					}
 					break;
 
@@ -97,7 +97,7 @@ if ( ! class_exists( 'IMS_Membership_Custom_Columns' ) ) :
 					if ( ! empty( $price ) ) {
 						echo esc_html( $formatted_price );
 					} else {
-						_e( 'Not Available', 'inspiry-memberships' );
+						esc_html_e( 'Not Available', 'inspiry-memberships' );
 					}
 					break;
 
@@ -109,7 +109,7 @@ if ( ! class_exists( 'IMS_Membership_Custom_Columns' ) ) :
 					} elseif ( ! empty( $duration ) && ( $duration == 1 ) ) {
 						echo esc_html( $duration . ' ' . rtrim( $duration_unit, "s" ) );
 					} else {
-						_e( 'Not Available', 'inspiry-memberships' );
+						esc_html_e( 'Not Available', 'inspiry-memberships' );
 					}
 					break;
 
