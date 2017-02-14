@@ -1,57 +1,59 @@
 /* ----------------------------------------------------------------------------
  * Welcome Page CSS
  * ------------------------------------------------------------------------- */
- /* New Logo */
- .svg .ims__logo {
-    color: #fff;
-    background: url(../img/inspiry-logo.png)  center center no-repeat rgba(0,0,0,0);
-    -webkit-background-size: contain;
-    -o-background-size: contain;
-    background-size: contain;
-    height: 140px;
-    display: inline-block;
-    width: 140px;
-    position: absolute;
-    top: 0;
-    right: 0;
- }
+/* New Logo */
+.svg .ims__logo {
+	color: #fff;
+	background: url(../img/inspiry-logo.png) center center no-repeat rgba(0, 0, 0, 0);
+	-webkit-background-size: contain;
+	-o-background-size: contain;
+	background-size: contain;
+	height: 140px;
+	display: inline-block;
+	width: 140px;
+	position: absolute;
+	top: 0;
+	right: 0;
+}
 
- .about-wrap .feature-section p.ims__description {
-    margin-left: 0;
- }
+.about-wrap .feature-section p.ims__description {
+	margin-left: 0;
+	max-width: none;
+}
 
- /* Responsive Youtube Video*/
- .embed-container {
-    height        : 0;
-    max-width     : 100%;
-    padding-bottom: 56.25%;
-    overflow      : hidden;
-    position      : relative;
- }
- .embed-container iframe,
- .embed-container object,
- .embed-container embed {
-    top     : 0;
-    left    : 0;
-    width   : 100%;
-    height  : 100%;
-    position: absolute;
- }
+/* Responsive Youtube Video*/
+.embed-container {
+	height: 0;
+	max-width: 100%;
+	padding-bottom: 56.25%;
+	overflow: hidden;
+	position: relative;
+}
+
+.embed-container iframe,
+.embed-container object,
+.embed-container embed {
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+}
 
 .ims-basic-settings,
 .ims-stripe-settings,
 .ims-paypal-settings,
 .ims-wire-settings {
-    display: none;
+	display: none;
 }
 
 .about-wrap .feature-section .ims-gif {
-    display: none;
-    margin: 0;
-    border: none;
-    padding: 0 5px;
+	display: none;
+	margin: 0;
+	border: none;
+	padding: 0 5px;
 }
 
 .wp-video iframe {
-    border: 1px solid rgba(0,0,0,.1);
+	border: 1px solid rgba(0, 0, 0, .1);
 }
