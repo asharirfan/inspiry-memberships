@@ -70,7 +70,7 @@ if ( ! class_exists( 'IMS_Scripts' ) ) :
 				// JS functions file.
                 wp_register_script(
                     'ims-custom-js',
-                    IMS_BASE_URL . 'assets/js/custom.js',
+                    IMS_BASE_URL . 'resources/js/custom.js',
                     array( 'jquery' ),
                     IMS_VERSION,
                     true

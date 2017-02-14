@@ -38,13 +38,13 @@ Thumbs.db
 # Composer #
 ##########
 library/vendors/composer/
-!assets/js/vendor/
+!resources/js/vendor/
 wpcs/
 composer.lock
 
 # Bower #
 ##########
-assets/bower_components/*
+resources/bower_components/*
 
 # Codekit #
 ##########
@@ -64,9 +64,9 @@ node_modules
 # PhpStrom Project Files #
 .idea/
 library/vendors/composer
-assets/img/.DS_Store
-assets/sass/HTML
-assets/sass/Rails
+resources/img/.DS_Store
+resources/sass/HTML
+resources/sass/Rails
 HTML
 Rails
 

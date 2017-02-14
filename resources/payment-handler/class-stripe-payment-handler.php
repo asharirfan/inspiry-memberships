@@ -98,7 +98,7 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 
 			// Require Stripe library if it is not already exists.
 			if ( ! class_exists( '\Stripe\Stripe' ) ) {
-				include( IMS_BASE_DIR . '/assets/stripe/stripe-init.php' );
+				include( IMS_BASE_DIR . '/resources/stripe/stripe-init.php' );
 			}
 
 			/**

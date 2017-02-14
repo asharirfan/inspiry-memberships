@@ -93,8 +93,8 @@ if ( ! class_exists( 'IMS_Welcome_Page' ) ) :
 			 *
 			 * @since 1.0.0
 			 */
-			if ( file_exists( IMS_BASE_DIR . '/assets/welcome/welcome-page.php' ) ) {
-			    require_once( IMS_BASE_DIR . '/assets/welcome/welcome-page.php' );
+			if ( file_exists( IMS_BASE_DIR . '/resources/welcome/welcome-page.php' ) ) {
+			    require_once( IMS_BASE_DIR . '/resources/welcome/welcome-page.php' );
 			}
 
 		}
@@ -114,7 +114,7 @@ if ( ! class_exists( 'IMS_Welcome_Page' ) ) :
 			// Welcome page styles.
 			wp_enqueue_style(
 				'wpw_style',
-				IMS_BASE_URL . '/assets/css/welcome.css',
+				IMS_BASE_URL . '/resources/css/welcome.css',
 				array(),
 				IMS_VERSION,
 				'all'
@@ -137,7 +137,7 @@ if ( ! class_exists( 'IMS_Welcome_Page' ) ) :
 			// JS functions file.
             wp_register_script(
                 'ims-welcome-js',
-                IMS_BASE_URL . 'assets/js/welcome.js',
+                IMS_BASE_URL . 'resources/js/welcome.js',
                 array( 'jquery' ),
                 IMS_VERSION,
                 true

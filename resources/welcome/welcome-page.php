@@ -49,8 +49,8 @@ $the_version = IMS_VERSION;
 						 *
 						 * @since 1.0.0
 						 */
-						if ( file_exists( IMS_BASE_DIR . '/assets/welcome/form/basic-settings.php' ) ) {
-							require_once( IMS_BASE_DIR . '/assets/welcome/form/basic-settings.php' );
+						if ( file_exists( IMS_BASE_DIR . '/resources/welcome/form/basic-settings.php' ) ) {
+							require_once( IMS_BASE_DIR . '/resources/welcome/form/basic-settings.php' );
 						}
 						?>
 					</div>
@@ -64,8 +64,8 @@ $the_version = IMS_VERSION;
 						 *
 						 * @since 1.0.0
 						 */
-						if ( file_exists( IMS_BASE_DIR . '/assets/welcome/form/stripe-settings.php' ) ) {
-							require_once( IMS_BASE_DIR . '/assets/welcome/form/stripe-settings.php' );
+						if ( file_exists( IMS_BASE_DIR . '/resources/welcome/form/stripe-settings.php' ) ) {
+							require_once( IMS_BASE_DIR . '/resources/welcome/form/stripe-settings.php' );
 						}
 						?>
 					</div>
@@ -79,8 +79,8 @@ $the_version = IMS_VERSION;
 						 *
 						 * @since 1.0.0
 						 */
-						if ( file_exists( IMS_BASE_DIR . '/assets/welcome/form/paypal-settings.php' ) ) {
-							require_once( IMS_BASE_DIR . '/assets/welcome/form/paypal-settings.php' );
+						if ( file_exists( IMS_BASE_DIR . '/resources/welcome/form/paypal-settings.php' ) ) {
+							require_once( IMS_BASE_DIR . '/resources/welcome/form/paypal-settings.php' );
 						}
 						?>
 					</div>
@@ -94,8 +94,8 @@ $the_version = IMS_VERSION;
 						 *
 						 * @since 1.0.0
 						 */
-						if ( file_exists( IMS_BASE_DIR . '/assets/welcome/form/wire-settings.php' ) ) {
-							require_once( IMS_BASE_DIR . '/assets/welcome/form/wire-settings.php' );
+						if ( file_exists( IMS_BASE_DIR . '/resources/welcome/form/wire-settings.php' ) ) {
+							require_once( IMS_BASE_DIR . '/resources/welcome/form/wire-settings.php' );
 						}
 						?>
 					</div>
@@ -104,7 +104,7 @@ $the_version = IMS_VERSION;
 				<li>
 					<p class="ims__description">
 						<a id="ims-install" class="button button-primary"><?php esc_html_e( 'Start Configuring', 'inspiry-memberships' ); ?></a>
-						<img class="ims-gif" src="<?php echo IMS_BASE_URL; ?>assets/img/spinner.gif">
+						<img class="ims-gif" src="<?php echo IMS_BASE_URL; ?>resources/img/spinner.gif">
 					</p>
 					<p class="ims-error ims__description"></p>
 				</li>

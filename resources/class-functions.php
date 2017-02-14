@@ -259,7 +259,7 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 					<!-- /.form-option -->
 
 					<div class="ims-membership_loader">
-						<img src="<?php echo IMS_BASE_URL; ?>assets/img/ajax-loader.gif">
+						<img src="<?php echo IMS_BASE_URL; ?>resources/img/ajax-loader.gif">
 						<!-- Ajax Loader GIF -->
 					</div>
 					<!-- /.ims-membership_loader -->
@@ -275,7 +275,7 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 						<?php wp_nonce_field( 'membership-paypal-nonce', 'membership_paypal_nonce' ); ?>
 						<div class="ims-button-option ims-paypal-button">
 							<a href="#" id="ims-paypal">
-								<img src="<?php echo IMS_BASE_URL; ?>assets/img/checkout-paypal.png">
+								<img src="<?php echo IMS_BASE_URL; ?>resources/img/checkout-paypal.png">
 							</a>
 						</div>
 						<!-- /.form-option ims-paypal-button -->

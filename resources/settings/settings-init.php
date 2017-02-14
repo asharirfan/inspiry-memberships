@@ -18,8 +18,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 1.0.0
  */
-if ( file_exists( IMS_BASE_DIR . '/assets/settings/class-ims-settings.php' ) ) {
-    require_once( IMS_BASE_DIR . '/assets/settings/class-ims-settings.php' );
+if ( file_exists( IMS_BASE_DIR . '/resources/settings/class-ims-settings.php' ) ) {
+    require_once( IMS_BASE_DIR . '/resources/settings/class-ims-settings.php' );
 }
 
 if ( class_exists( 'WP_OSA' ) ) {
@@ -66,8 +66,8 @@ if ( class_exists( 'WP_OSA' ) ) {
 	 *
 	 * @since 1.0.0
 	 */
-	if ( file_exists( IMS_BASE_DIR . 'assets/settings/basic-settings.php' ) ) {
-	    require_once( IMS_BASE_DIR . 'assets/settings/basic-settings.php' );
+	if ( file_exists( IMS_BASE_DIR . 'resources/settings/basic-settings.php' ) ) {
+	    require_once( IMS_BASE_DIR . 'resources/settings/basic-settings.php' );
 	}
 
 	/**
@@ -75,8 +75,8 @@ if ( class_exists( 'WP_OSA' ) ) {
 	 *
 	 * @since 1.0.0
 	 */
-	if ( file_exists( IMS_BASE_DIR . 'assets/settings/stripe-settings.php' ) ) {
-	    require_once( IMS_BASE_DIR . 'assets/settings/stripe-settings.php' );
+	if ( file_exists( IMS_BASE_DIR . 'resources/settings/stripe-settings.php' ) ) {
+	    require_once( IMS_BASE_DIR . 'resources/settings/stripe-settings.php' );
 	}
 
     /**
@@ -84,8 +84,8 @@ if ( class_exists( 'WP_OSA' ) ) {
 	 *
 	 * @since 1.0.0
 	 */
-	if ( file_exists( IMS_BASE_DIR . 'assets/settings/paypal-settings.php' ) ) {
-	    require_once( IMS_BASE_DIR . 'assets/settings/paypal-settings.php' );
+	if ( file_exists( IMS_BASE_DIR . 'resources/settings/paypal-settings.php' ) ) {
+	    require_once( IMS_BASE_DIR . 'resources/settings/paypal-settings.php' );
 	}
 
 	/**
@@ -93,8 +93,8 @@ if ( class_exists( 'WP_OSA' ) ) {
 	 *
 	 * @since 1.0.0
 	 */
-	if ( file_exists( IMS_BASE_DIR . 'assets/settings/wire-settings.php' ) ) {
-	    require_once( IMS_BASE_DIR . 'assets/settings/wire-settings.php' );
+	if ( file_exists( IMS_BASE_DIR . 'resources/settings/wire-settings.php' ) ) {
+	    require_once( IMS_BASE_DIR . 'resources/settings/wire-settings.php' );
 	}
 
 	// After adding settings hook.

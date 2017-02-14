@@ -170,7 +170,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<a href="#" class="button button-primary" id="ims-stripe-submit">
 			<?php _e( 'Next', 'inspiry-memberships' ); ?>
 		</a>
-		<img class="ims-gif" src="<?php echo IMS_BASE_URL; ?>assets/img/spinner.gif">
+		<img class="ims-gif" src="<?php echo IMS_BASE_URL; ?>resources/img/spinner.gif">
 	</p>
 	<!-- /.ims__description -->
 

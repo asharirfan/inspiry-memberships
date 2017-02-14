@@ -18,8 +18,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 1.0.0
  */
-if ( file_exists( IMS_BASE_DIR . '/assets/membership/cpt-membership.php' ) ) {
-    require_once( IMS_BASE_DIR . '/assets/membership/cpt-membership.php' );
+if ( file_exists( IMS_BASE_DIR . '/resources/membership/cpt-membership.php' ) ) {
+    require_once( IMS_BASE_DIR . '/resources/membership/cpt-membership.php' );
 }
 
 /**
@@ -27,8 +27,8 @@ if ( file_exists( IMS_BASE_DIR . '/assets/membership/cpt-membership.php' ) ) {
  *
  * @since 1.0.0
  */
-if ( file_exists( IMS_BASE_DIR . '/assets/membership/class-membership.php' ) ) {
-    require_once( IMS_BASE_DIR . '/assets/membership/class-membership.php' );
+if ( file_exists( IMS_BASE_DIR . '/resources/membership/class-membership.php' ) ) {
+    require_once( IMS_BASE_DIR . '/resources/membership/class-membership.php' );
 }
 
 /**
@@ -36,8 +36,8 @@ if ( file_exists( IMS_BASE_DIR . '/assets/membership/class-membership.php' ) ) {
  *
  * @since 1.0.0
  */
-if ( file_exists( IMS_BASE_DIR . '/assets/membership/class-membership-metaboxes.php' ) ) {
-    require_once( IMS_BASE_DIR . '/assets/membership/class-membership-metaboxes.php' );
+if ( file_exists( IMS_BASE_DIR . '/resources/membership/class-membership-metaboxes.php' ) ) {
+    require_once( IMS_BASE_DIR . '/resources/membership/class-membership-metaboxes.php' );
 }
 
 /**
@@ -45,8 +45,8 @@ if ( file_exists( IMS_BASE_DIR . '/assets/membership/class-membership-metaboxes.
  *
  * @since 1.0.0
  */
-if ( file_exists( IMS_BASE_DIR . '/assets/membership/class-membership-custom-columns.php' ) ) {
-    require_once( IMS_BASE_DIR . '/assets/membership/class-membership-custom-columns.php' );
+if ( file_exists( IMS_BASE_DIR . '/resources/membership/class-membership-custom-columns.php' ) ) {
+    require_once( IMS_BASE_DIR . '/resources/membership/class-membership-custom-columns.php' );
 }
 
 /**
@@ -54,8 +54,8 @@ if ( file_exists( IMS_BASE_DIR . '/assets/membership/class-membership-custom-col
  *
  * @since 1.0.0
  */
-if ( file_exists( IMS_BASE_DIR . '/assets/membership/class-get-membership.php' ) ) {
-    require_once( IMS_BASE_DIR . '/assets/membership/class-get-membership.php' );
+if ( file_exists( IMS_BASE_DIR . '/resources/membership/class-get-membership.php' ) ) {
+    require_once( IMS_BASE_DIR . '/resources/membership/class-get-membership.php' );
 }
 
 /**
@@ -63,8 +63,8 @@ if ( file_exists( IMS_BASE_DIR . '/assets/membership/class-get-membership.php' )
  *
  * @since 1.0.0
  */
-if ( file_exists( IMS_BASE_DIR . '/assets/membership/methods-get-membership.php' ) ) {
-    require_once( IMS_BASE_DIR . '/assets/membership/methods-get-membership.php' );
+if ( file_exists( IMS_BASE_DIR . '/resources/membership/methods-get-membership.php' ) ) {
+    require_once( IMS_BASE_DIR . '/resources/membership/methods-get-membership.php' );
 }
 
 /**
@@ -72,8 +72,8 @@ if ( file_exists( IMS_BASE_DIR . '/assets/membership/methods-get-membership.php'
  *
  * @since 1.0.0
  */
-if ( file_exists( IMS_BASE_DIR . '/assets/membership/class-membership-methods.php' ) ) {
-    require_once( IMS_BASE_DIR . '/assets/membership/class-membership-methods.php' );
+if ( file_exists( IMS_BASE_DIR . '/resources/membership/class-membership-methods.php' ) ) {
+    require_once( IMS_BASE_DIR . '/resources/membership/class-membership-methods.php' );
 }
 
 if ( class_exists( 'IMS_Membership' ) ) {

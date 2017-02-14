@@ -267,7 +267,7 @@ if ( ! class_exists( 'IMS_Membership_Meta_Boxes' ) ) :
 
 			global $post_type;
     		if ( 'ims_membership' === $post_type ) {
-    			wp_enqueue_style( 'ims-admin-styles', IMS_BASE_URL . 'assets/css/membership.css', array(), IMS_VERSION );
+    			wp_enqueue_style( 'ims-admin-styles', IMS_BASE_URL . 'resources/css/membership.css', array(), IMS_VERSION );
     		}
 
 		}

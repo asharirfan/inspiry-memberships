@@ -18,8 +18,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 1.0.0
  */
-if ( file_exists( IMS_BASE_DIR . '/assets/payment-handler/class-payment-handler.php' ) ) {
-    require_once( IMS_BASE_DIR . '/assets/payment-handler/class-payment-handler.php' );
+if ( file_exists( IMS_BASE_DIR . '/resources/payment-handler/class-payment-handler.php' ) ) {
+    require_once( IMS_BASE_DIR . '/resources/payment-handler/class-payment-handler.php' );
 }
 
 /**
@@ -27,8 +27,8 @@ if ( file_exists( IMS_BASE_DIR . '/assets/payment-handler/class-payment-handler.
  *
  * @since 1.0.0
  */
-if ( file_exists( IMS_BASE_DIR . '/assets/payment-handler/class-stripe-payment-handler.php' ) ) {
-    require_once( IMS_BASE_DIR . '/assets/payment-handler/class-stripe-payment-handler.php' );
+if ( file_exists( IMS_BASE_DIR . '/resources/payment-handler/class-stripe-payment-handler.php' ) ) {
+    require_once( IMS_BASE_DIR . '/resources/payment-handler/class-stripe-payment-handler.php' );
 }
 
 /**
@@ -36,8 +36,8 @@ if ( file_exists( IMS_BASE_DIR . '/assets/payment-handler/class-stripe-payment-h
  *
  * @since 1.0.0
  */
-if ( file_exists( IMS_BASE_DIR . '/assets/payment-handler/class-paypal-payment-handler.php' ) ) {
-    require_once( IMS_BASE_DIR . '/assets/payment-handler/class-paypal-payment-handler.php' );
+if ( file_exists( IMS_BASE_DIR . '/resources/payment-handler/class-paypal-payment-handler.php' ) ) {
+    require_once( IMS_BASE_DIR . '/resources/payment-handler/class-paypal-payment-handler.php' );
 }
 
 /**
@@ -45,8 +45,8 @@ if ( file_exists( IMS_BASE_DIR . '/assets/payment-handler/class-paypal-payment-h
  *
  * @since 1.0.0
  */
-if ( file_exists( IMS_BASE_DIR . '/assets/payment-handler/class-wire-transfer-handler.php' ) ) {
-    require_once( IMS_BASE_DIR . '/assets/payment-handler/class-wire-transfer-handler.php' );
+if ( file_exists( IMS_BASE_DIR . '/resources/payment-handler/class-wire-transfer-handler.php' ) ) {
+    require_once( IMS_BASE_DIR . '/resources/payment-handler/class-wire-transfer-handler.php' );
 }
 
 if ( class_exists( 'IMS_Payment_Handler' ) ) {
