@@ -1,4 +1,4 @@
-# Inspiry Memberships
+=== Inspiry Memberships ===
 Contributors: inspirythemes, mrasharirfan, saqibsarwar
 Donate link: url
 Tags: membership, real estate, inspiry

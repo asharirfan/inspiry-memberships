@@ -155,12 +155,25 @@ if ( ! class_exists( 'Inspiry_Memberships' ) ) :
 		public function init_hooks() {
 
 			register_activation_hook( __FILE__, array( 'IMS_Install', 'install' ) );
+
+			add_filter( 'plugin_action_links_' . IMS_BASE_NAME, array( $this, 'settings_action_link' ) );
+
 			register_deactivation_hook( __FILE__, array( 'IMS_Uninstall', 'uninstall' ) );
-
-			// add_action( 'init', array( __CLASS__, 'init' ) );
-
 		}
 
+		/**
+		 * Add plugin settings link
+		 *
+		 * @param $links
+		 *
+		 * @since 1.0.0
+		 * @return array
+		 */
+		public function settings_action_link( $links ) {
+			$links[] = '<a href="' . get_admin_url( null, 'admin.php?page=ims_settings' ) . '">' . esc_html__( 'Settings', 'inspiry-memberships' ) . '</a>';
+
+			return $links;
+		}
 	}
 
 endif;

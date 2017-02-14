@@ -64,7 +64,7 @@ if ( ! class_exists( 'IMS_Admin_Menu' ) ) :
 				'addnew' => array(
 					'inspiry_memberships',
 					__( 'Add New Membership', 'inspiry-memberships' ),
-					__( '⇨ New Membership', 'inspiry-memberships' ),
+					__( 'New Membership', 'inspiry-memberships' ),
 					'manage_options',
 					'post-new.php?post_type=ims_membership',
 				),
@@ -78,7 +78,7 @@ if ( ! class_exists( 'IMS_Admin_Menu' ) ) :
 				'addnewreceipt' => array(
 					'inspiry_memberships',
 					__( 'Add New Receipt', 'inspiry-memberships' ),
-					__( '✓ New Receipt', 'inspiry-memberships' ),
+					__( 'New Receipt', 'inspiry-memberships' ),
 					'manage_options',
 					'post-new.php?post_type=ims_receipt',
 				),
