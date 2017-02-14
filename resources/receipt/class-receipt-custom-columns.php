@@ -34,13 +34,13 @@ if ( ! class_exists( 'IMS_Receipt_Custom_Columns' ) ) :
 
 			$columns = apply_filters( 'ims_receipt_custom_column_names', array(
 	            'cb' 			=> "<input type=\"checkbox\" />",
-	            'title' 		=> __( 'Receipt', 'inspiry-stripe' ),
-	            'receipt_for'	=> __( 'Receipt For', 'inspiry-stripe' ),
-	            'membership'	=> __( 'Membership', 'inspiry-stripe' ),
-	            'price'			=> __( 'Price', 'inspiry-stripe' ),
-	            'user_id' 		=> __( 'User', 'inspiry-stripe' ),
-	            'vendor' 		=> __( 'Vendor', 'inspiry-stripe' ),
-	            'purchase_date'	=> __( 'Date of Purchase', 'inspiry-stripe' )
+	            'title' 		=> __( 'Receipt', 'inspiry-memberships' ),
+	            'receipt_for'	=> __( 'Receipt For', 'inspiry-memberships' ),
+	            'membership'	=> __( 'Membership', 'inspiry-memberships' ),
+	            'price'			=> __( 'Price', 'inspiry-memberships' ),
+	            'user_id' 		=> __( 'User', 'inspiry-memberships' ),
+	            'vendor' 		=> __( 'Vendor', 'inspiry-memberships' ),
+	            'purchase_date'	=> __( 'Date of Purchase', 'inspiry-memberships' )
 	        ) );
 
 	        /**

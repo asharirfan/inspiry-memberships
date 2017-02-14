@@ -220,7 +220,7 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 					$stripe_button_arr	= apply_filters( 'ims_stripe_button_args', array(
 						'success'			=> true,
 						'blog_name'			=> get_bloginfo( 'name' ),
-						'desc'				=> __( 'Membership Payment', 'inspiry-stripe' ),
+						'desc'				=> __( 'Membership Payment', 'inspiry-memberships' ),
 						'ID'				=> get_the_ID(),
 						'membership' 		=> get_the_title( $membership_id ),
 						'membership_id'		=> $membership_id,
