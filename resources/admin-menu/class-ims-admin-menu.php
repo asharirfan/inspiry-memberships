@@ -55,7 +55,7 @@ if ( ! class_exists( 'IMS_Admin_Menu' ) ) :
 				$this->menu_capability,
 				'inspiry_memberships',
 				'',
-				'dashicons-smiley',
+				'dashicons-id',
 				'9.08'
 			);
 
