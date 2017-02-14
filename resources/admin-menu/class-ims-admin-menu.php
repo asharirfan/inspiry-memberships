@@ -56,7 +56,7 @@ if ( ! class_exists( 'IMS_Admin_Menu' ) ) :
 				'inspiry_memberships',
 				'',
 				'dashicons-id',
-				'9.08'
+				'9'
 			);
 
 			// Add all sub menus.
