@@ -35,10 +35,10 @@ if ( ! class_exists( 'IMS_Membership_Custom_Columns' ) ) :
 			$columns = apply_filters( 'ims_membership_custom_column_name', array(
 	            'cb' 			=> "<input type=\"checkbox\" />",
 	            'title' 		=> __( 'Membership Title', 'inspiry-stripe' ),
-	            'properties'	=> __( 'Properties Allowed', 'inspiry-stripe' ),
+	            'properties'	=> __( 'Allowed Properties', 'inspiry-stripe' ),
 	            'featured' 		=> __( 'Featured Properties', 'inspiry-stripe' ),
 	            'price' 		=> __( 'Price', 'inspiry-stripe' ),
-	            'duration' 		=> __( 'Duration', 'inspiry-stripe' )
+	            'duration' 		=> __( 'Billing Period', 'inspiry-stripe' )
 	        ) );
 
 	        /**
