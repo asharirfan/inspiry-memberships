@@ -35,12 +35,6 @@ if ( ! class_exists( 'IMS_Uninstall' ) ) :
 			// Delete the welcome transient.
 			delete_transient( '_welcome_redirect_ims' );
 
-			// Delete plugin options.
-			delete_option( 'ims_basic_settings' );
-			delete_option( 'ims_stripe_settings' );
-			delete_option( 'ims_paypal_settings' );
-			delete_option( 'ims_wire_settings' );
-
 		}
 
 	}
