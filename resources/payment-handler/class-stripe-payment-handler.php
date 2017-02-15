@@ -217,6 +217,13 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 
 					$membership_obj 	= ims_get_membership_object( $membership_id );
 
+					$price 	= $membership_obj->get_price() * 100;
+					if ( ! empty( $price ) ) {
+						$payment_nonce	= wp_create_nonce( 'ims-stripe-nonce' );
+					} else {
+						$payment_nonce	= wp_create_nonce( 'ims-free-nonce' );
+					}
+
 					$stripe_button_arr	= apply_filters( 'ims_stripe_button_args', array(
 						'success'			=> true,
 						'blog_name'			=> get_bloginfo( 'name' ),
@@ -224,11 +231,12 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 						'ID'				=> get_the_ID(),
 						'membership' 		=> get_the_title( $membership_id ),
 						'membership_id'		=> $membership_id,
-						'price'				=> $membership_obj->get_price() * 100,
+						'price'				=> $price,
 						'publishable_key'	=> $this->publishable_key,
 						'currency_code'		=> $this->currency_code,
 						'button_label'		=> $ims_button_label,
-						'payment_nonce'		=> wp_create_nonce( 'ims-stripe-nonce' )
+						'payment_nonce'		=> $payment_nonce,
+						'freeButtonLabel'	=> __( 'Subscribe', 'inspiry-memberships' )
 					) );
 					echo json_encode( $stripe_button_arr );
 
@@ -376,7 +384,7 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 					$redirect_url	= add_query_arg( array( 'membership' => 'failed' ), $redirect );
 
 					// Add action hook after stripe payment is done.
-					do_action( 'ims_stripe_simple_payment_failed', $user_id, $membership_id, $receipt_id );
+					do_action( 'ims_stripe_simple_payment_failed' );
 
 				}
 

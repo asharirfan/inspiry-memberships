@@ -63,43 +63,67 @@ jQuery( function( $ ) {
 
                         stripe_button.empty(); // Empty the previous button.
 
-                        // Stripe Payment Button
-                        var stripe_pay  = jQuery( '<script></script>' );
-                        stripe_pay.attr( 'src', 'https://checkout.stripe.com/checkout.js' );
-                        stripe_pay.addClass( 'stripe-button' );
-                        stripe_pay.attr( 'data-key', response.publishable_key );
-                        stripe_pay.attr( 'data-amount', response.price );
-                        stripe_pay.attr( 'data-name', response.blog_name );
-                        stripe_pay.attr( 'data-currency', response.currency_code );
-                        stripe_pay.attr( 'data-description', response.desc + ' for ' + response.membership );
-                        stripe_pay.attr( 'data-locale', 'auto' );
-                        stripe_pay.attr( 'data-billing-address', 'true' );
-                        stripe_pay.attr( 'data-label', response.button_label );
-                        stripe_button.append( stripe_pay );
+                        if ( ! response.price ) {
 
-                        var stripe_action = jQuery( '<input />' );
-                        stripe_action.attr( 'type', 'hidden' );
-                        stripe_action.attr( 'name', 'action' );
-                        stripe_action.attr( 'value', 'ims_stripe_membership_payment' );
-                        stripe_button.append( stripe_action );
+                            stripe_button.hide();
+                            $( '.ims-paypal-button' ).hide();
 
-                        var stripe_nonce = jQuery( '<input />' );
-                        stripe_nonce.attr( 'type', 'hidden' );
-                        stripe_nonce.attr( 'name', 'ims_stripe_nonce' );
-                        stripe_nonce.attr( 'value', response.payment_nonce );
-                        stripe_button.append( stripe_nonce );
+                            var freeButton  = jQuery( '<button></button>' );
+                            freeButton.attr( 'id', 'ims-free-button' );
+                            freeButton.attr( 'type', 'submit' );
+                            freeButton.text( response.freeButtonLabel );
+                            stripe_button.append( freeButton );
+                            stripe_button.show();
 
-                        var stripe_price = jQuery( '<input />' );
-                        stripe_price.attr( 'type', 'hidden' );
-                        stripe_price.attr( 'name', 'membership_price' );
-                        stripe_price.attr( 'value', response.price );
-                        stripe_button.append( stripe_price );
+                            var free_nonce = jQuery( '<input />' );
+                            free_nonce.attr( 'type', 'hidden' );
+                            free_nonce.attr( 'id', 'ims_free_check' );
+                            free_nonce.attr( 'name', 'ims_free_check' );
+                            free_nonce.attr( 'value', true );
+                            stripe_button.append( free_nonce );
 
-                        var stripe_membership_id = jQuery( '<input />' );
-                        stripe_membership_id.attr( 'type', 'hidden' );
-                        stripe_membership_id.attr( 'name', 'membership_id' );
-                        stripe_membership_id.attr( 'value', response.membership_id );
-                        stripe_button.append( stripe_membership_id );
+                        } else {
+
+                            $( '.ims-paypal-button' ).show();
+
+                            // Stripe Payment Button
+                            var stripe_pay  = jQuery( '<script></script>' );
+                            stripe_pay.attr( 'src', 'https://checkout.stripe.com/checkout.js' );
+                            stripe_pay.addClass( 'stripe-button' );
+                            stripe_pay.attr( 'data-key', response.publishable_key );
+                            stripe_pay.attr( 'data-amount', response.price );
+                            stripe_pay.attr( 'data-name', response.blog_name );
+                            stripe_pay.attr( 'data-currency', response.currency_code );
+                            stripe_pay.attr( 'data-description', response.desc + ' for ' + response.membership );
+                            stripe_pay.attr( 'data-locale', 'auto' );
+                            stripe_pay.attr( 'data-billing-address', 'true' );
+                            stripe_pay.attr( 'data-label', response.button_label );
+                            stripe_button.append( stripe_pay );
+
+                            var stripe_action = jQuery( '<input />' );
+                            stripe_action.attr( 'type', 'hidden' );
+                            stripe_action.attr( 'name', 'action' );
+                            stripe_action.attr( 'value', 'ims_stripe_membership_payment' );
+                            stripe_button.append( stripe_action );
+
+                            var stripe_nonce = jQuery( '<input />' );
+                            stripe_nonce.attr( 'type', 'hidden' );
+                            stripe_nonce.attr( 'name', 'ims_stripe_nonce' );
+                            stripe_nonce.attr( 'value', response.payment_nonce );
+                            stripe_button.append( stripe_nonce );
+
+                            var stripe_price = jQuery( '<input />' );
+                            stripe_price.attr( 'type', 'hidden' );
+                            stripe_price.attr( 'name', 'membership_price' );
+                            stripe_price.attr( 'value', response.price );
+                            stripe_button.append( stripe_price );
+
+                            var stripe_membership_id = jQuery( '<input />' );
+                            stripe_membership_id.attr( 'type', 'hidden' );
+                            stripe_membership_id.attr( 'name', 'membership_id' );
+                            stripe_membership_id.attr( 'value', response.membership_id );
+                            stripe_button.append( stripe_membership_id );
+                        }
 
                     } else {
                         error_div.text( response.message );

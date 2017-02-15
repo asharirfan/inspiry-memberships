@@ -370,7 +370,7 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 				$message 	.= sprintf( __( 'Payment process completed %s.', 'inspiry-memberships' ), $vendor ) . "<br/><br/>";
 				$message 	.= sprintf( __( 'To view the details, please visit %s', 'inspiry-memberships' ), $receipt_title );
 
-				$message	= apply_filters( 'ims_membership_admin_mail', $message, $user_id, $membership_id, $vendor );
+				$message	= apply_filters( 'ims_membership_admin_mail', $message, $membership_id, $vendor );
 
 			} elseif ( ! empty( $recurring ) ) {
 
@@ -380,7 +380,7 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 				$message 	.= sprintf( __( 'Payment process completed %s.', 'inspiry-memberships' ), $vendor ) . "<br/><br/>";
 				$message 	.= sprintf( __( 'To view the details, please visit %s', 'inspiry-memberships' ), $receipt_title );
 
-				$message	= apply_filters( 'ims_recurring_membership_admin_mail', $message, $user_id, $membership_id, $vendor );
+				$message	= apply_filters( 'ims_recurring_membership_admin_mail', $message, $membership_id, $vendor );
 
 			}
 

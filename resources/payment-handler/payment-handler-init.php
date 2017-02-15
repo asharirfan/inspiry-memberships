@@ -58,6 +58,8 @@ if ( class_exists( 'IMS_Payment_Handler' ) ) {
 
 	add_action( 'init', array( $ims_payment_handler, 'cancel_user_membership_request' ) ); // Cancel User Membership Request.
 
+	add_action( 'init', array( $ims_payment_handler, 'subscribe_free_membership' ) );
+
 }
 
 if ( class_exists( 'IMS_Stripe_Payment_Handler' ) ) {

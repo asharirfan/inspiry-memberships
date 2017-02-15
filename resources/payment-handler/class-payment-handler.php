@@ -66,6 +66,59 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 
 		}
 
+		/**
+		 * Method: Handle free membership request.
+		 *
+		 * @since 1.0.0
+		 */
+		public function subscribe_free_membership() {
+
+			if ( isset( $_POST[ 'action' ] )
+					&& 'ims_subscribe_membership' == $_POST[ 'action' ]
+					&& wp_verify_nonce( $_POST[ 'membership_select_nonce' ], 'membership-select-nonce' ) ) {
+
+				// Get membership id.
+				$membership_id	= intval( $_POST[ 'ims-membership-select' ] );
+
+				// Get current user.
+				$user 		= wp_get_current_user();
+				$user_id	= $user->ID;
+				$user_email	= $user->user_email;
+
+				// inspiry_log( $membership_id );
+
+				$membership_methods	= new IMS_Membership_Method();
+				$receipt_methods 	= new IMS_Receipt_Method();
+
+				// Add membership.
+				$membership_methods->add_user_membership( $user_id, $membership_id, 'wire' );
+
+				// Generate receipt.
+				$receipt_id	= $receipt_methods->generate_wire_transfer_receipt( $user_id, $membership_id, false );
+
+				if ( ! empty( $receipt_id ) ) {
+
+					// Mail the users.
+					$membership_methods->mail_user( $user_id, $membership_id, 'wire' );
+					$membership_methods->mail_admin( $membership_id, $receipt_id, 'wire' );
+
+					// Update receipt meta.
+					$prefix	= apply_filters( 'ims_receipt_meta_prefix', 'ims_receipt_' );
+
+					update_post_meta( $receipt_id, "{$prefix}status", true );
+
+				}
+
+				if ( wp_get_referer() ) {
+				    wp_safe_redirect( wp_get_referer() );
+				} else {
+				    wp_safe_redirect( get_home_url() );
+				}
+
+			}
+
+		}
+
 	}
 
 endif;
