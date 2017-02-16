@@ -50,61 +50,66 @@ if ( ! class_exists( 'IMS_Wire_Transfer_Handler' ) ) :
 		 */
 		public function send_wire_receipt() {
 
-			// Get membership id.
-			$membership_id	= intval( $_POST[ 'membership_id' ] );
+			if ( isset( $_POST[ 'action' ] ) && 'ims_send_wire_receipt' === $_POST[ 'action' ] &&
+				wp_verify_nonce( $_POST[ 'membership_select_nonce' ], 'membership-select-nonce' ) ) {
 
-			// Get current user.
-			$user 		= wp_get_current_user();
-			$user_id	= $user->ID;
-			$user_email	= $user->user_email;
+				// Get membership id.
+				$membership_id	= ( isset( $_POST[ 'membership_id' ] ) ) ? intval( $_POST[ 'membership_id' ] ) : false;
 
-			if ( empty( $membership_id ) || empty( $user_id ) ) {
-				echo json_encode( array(
-					'success'	=> false,
-					'message'	=> __( 'Please select a membership to continue.', 'inspiry-memberships' )
-				) );
+				// Get current user.
+				$user 		= wp_get_current_user();
+				$user_id	= $user->ID;
+				$user_email	= $user->user_email;
+
+				if ( empty( $membership_id ) || empty( $user_id ) ) {
+					echo json_encode( array(
+						'success'	=> false,
+						'message'	=> __( 'Please select a membership to continue.', 'inspiry-memberships' )
+					) );
+					die();
+				}
+
+				$membership_title	= get_the_title( $membership_id );
+				$membership_obj		= ims_get_membership_object( $membership_id ); // Membership object.
+				$price 				= $membership_obj->get_price(); // Membership price (unformatted).
+				$formatted_price	= IMS_Functions::get_formatted_price( $price ); // Membership price (formatted).
+
+				$receipt_methods	= new IMS_Receipt_Method();
+				$receipt_id 		= $receipt_methods->generate_wire_transfer_receipt( $user_id, $membership_id, false );
+
+				// Membership Receipt Mail.
+				$subject	= 	__( 'Membership Receipt.', 'inspiry-memberships' );
+
+				$message 	= 	sprintf( __( 'You have successfully applied for %s package on our site.', 'inspiry-memberships' ), $membership_title ) . "<br/><br/>";
+				$message 	.= 	__( 'Your chose to pay via Wire Transfer.', 'inspiry-memberships' ) . "<br/><br/>";
+				$message 	.= 	sprintf( __( 'Please send a payment of %s to the account mentioned on the website.', 'inspiry-memberships' ), $formatted_price ) . "<br/><br/>";
+				$message 	.= 	sprintf( __( 'Please include the receipt name, Receipt %s, in the payment details.', 'inspiry-memberships' ), $receipt_id ) . "<br/><br/>";
+				$message 	.= 	__( 'We will activate your membership as soon as we get confirmation of your payment.', 'inspiry-memberships' );
+
+				if ( is_email( $user_email ) ) {
+					$email 	= IMS_Email::send_email( $user_email, $subject, $message );
+				} else {
+					echo json_encode( array(
+						'success'	=> false,
+						'message'	=> __( 'Your email address is not valid.', 'inspiry-memberships' )
+					) );
+					die();
+				}
+
+				if ( $email ) {
+					echo json_encode( array(
+						'success'	=> true,
+						'message'	=> __( 'Email sent successfully.', 'inspiry-memberships' )
+					) );
+				} else {
+					echo json_encode( array(
+						'success'	=> false,
+						'message'	=> __( 'Error occured while sending email.', 'inspiry-memberships' )
+					) );
+				}
 				die();
+
 			}
-
-			$membership_title	= get_the_title( $membership_id );
-			$membership_obj		= ims_get_membership_object( $membership_id ); // Membership object.
-			$price 				= $membership_obj->get_price(); // Membership price (unformatted).
-			$formatted_price	= IMS_Functions::get_formatted_price( $price ); // Membership price (formatted).
-
-			$receipt_methods	= new IMS_Receipt_Method();
-			$receipt_id 		= $receipt_methods->generate_wire_transfer_receipt( $user_id, $membership_id, false );
-
-			// Membership Receipt Mail.
-			$subject	= 	__( 'Membership Receipt.', 'inspiry-memberships' );
-
-			$message 	= 	sprintf( __( 'You have successfully applied for %s package on our site.', 'inspiry-memberships' ), $membership_title ) . "<br/><br/>";
-			$message 	.= 	__( 'Your chose to pay via Wire Transfer.', 'inspiry-memberships' ) . "<br/><br/>";
-			$message 	.= 	sprintf( __( 'Please send a payment of %s to the account mentioned on the website.', 'inspiry-memberships' ), $formatted_price ) . "<br/><br/>";
-			$message 	.= 	sprintf( __( 'Please include the receipt name, Receipt %s, in the payment details.', 'inspiry-memberships' ), $receipt_id ) . "<br/><br/>";
-			$message 	.= 	__( 'We will activate your membership as soon as we get confirmation of your payment.', 'inspiry-memberships' );
-
-			if ( is_email( $user_email ) ) {
-				$email 	= IMS_Email::send_email( $user_email, $subject, $message );
-			} else {
-				echo json_encode( array(
-					'success'	=> false,
-					'message'	=> __( 'Your email address is not valid.', 'inspiry-memberships' )
-				) );
-				die();
-			}
-
-			if ( $email ) {
-				echo json_encode( array(
-					'success'	=> true,
-					'message'	=> __( 'Email sent successfully.', 'inspiry-memberships' )
-				) );
-			} else {
-				echo json_encode( array(
-					'success'	=> false,
-					'message'	=> __( 'Error occured while sending email.', 'inspiry-memberships' )
-				) );
-			}
-			die();
 
 		}
 

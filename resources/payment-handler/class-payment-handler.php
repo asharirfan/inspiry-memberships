@@ -36,16 +36,15 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 					&& 'ims_cancel_user_membership' == $_POST[ 'action' ]
 					&& wp_verify_nonce( $_POST[ 'ims_cancel_membership_nonce' ], 'ims-cancel-membership-nonce' ) ) {
 
-				// Get user and membership id.
-				$user_id	= $_POST[ 'user_id' ];
-
 				// Bail if user id is empty.
-				if ( empty( $user_id ) ) {
+				if ( ! isset( $_POST[ 'user_id' ] ) || empty( $_POST[ 'user_id' ] ) ) {
 					return;
 				}
 
+				$user_id	= intval( $_POST[ 'user_id' ] );
+
 				// Get current vendor.
-				$vendor = get_user_meta( $user_id, 'ims_current_vendor', true );
+				$vendor	= get_user_meta( $user_id, 'ims_current_vendor', true );
 
 				if ( 'stripe' === $vendor ) {
 
@@ -77,15 +76,17 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 					&& 'ims_subscribe_membership' == $_POST[ 'action' ]
 					&& wp_verify_nonce( $_POST[ 'membership_select_nonce' ], 'membership-select-nonce' ) ) {
 
-				// Get membership id.
+				// Bail if membership id is empty.
+				if ( ! isset( $_POST[ 'ims-membership-select' ] ) || empty( $_POST[ 'ims-membership-select' ] ) ) {
+					return;
+				}
+
 				$membership_id	= intval( $_POST[ 'ims-membership-select' ] );
 
 				// Get current user.
 				$user 		= wp_get_current_user();
 				$user_id	= $user->ID;
 				$user_email	= $user->user_email;
-
-				// inspiry_log( $membership_id );
 
 				$membership_methods	= new IMS_Membership_Method();
 				$receipt_methods 	= new IMS_Receipt_Method();

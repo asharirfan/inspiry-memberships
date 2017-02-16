@@ -270,41 +270,39 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 
 				$this->stripe_routine_checks();
 
-				// Get recurring payment check.
-				$is_recurring 		= ( isset( $_POST[ 'ims_recurring' ] ) ) ? true : false;
-
 				// Get membership details.
-				$membership_id 		= intval( $_POST[ 'membership_id' ] );
-				$membership_price 	= floatval( $_POST[ 'membership_price' ] );
+				$membership_id 		= ( isset( $_POST[ 'membership_id' ] ) ) ? intval( $_POST[ 'membership_id' ] ) : false;
+				$membership_price 	= ( isset( $_POST[ 'membership_price' ] ) ) ? floatval( $_POST[ 'membership_price' ] ) : false;
+				$redirect 	= ( isset( $_POST[ 'redirect' ] ) ) ? sanitize_text_field( $_POST[ 'redirect' ] ) : false;
 
-				// Get redirect url.
-				$redirect 	= filter_var( $_POST[ 'redirect' ], FILTER_SANITIZE_URL );
+				// Sanitize redirect url.
+				$redirect 	= filter_var( $redirect, FILTER_SANITIZE_URL );
 
 				// Get current user.
 				$user 		= wp_get_current_user();
 				$user_id 	= $user->ID;
 
 				// Get stripe token.
-				$this->stripe_token	= sanitize_text_field( $_POST[ 'stripeToken' ] );
+				$this->stripe_token	= ( isset( $_POST[ 'stripeToken' ] ) ) ? sanitize_text_field( $_POST[ 'stripeToken' ] ) : false;
 
 				// Customer Details
-				$recurring 	= $is_recurring;
-				$email 		= $_POST[ 'stripeEmail' ];
-				$name 		= $_POST[ 'stripeBillingName' ];
-				$address 	= $_POST[ 'stripeBillingAddressLine1' ];
-				$zip 		= $_POST[ 'stripeBillingAddressZip' ];
-				$city 		= $_POST[ 'stripeBillingAddressCity' ];
-				$state 		= $_POST[ 'stripeBillingAddressState' ];
-				$country 	= $_POST[ 'stripeBillingAddressCountry' ];
+				$recurring 	= ( isset( $_POST[ 'ims_recurring' ] ) ) ? true : false;
+				$email 		= ( isset( $_POST[ 'stripeEmail' ] ) ) ? sanitize_email( $_POST[ 'stripeEmail' ] ) : false;
+				$name 		= ( isset( $_POST[ 'stripeBillingName' ] ) ) ? sanitize_text_field( $_POST[ 'stripeBillingName' ] ) : false;
+				$address 	= ( isset( $_POST[ 'stripeBillingAddressLine1' ] ) ) ? sanitize_text_field( $_POST[ 'stripeBillingAddressLine1' ] ) : false;
+				$zip 		= ( isset( $_POST[ 'stripeBillingAddressZip' ] ) ) ? sanitize_text_field( $_POST[ 'stripeBillingAddressZip' ] ) : false;
+				$city 		= ( isset( $_POST[ 'stripeBillingAddressCity' ] ) ) ? sanitize_text_field( $_POST[ 'stripeBillingAddressCity' ] ) : false;
+				$state 		= ( isset( $_POST[ 'stripeBillingAddressState' ] ) ) ? sanitize_text_field( $_POST[ 'stripeBillingAddressState' ] ) : false;
+				$country 	= ( isset( $_POST[ 'stripeBillingAddressCountry' ] ) ) ? sanitize_text_field( $_POST[ 'stripeBillingAddressCountry' ] ) : false;
 
+				$this->customer_details['email'] 		= ( ! empty( $email ) && is_email( $email ) ) ? $email : false;
 				$this->customer_details['recurring']	= ( ! empty( $recurring ) ) ? $recurring : false;
-				$this->customer_details['email'] 		= ( is_email( $email ) ) ? sanitize_email( $email ) : false;
-				$this->customer_details['name'] 		= ( ! empty( $name )  ) ? sanitize_text_field( $name ) : false;
-				$this->customer_details['address'] 		= ( ! empty( $address ) ) ? sanitize_text_field( $address ) : false;
-				$this->customer_details['zip'] 			= ( ! empty( $zip ) ) ? sanitize_text_field( $zip ) : false;
-				$this->customer_details['city'] 		= ( ! empty( $city )  ) ? sanitize_text_field( $city ) : false;
-				$this->customer_details['state'] 		= ( ! empty( $state )  ) ? sanitize_text_field( $state ) : false;
-				$this->customer_details['country'] 		= ( ! empty( $country )  ) ? sanitize_text_field( $country ) : false;
+				$this->customer_details['name'] 		= ( ! empty( $name )  ) ? $name : false;
+				$this->customer_details['address'] 		= ( ! empty( $address ) ) ? $address : false;
+				$this->customer_details['zip'] 			= ( ! empty( $zip ) ) ? $zip : false;
+				$this->customer_details['city'] 		= ( ! empty( $city )  ) ? $city : false;
+				$this->customer_details['state'] 		= ( ! empty( $state )  ) ? $state : false;
+				$this->customer_details['country'] 		= ( ! empty( $country )  ) ? $country : false;
 
 				/**
 				 * Filter the values of $customer_details array
