@@ -217,10 +217,20 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 						</label>
 					</th>
 					<td>
-						<?php $status = esc_attr( get_post_meta( $receipt->ID, "{$prefix}status", true ) ); ?>
+						<?php
+							// Get membership status.
+							$status 	= esc_attr( get_post_meta( $receipt->ID, "{$prefix}status", true ) );
+							// Get user id and current user membership id.
+							$user_id	= get_post_meta( $receipt->ID, "{$prefix}user_id", true );
+							$current_membership	= get_user_meta( $user_id, "ims_current_membership", true );
+							$membership_id 		= get_post_meta( $receipt->ID, "{$prefix}membership_id", true );
+						?>
 						<?php if ( empty( $status ) ) : ?>
 							<input type="checkbox" name="status" id="status" />
 							<p class="description"><?php _e( 'Select to activate the membership.', 'inspiry-membership' ); ?></p>
+						<?php elseif ( $current_membership !== $membership_id ) : ?>
+							<input type="hidden" name="status" id="status" value="true" />
+							<p class="description"><?php _e( 'Membership expired.', 'inspiry-membership' ); ?></p>
 						<?php else : ?>
 							<input type="hidden" name="status" id="status" value="true" />
 							<p class="description"><?php _e( 'Membership is active.', 'inspiry-membership' ); ?></p>
