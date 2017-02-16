@@ -48,6 +48,7 @@ if ( ! class_exists( 'IMS_Admin_Menu' ) ) :
 		 * @since 1.0.0
 		 */
 		public function ims_menu() {
+
 			// Add menu page.
 			add_menu_page(
 				__( 'Memberships', 'inspiry-memberships' ),
@@ -125,9 +126,9 @@ if ( ! class_exists( 'IMS_Admin_Menu' ) ) :
 			// Check if the current screen's ID has any of the above menu array items.
 			if ( in_array( $screen->id, $menu_arr ) ) { ?>
 				<script type="text/javascript">
-						jQuery("body").removeClass("sticky-menu");
-						jQuery("#toplevel_page_inspiry_memberships").addClass('wp-has-current-submenu wp-menu-open').removeClass('wp-not-current-submenu');
-						jQuery("#toplevel_page_inspiry_memberships > a").addClass('wp-has-current-submenu wp-menu-open').removeClass('wp-not-current-submenu');
+					jQuery( "body" ).removeClass( "sticky-menu" );
+					jQuery( "#toplevel_page_inspiry_memberships" ).addClass( 'wp-has-current-submenu wp-menu-open' ).removeClass( 'wp-not-current-submenu' );
+					jQuery( "#toplevel_page_inspiry_memberships > a" ).addClass( 'wp-has-current-submenu wp-menu-open' ).removeClass( 'wp-not-current-submenu' );
 				</script>
 				<?php
 			}

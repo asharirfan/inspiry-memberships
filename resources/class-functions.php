@@ -96,9 +96,9 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 
 			if ( ! empty( $price ) ) {
 				if ( 'after' === $currency_position ) {
-					$formatted_price 	= $price . $currency_settings[ 'ims_currency_symbol' ];
+					$formatted_price 	= esc_html( $price . $currency_settings[ 'ims_currency_symbol' ] );
 				} else {
-					$formatted_price 	= $currency_settings[ 'ims_currency_symbol' ] . $price;
+					$formatted_price 	= esc_html( $currency_settings[ 'ims_currency_symbol' ] . $price );
 				}
 			} else {
 				return __( 'Price not available', 'inspiry-memberships' );
@@ -237,7 +237,7 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 
 							<option selected disabled><?php esc_html_e( 'None', 'inspiry-memberships' ); ?></option>
 							<?php foreach ( $ims_memberships as $ims_membership ) : ?>
-								<option value="<?php echo $ims_membership[ 'ID' ]; ?>">
+								<option value="<?php echo esc_attr( $ims_membership[ 'ID' ] ); ?>">
 									<?php esc_html_e( $ims_membership[ 'title' ], 'inspiry-memberships' ); ?>
 								</option>
 							<?php endforeach; ?>

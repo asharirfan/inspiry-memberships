@@ -31,8 +31,7 @@ if ( ! class_exists( 'IMS_Membership' ) ) :
 		 * @var 	object
 		 * @since 	1.0.0
 		 */
-		 public $membership;
-
+		public $membership;
 
 		/**
 		 * Constructor.

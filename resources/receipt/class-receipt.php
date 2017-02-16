@@ -31,8 +31,7 @@ if ( ! class_exists( 'IMS_Receipt' ) ) :
 		 * @var 	object
 		 * @since 	1.0.0
 		 */
-		 public $receipt;
-
+		public $receipt;
 
 		/**
 		 * Constructor.

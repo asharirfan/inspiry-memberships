@@ -6,6 +6,7 @@
  * Version:         1.0.0
  * Author:          Inspiry Themes
  * Author URI:      https://inspirythemes.com
+ * Contributors:	inspirythemes, mrasharirfan, saqibsarwar
  * License:         GPL-2.0+
  * License URI:     http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:     inspiry-memberships

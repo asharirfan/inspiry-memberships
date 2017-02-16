@@ -30,6 +30,13 @@ if ( ! class_exists( 'IMS_Receipt_Method' ) ) :
 		/**
 		 * Generate receipt for the membership subscription.
 		 *
+		 * @param int 		$user_id 		- id of the user
+		 * @param int 		$membership_id	- id of the membership
+		 * @param string 	$vendor 		- purchasing vendor for membership
+		 * @param string 	$payment_id 	- id of the payment
+		 * @param bool 		$recurring 		- check to detect the type of receipt
+		 * @param bool 		$blank 			- check to indicate a blank receipt
+		 *
 		 * @since 1.0.0
 		 */
 		public function generate_receipt( $user_id = 0, $membership_id = 0, $vendor = NULL, $payment_id = 0, $recurring = false, $blank = false ) {

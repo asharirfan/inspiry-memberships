@@ -82,7 +82,7 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 								name="receipt_id"
 								id="receipt_id"
 								disabled
-								value="<?php echo ( ! empty( $receipt_id ) ) ? esc_attr( $receipt_id ) : __( 'Receipt ID is not generated yet!' ); ?>"
+								value="<?php echo ( ! empty( $receipt_id ) ) ? esc_attr( $receipt_id ) : __( 'Receipt ID is not generated yet!', 'inspiry-memberships' ); ?>"
 						/>
 					</td>
 				</tr>
@@ -99,7 +99,7 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 								name="receipt_for"
 								id="receipt_for"
 								disabled
-								value="<?php echo ( ! empty( $receipt_for ) ) ? esc_attr( $receipt_for ) : __( 'Data not available!' ); ?>"
+								value="<?php echo ( ! empty( $receipt_for ) ) ? esc_attr( $receipt_for ) : __( 'Data not available!', 'inspiry-memberships' ); ?>"
 						/>
 					</td>
 				</tr>

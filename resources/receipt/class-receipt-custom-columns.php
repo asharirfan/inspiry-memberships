@@ -82,7 +82,7 @@ if ( ! class_exists( 'IMS_Receipt_Custom_Columns' ) ) :
 					$membership_obj 	= get_post( $membership_id );
 					$membership_title 	= $membership_obj->post_title;
 					if ( ! empty( $membership_title ) ) {
-						echo '<a href="' . get_edit_post_link( $membership_id ) . '">' . esc_html( $membership_title ) . '</a>';
+						echo '<a href="' . esc_url( get_edit_post_link( $membership_id ) ) . '">' . esc_html( $membership_title ) . '</a>';
 					} else {
 						esc_html_e( 'Not Available', 'inspiry-memberships' );
 					}
@@ -112,7 +112,7 @@ if ( ! class_exists( 'IMS_Receipt_Custom_Columns' ) ) :
 						$user_name 	= $user->user_login;
 					}
 					if ( ! empty( $user_name ) ) {
-						echo '<a href="' . get_edit_profile_url( $user_id ) . '">' . esc_html( $user_name ) . '</a>';
+						echo '<a href="' . esc_url( get_edit_profile_url( $user_id ) ) . '">' . esc_html( $user_name ) . '</a>';
 					} else {
 						esc_html_e( 'Not Available', 'inspiry-memberships' );
 					}

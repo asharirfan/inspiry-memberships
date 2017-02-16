@@ -31,7 +31,7 @@ if ( ! class_exists( 'IMS_Scripts' ) ) :
 		 * @var 	object
 		 * @since 	1.0.0
 		 */
-		 protected static $_instance;
+		protected static $_instance;
 
 		/**
 		 * Method: Create and return instance of the class.

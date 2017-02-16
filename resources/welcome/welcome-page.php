@@ -14,10 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Version.
-$the_version = IMS_VERSION;
-
-// Logo image.
-// $logo_img = IMS_BASE_URL . '/welcome/img/logo.png'; ?>
+$the_version = IMS_VERSION; ?>
 
 <!-- HTML Started! -->
 <div class="wrap about-wrap">
@@ -25,7 +22,7 @@ $the_version = IMS_VERSION;
 	<h1><?php printf( __( 'Inspiry Memberships %s', 'inspiry-memberships' ), $the_version ); ?></h1>
 
 	<div class="about-text">
-		<?php printf( __( "A membership plugin for real estate themes by Inspiry Themes.", 'inspiry-memberships' ), $the_version ); ?>
+		<?php esc_html_e( "A membership plugin for real estate themes by Inspiry Themes.", 'inspiry-memberships' ); ?>
 	</div>
 
 	<div class="ims__logo"></div>

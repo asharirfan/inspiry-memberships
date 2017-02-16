@@ -31,8 +31,7 @@ if ( ! class_exists( 'IMS_Welcome_Page' ) ) :
 		 * @var 	string
 		 * @since 	1.0.0
 		 */
-		 protected static $_welcome_page;
-
+		protected static $_welcome_page;
 
 		/**
 		 * Method: Redirect to welcome page on activation.
