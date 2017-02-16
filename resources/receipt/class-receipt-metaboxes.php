@@ -73,7 +73,7 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 				<tr valign="top">
 					<th scope="row" valign="top">
 						<label for="receipt_id">
-							<?php _e( 'Receipt ID', 'inspiry-membership' ); ?>
+							<?php esc_html_e( 'Receipt ID', 'inspiry-membership' ); ?>
 						</label>
 					</th>
 					<td>
@@ -90,7 +90,7 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 				<tr valign="top">
 					<th scope="row" valign="top">
 						<label for="receipt_for">
-							<?php _e( 'Receipt For', 'inspiry-membership' ); ?>
+							<?php esc_html_e( 'Receipt For', 'inspiry-membership' ); ?>
 						</label>
 					</th>
 					<td>
@@ -107,7 +107,7 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 				<tr valign="top">
 					<th scope="row" valign="top">
 						<label for="membership_id">
-							<?php _e( 'Membership ID', 'inspiry-membership' ); ?>
+							<?php esc_html_e( 'Membership ID', 'inspiry-membership' ); ?>
 						</label>
 					</th>
 					<td>
@@ -123,7 +123,7 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 				<tr valign="top">
 					<th scope="row" valign="top">
 						<label for="price">
-							<?php _e( 'Price', 'inspiry-membership' ); ?>
+							<?php esc_html_e( 'Price', 'inspiry-membership' ); ?>
 						</label>
 					</th>
 					<td>
@@ -139,7 +139,7 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 				<tr valign="top">
 					<th scope="row" valign="top">
 						<label for="purchase_date">
-							<?php _e( 'Date of Purchase', 'inspiry-membership' ); ?>
+							<?php esc_html_e( 'Date of Purchase', 'inspiry-membership' ); ?>
 						</label>
 					</th>
 					<td>
@@ -149,14 +149,14 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 								placeholder="Date of Purchase"
 								value="<?php echo esc_attr( get_post_meta( $receipt->ID, "{$prefix}purchase_date", true ) ); ?>"
 						/>
-						<p class="description"><?php _e( 'Format: YYYY-MM-DD H:M:S', 'inspiry-memberships' ); ?></p>
+						<p class="description"><?php esc_html_e( 'Format: YYYY-MM-DD H:M:S', 'inspiry-memberships' ); ?></p>
 					</td>
 				</tr>
 
 				<tr valign="top">
 					<th scope="row" valign="top">
 						<label for="user_id">
-							<?php _e( 'User ID', 'inspiry-membership' ); ?>
+							<?php esc_html_e( 'User ID', 'inspiry-membership' ); ?>
 						</label>
 					</th>
 					<td>
@@ -172,23 +172,23 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 				<tr valign="top">
 					<th scope="row" valign="top">
 						<label for="user_id">
-							<?php _e( 'Vendor', 'inspiry-membership' ); ?>
+							<?php esc_html_e( 'Vendor', 'inspiry-membership' ); ?>
 						</label>
 					</th>
 					<td>
 						<?php $vendor = get_post_meta( $receipt->ID, "{$prefix}vendor", true ); ?>
 						<select	name="vendor" id="vendor">
 							<option value="" <?php echo ( '' == $vendor ) ? 'selected' : ''; ?> disabled>
-								<?php _e( 'None', 'inspiry-memberships' ); ?>
+								<?php esc_html_e( 'None', 'inspiry-memberships' ); ?>
 							</option>
 							<option value="stripe" <?php echo ( 'stripe' == $vendor ) ? 'selected' : ''; ?> >
-								<?php _e( 'Stripe', 'inspiry-memberships' ); ?>
+								<?php esc_html_e( 'Stripe', 'inspiry-memberships' ); ?>
 							</option>
 							<option value="paypal" <?php echo ( 'paypal' == $vendor ) ? 'selected' : ''; ?> >
-								<?php _e( 'PayPal', 'inspiry-memberships' ); ?>
+								<?php esc_html_e( 'PayPal', 'inspiry-memberships' ); ?>
 							</option>
 							<option value="wire" <?php echo ( 'wire' == $vendor ) ? 'selected' : ''; ?> >
-								<?php _e( 'Wire Transfer', 'inspiry-memberships' ); ?>
+								<?php esc_html_e( 'Wire Transfer', 'inspiry-memberships' ); ?>
 							</option>
 						</select>
 					</td>
@@ -197,7 +197,7 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 				<tr valign="top">
 					<th scope="row" valign="top">
 						<label for="payment_id">
-							<?php _e( 'Payment ID', 'inspiry-membership' ); ?>
+							<?php esc_html_e( 'Payment ID', 'inspiry-membership' ); ?>
 						</label>
 					</th>
 					<td>
@@ -213,7 +213,7 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 				<tr valign="top">
 					<th scope="row" valign="top">
 						<label for="status">
-							<?php _e( 'Membership Status', 'inspiry-membership' ); ?>
+							<?php esc_html_e( 'Membership Status', 'inspiry-membership' ); ?>
 						</label>
 					</th>
 					<td>
@@ -227,13 +227,13 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 						?>
 						<?php if ( empty( $status ) ) : ?>
 							<input type="checkbox" name="status" id="status" />
-							<p class="description"><?php _e( 'Select to activate the membership.', 'inspiry-membership' ); ?></p>
+							<p class="description"><?php esc_html_e( 'Select to activate the membership.', 'inspiry-membership' ); ?></p>
 						<?php elseif ( $current_membership !== $membership_id ) : ?>
 							<input type="hidden" name="status" id="status" value="true" />
-							<p class="description"><?php _e( 'Membership expired.', 'inspiry-membership' ); ?></p>
+							<p class="description"><?php esc_html_e( 'Membership expired.', 'inspiry-membership' ); ?></p>
 						<?php else : ?>
 							<input type="hidden" name="status" id="status" value="true" />
-							<p class="description"><?php _e( 'Membership is active.', 'inspiry-membership' ); ?></p>
+							<p class="description"><?php esc_html_e( 'Membership is active.', 'inspiry-membership' ); ?></p>
 						<?php endif; ?>
 					</td>
 				</tr>

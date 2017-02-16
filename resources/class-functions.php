@@ -231,14 +231,14 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 
 					<div class="form-option">
 
-						<h4><?php _e( 'Select Membership', 'inspiry-memberships' ); ?></h4>
+						<h4><?php esc_html_e( 'Select Membership', 'inspiry-memberships' ); ?></h4>
 
 						<select name="ims-membership-select" id="ims-membership-select">
 
-							<option selected disabled><?php _e( 'None', 'inspiry-memberships' ); ?></option>
+							<option selected disabled><?php esc_html_e( 'None', 'inspiry-memberships' ); ?></option>
 							<?php foreach ( $ims_memberships as $ims_membership ) : ?>
 								<option value="<?php echo $ims_membership[ 'ID' ]; ?>">
-									<?php _e( $ims_membership[ 'title' ], 'inspiry-memberships' ); ?>
+									<?php esc_html_e( $ims_membership[ 'title' ], 'inspiry-memberships' ); ?>
 								</option>
 							<?php endforeach; ?>
 
@@ -251,7 +251,7 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 						<?php if ( 'on' === $basic_settings[ 'ims_recurring_memberships_enable' ] ) : ?>
 							<input type="checkbox" name="ims_recurring" id="ims_recurring" />
 							<label for="ims_recurring" id="ims_recurring_label">
-								<?php _e( 'Recurring Membership?', 'inspiry-memberships' ); ?>
+								<?php esc_html_e( 'Recurring Membership?', 'inspiry-memberships' ); ?>
 							</label>
 						<?php endif; ?>
 
@@ -283,7 +283,7 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 
 					<?php if ( 'on' === $wire_settings[ 'ims_wire_enable' ] ) : ?>
 						<div class="ims-wire-transfer">
-							<h4><?php _e( 'Wire Transfer', 'inspiry-memberships' ); ?></h4>
+							<h4><?php esc_html_e( 'Wire Transfer', 'inspiry-memberships' ); ?></h4>
 							<?php
 								if ( isset( $wire_settings[ 'ims_wire_transfer_instructions' ] )
 									&& ! empty( $wire_settings[ 'ims_wire_transfer_instructions' ] ) ) {
@@ -304,7 +304,7 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 						<!-- /.ims-wire-transfer -->
 
 						<div class="ims-button-option ims-receipt-button">
-							<a href="#" id="ims-receipt"><?php _e( 'Send Receipt', 'inspiry-memberships' ); ?></a>
+							<a href="#" id="ims-receipt"><?php esc_html_e( 'Send Receipt', 'inspiry-memberships' ); ?></a>
 						</div>
 						<!-- /.form-option ims-paypal-button -->
 					<?php endif; ?>
@@ -336,9 +336,9 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 			if ( ! empty( $user_id ) ) : ?>
 
 				<form action="" method="POST" id="ims-cancel-user-membership">
-					<h4 class="title"><?php _e( 'Are you sure?', 'inspiry-memberships' ); ?></h4>
-					<button class="ims-btn" id="ims-btn-confirm" type="submit"><?php _e( 'Confirm', 'inspiry-memberships' ); ?></button>
-					<button class="ims-btn" id="ims-btn-close" type="button"><?php _e( 'Cancel', 'inspiry-memberships' ); ?></button>
+					<h4 class="title"><?php esc_html_e( 'Are you sure?', 'inspiry-memberships' ); ?></h4>
+					<button class="ims-btn" id="ims-btn-confirm" type="submit"><?php esc_html_e( 'Confirm', 'inspiry-memberships' ); ?></button>
+					<button class="ims-btn" id="ims-btn-close" type="button"><?php esc_html_e( 'Cancel', 'inspiry-memberships' ); ?></button>
 					<input type="hidden" name="action" value="ims_cancel_user_membership" />
 					<input type="hidden" name="user_id" value="<?php echo esc_attr( $user_id ); ?>" />
 					<input type="hidden" name="ims_cancel_membership_nonce" value="<?php echo wp_create_nonce( 'ims-cancel-membership-nonce' ); ?>" />
