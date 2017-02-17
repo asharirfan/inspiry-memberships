@@ -518,6 +518,7 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 						$this->paypal_user_membership_end_schedule( $current_user->ID, $membership_id );
 
 						$redirect_url 	= add_query_arg( array( 'membership' => 'purchased' ), esc_url( get_bloginfo( 'url' ) ) );
+						$redirect_url	= apply_filters( 'ims_membership_success_redirect', $redirect_url );
 
 						// Add action hook after paypal payment is done.
 						do_action( 'ims_paypal_simple_payment_success', $user_id, $membership_id, $receipt_id );
@@ -525,6 +526,7 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 					} else {
 
 						$redirect_url 	= add_query_arg( array( 'membership' => 'failed' ), esc_url( get_bloginfo( 'url' ) ) );
+						$redirect_url	= apply_filters( 'ims_membership_failed_redirect', $redirect_url );
 
 						// Add action hook after paypal payment is failed.
 						do_action( 'ims_paypal_simple_payment_failed' );
@@ -537,6 +539,7 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 				}
 
 				$redirect_url 	= add_query_arg( array( 'membership' => 'failed' ), esc_url( get_bloginfo( 'url' ) ) );
+				$redirect_url	= apply_filters( 'ims_membership_failed_redirect', $redirect_url );
 				wp_redirect( $redirect_url );
 				exit();
 
@@ -755,6 +758,7 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 						}
 
 						$redirect_url 	= esc_url( add_query_arg( array( 'membership' => 'success' ), home_url() ) );
+						$redirect_url	= apply_filters( 'ims_membership_success_redirect', $redirect_url );
 
 						// Add action hook after paypal payment is done.
 						do_action( 'ims_paypal_recurring_payment_success', $current_user->ID, $membership_id, $receipt_id );
@@ -762,6 +766,7 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 					} else {
 
 						$redirect_url 	= esc_url( add_query_arg( array( 'membership' => 'failed' ), home_url() ) );
+						$redirect_url	= apply_filters( 'ims_membership_failed_redirect', $redirect_url );
 
 						// Add action hook after paypal payment failed.
 						do_action( 'ims_paypal_recurring_payment_failed' );
@@ -774,6 +779,7 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 				} else {
 
 					$redirect_url 	= esc_url( add_query_arg( array( 'membership' => 'failed' ), home_url() ) );
+					$redirect_url	= apply_filters( 'ims_membership_failed_redirect', $redirect_url );
 					wp_redirect( $redirect_url );
 					exit();
 

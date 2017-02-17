@@ -367,10 +367,12 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 
 						// Redirect on sucessful membership.
 						$redirect_url	= add_query_arg( array( 'membership' => 'successful' ), $redirect );
+						$redirect_url	= apply_filters( 'ims_membership_success_redirect', $redirect_url );
 
 					} else {
 						// Redirect on empty receipt id.
 						$redirect_url 	= $redirect;
+						$redirect_url	= apply_filters( 'ims_membership_failed_redirect', $redirect_url );
 					}
 
 					// Add action hook after stripe payment is done.
@@ -380,6 +382,7 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 
 					// Redirect on empty token or membership id.
 					$redirect_url	= add_query_arg( array( 'membership' => 'failed' ), $redirect );
+					$redirect_url	= apply_filters( 'ims_membership_failed_redirect', $redirect_url );
 
 					// Add action hook after stripe payment is done.
 					do_action( 'ims_stripe_simple_payment_failed' );
@@ -389,6 +392,7 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 			} else {
 				// Redirect on empty token or membership id.
 				$redirect_url	= add_query_arg( array( 'membership' => 'failed' ), $redirect );
+				$redirect_url	= apply_filters( 'ims_membership_failed_redirect', $redirect_url );
 			}
 
 			// Redirect back to our previous page with the added query variable.
@@ -449,6 +453,7 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 
 				// Redirect on successful payment.
 				$redirect_url	= add_query_arg( array( 'membership' => 'successful' ), $redirect );
+				$redirect_url	= apply_filters( 'ims_membership_success_redirect', $redirect_url );
 
 				// Add action hook after stripe payment is done.
 				do_action( 'ims_stripe_recurring_payment_success', $user_id, $membership_id, $receipt_id );
@@ -457,6 +462,7 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 
 				// Redirect on empty token or membership id.
 				$redirect_url	= add_query_arg( array( 'membership' => 'failed' ), $redirect );
+				$redirect_url	= apply_filters( 'ims_membership_failed_redirect', $redirect_url );
 
 				// Add action hook after stripe payment is done.
 				do_action( 'ims_stripe_recurring_payment_failed' );
