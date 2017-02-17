@@ -31,7 +31,7 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 		 * @var 	string
 		 * @since 	1.0.0
 		 */
-		 private $client_ID;
+		private $client_ID;
 
 		/**
 		 * PayPal Client Secret.
@@ -39,7 +39,7 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 		 * @var 	string
 		 * @since 	1.0.0
 		 */
-		 private $client_secret;
+		private $client_secret;
 
 		/**
 		 * PayPal Sandbox URI.
@@ -47,7 +47,7 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 		 * @var 	string
 		 * @since 	1.0.0
 		 */
-		 public $uri_sandbox;
+		public $uri_sandbox;
 
 		/**
 		 * PayPal Live URI.
@@ -55,7 +55,7 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 		 * @var 	string
 		 * @since 	1.0.0
 		 */
-		 public $uri_live;
+		public $uri_live;
 
 		/**
 		 * PayPal Access Token.
@@ -63,7 +63,7 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 		 * @var 	string
 		 * @since 	1.0.0
 		 */
-		 private $access_token;
+		private $access_token;
 
 		/**
 		 * PayPal Token Type.
@@ -71,7 +71,7 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 		 * @var 	string
 		 * @since 	1.0.0
 		 */
-		 private $token_type;
+		private $token_type;
 
 		/**
 		 * PayPal API Username.
@@ -79,7 +79,7 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 		 * @var 	string
 		 * @since 	1.0.0
 		 */
-		 private $api_username;
+		private $api_username;
 
 		/**
 		 * PayPal API Password.
@@ -87,7 +87,7 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 		 * @var 	string
 		 * @since 	1.0.0
 		 */
-		 private $api_password;
+		private $api_password;
 
 		/**
 		 * PayPal API Signature.
@@ -95,7 +95,7 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 		 * @var 	string
 		 * @since 	1.0.0
 		 */
-		 private $api_signature;
+		private $api_signature;
 
 		/**
 		 * PayPal API EndPoint.
@@ -103,7 +103,7 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 		 * @var 	string
 		 * @since 	1.0.0
 		 */
-		 private $api_endpoint;
+		private $api_endpoint;
 
 		/**
 		 * PayPal Express Checkout URL.
@@ -111,7 +111,7 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 		 * @var 	string
 		 * @since 	1.0.0
 		 */
-		 private $express_checkout_url;
+		private $express_checkout_url;
 
 		/**
 		 * Currency Code.
@@ -119,7 +119,7 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 		 * @var 	string
 		 * @since 	1.0.0
 		 */
-		 public $currency_code = 'USD';
+		public $currency_code = 'USD';
 
 		/**
 		 * Constructor.

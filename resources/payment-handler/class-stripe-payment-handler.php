@@ -31,7 +31,7 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 		 * @var 	object
 		 * @since 	1.0.0
 		 */
-		 protected static $_instance;
+		protected static $_instance;
 
 		/**
 		 * Stripe Secret Key.
@@ -39,7 +39,7 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 		 * @var 	string
 		 * @since 	1.0.0
 		 */
-		 protected $secret_key;
+		protected $secret_key;
 
 		/**
 		 * Stripe Publishable Key.
@@ -47,7 +47,7 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 		 * @var 	string
 		 * @since 	1.0.0
 		 */
-		 protected $publishable_key;
+		protected $publishable_key;
 
 		/**
 		 * $currency_code.
@@ -55,7 +55,7 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 		 * @var 	string
 		 * @since 	1.0.0
 		 */
-		 protected $currency_code;
+		protected $currency_code;
 
 		/**
 		 * Stripe Token.
@@ -63,7 +63,7 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 		 * @var 	string
 		 * @since 	1.0.0
 		 */
-		 protected $stripe_token;
+		protected $stripe_token;
 
 		/**
 		 * Customer Details Array.
@@ -71,7 +71,7 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 		 * @var 	array
 		 * @since 	1.0.0
 		 */
-		 protected $customer_details;
+		protected $customer_details;
 
 		/**
 		 * Method: Returns a single instance of this class.
@@ -210,7 +210,7 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 					$ims_stripe_settings 	= get_option( 'ims_stripe_settings' );
 
 					// Strip button label.
-					$ims_button_label 		= 'Pay with Card';
+					$ims_button_label 		= __( 'Pay with Card', 'inspiry-memberships' );
 					if ( ! empty( $ims_stripe_settings[ 'ims_stripe_btn_label' ] ) ) {
 						$ims_button_label	= $ims_stripe_settings[ 'ims_stripe_btn_label' ];
 					}

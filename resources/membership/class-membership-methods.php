@@ -118,6 +118,24 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 			// Get current membership details.
 			$current_membership 	= get_user_meta( $user_id, 'ims_current_membership', true );
 			$current_membership_id	= intval( $current_membership ); // Current Membership ID.
+			$current_vendor 		= get_user_meta( $user_id, 'ims_current_vendor', true );
+
+			if ( 'stripe' === $current_vendor ) {
+
+				// Clear schedule hook.
+				wp_clear_scheduled_hook( 'ims_stripe_schedule_membership_end', array( $user_id, $current_membership_id ) );
+
+			} elseif ( 'paypal' === $current_vendor ) {
+
+				// Clear schedule hook.
+				wp_clear_scheduled_hook( 'ims_paypal_membership_schedule_end', array( $user_id, $current_membership_id ) );
+
+			} elseif ( 'wire' === $current_vendor ) {
+
+				// Clear schedule hook.
+				wp_clear_scheduled_hook( 'ims_wire_membership_schedule_end', array( $user_id, $current_membership_id ) );
+
+			}
 
 			// Get new membership details.
 			$new_membership_id 	= intval( $membership_id ); // New Membership ID.

@@ -86,6 +86,8 @@ if ( ! class_exists( 'IMS_Wire_Transfer_Handler' ) ) :
 				$message 	.= 	sprintf( __( 'Please include the receipt name, Receipt %s, in the payment details.', 'inspiry-memberships' ), $receipt_id ) . "<br/><br/>";
 				$message 	.= 	__( 'We will activate your membership as soon as we get confirmation of your payment.', 'inspiry-memberships' );
 
+				$message 	= apply_filters( 'ims_membership_receipt_email_message', $message, $user_id, $membership_id, $receipt_id );
+
 				if ( is_email( $user_email ) ) {
 					$email 	= IMS_Email::send_email( $user_email, $subject, $message );
 				} else {
