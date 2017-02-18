@@ -240,18 +240,12 @@ jQuery( function( $ ) {
             $( '#ims-receipt' ).click( function( e ) {
 
                 e.preventDefault(); // Prevent the default event of link.
-                var recurring           = $( '#ims_recurring' );
-
-                if ( ! recurring.is( ':checked' ) ) {
-                    recurring   = false
-                } else {
-                    recurring   = true;
-                }
 
                 var membershipSelect    = $( '#ims-membership-select' ); // Membership select option.
                 var membership          = membershipSelect.val(); // Getting selected membership id.
                 var form_loader         = $( '.ims-membership_loader img' ); // Form Loader Image.
                 var response_div        = $( '#ims_select_membership > .error' ); // Error div.
+                var wire_nonce          = $( '#membership_wire_nonce' ).val(); // Wire Transfer nonce.
                 response_div.empty();
 
                 form_loader.show(); // Show ajax loader GIF.
@@ -261,7 +255,8 @@ jQuery( function( $ ) {
                     type        : "POST",
                     data        : {
                         membership_id   : membership,
-                        action          : "ims_send_wire_receipt"
+                        action          : "ims_send_wire_receipt",
+                        nonce           : wire_nonce
                     },
                     dataType    : "json"
                 });

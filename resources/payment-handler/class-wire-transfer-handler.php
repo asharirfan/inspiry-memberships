@@ -51,7 +51,7 @@ if ( ! class_exists( 'IMS_Wire_Transfer_Handler' ) ) :
 		public function send_wire_receipt() {
 
 			if ( isset( $_POST[ 'action' ] ) && 'ims_send_wire_receipt' === $_POST[ 'action' ] &&
-				wp_verify_nonce( $_POST[ 'membership_select_nonce' ], 'membership-select-nonce' ) ) {
+				isset( $_POST[ 'nonce' ] ) && wp_verify_nonce( $_POST[ 'nonce' ], 'membership-wire-nonce' ) ) {
 
 				// Get membership id.
 				$membership_id	= ( isset( $_POST[ 'membership_id' ] ) ) ? intval( $_POST[ 'membership_id' ] ) : false;

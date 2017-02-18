@@ -299,6 +299,7 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 									echo '<p>' . __( 'Account Number: ', 'inspiry-memberships' );
 									echo esc_html( $wire_settings[ 'ims_wire_account_number' ] ) . '</p>';
 								}
+								wp_nonce_field( 'membership-wire-nonce', 'membership_wire_nonce' );
 							?>
 						</div>
 						<!-- /.ims-wire-transfer -->
