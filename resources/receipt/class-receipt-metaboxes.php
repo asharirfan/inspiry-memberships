@@ -293,7 +293,7 @@ if ( ! class_exists( 'IMS_Receipt_Meta_Boxes' ) ) :
 			$ims_meta_value[ 'user_id' ] 		= ( isset( $_POST[ 'user_id' ] ) && ! empty( $_POST[ 'user_id' ] ) ) ? intval( $_POST[ 'user_id' ] ) : '';
 			$ims_meta_value[ 'vendor' ] 		= ( isset( $_POST[ 'vendor' ] ) ) && ! empty( $_POST[ 'vendor' ] ) ? sanitize_text_field( $_POST[ 'vendor' ] ) : '';
 			$ims_meta_value[ 'payment_id' ] 	= ( isset( $_POST[ 'payment_id' ] ) && ! empty( $_POST[ 'payment_id' ] ) ) ? sanitize_text_field( $_POST[ 'payment_id' ] ) : '';
-			$ims_meta_value[ 'status' ] 		= ( ! empty( $_POST[ 'status' ] ) && ( 'true' === $_POST[ 'status' ] ) ) ? true : false;
+			$ims_meta_value[ 'status' ] 		= ( ! empty( $_POST[ 'status' ] ) && ( 'on' === $_POST[ 'status' ] ) ) ? true : false;
 
 			$membership_status	= get_post_meta( $receipt_id, 'ims_membership_status', true );
 
