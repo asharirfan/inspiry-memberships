@@ -1270,17 +1270,17 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 				if ( 0 === strcmp( $result, "VERIFIED" ) ) {
 
 					// The IPN is verified, process it.
-					$item_name 			= ( isset( $_POST[ 'item_name' ] ) && ! empty( $_POST[ 'item_name' ] ) ) 						? wp_kses( $_POST[ 'item_name' ], array() ) : false;
-					$item_number 		= ( isset( $_POST[ 'item_number' ] ) && ! empty( $_POST[ 'item_number' ] ) ) 					? wp_kses( $_POST[ 'item_number' ], array() ) : false;
-					$payment_status 	= ( isset( $_POST[ 'payment_status' ] ) && ! empty( $_POST[ 'payment_status' ] ) ) 				? wp_kses( $_POST[ 'payment_status' ], array() ) : false;
-					$payment_amount 	= ( isset( $_POST[ 'mc_gross' ] ) && ! empty( $_POST[ 'mc_gross' ] ) ) 							? wp_kses( $_POST[ 'mc_gross' ], array() ) : false;
-					$payment_currency	= ( isset( $_POST[ 'mc_currency' ] ) && ! empty( $_POST[ 'mc_currency' ] ) ) 					? wp_kses( $_POST[ 'mc_currency' ], array() ) : false;
-					$txn_id 			= ( isset( $_POST[ 'txn_id' ] ) && ! empty( $_POST[ 'txn_id' ] ) ) 								? wp_kses( $_POST[ 'txn_id' ], array() ) : false;
-					$txn_type 			= ( isset( $_POST[ 'txn_type' ] ) && ! empty( $_POST[ 'txn_type' ] ) ) 							? wp_kses( $_POST[ 'txn_type' ], array() ) : false;
-					$receiver_email 	= ( isset( $_POST[ 'receiver_email' ] ) && ! empty( $_POST[ 'receiver_email' ] ) ) 				? wp_kses( $_POST[ 'receiver_email' ], array() ) : false;
-					$payer_email 		= ( isset( $_POST[ 'payer_email' ] ) && ! empty( $_POST[ 'payer_email' ] ) ) 					? wp_kses( $_POST[ 'payer_email' ], array() ) : false;
-					$recurring_id 		= ( isset( $_POST[ 'recurring_payment_id' ] ) && ! empty( $_POST[ 'recurring_payment_id' ] ) )	? wp_kses( $_POST[ 'recurring_payment_id' ], array() ) : false;
-					$profile_status		= ( isset( $_POST[ 'profile_status' ] ) && ! empty( $_POST[ 'profile_status' ] ) ) 				? wp_kses( $_POST[ 'profile_status' ], array() ) : false;
+					$item_name        = ( isset( $_POST[ 'item_name' ] ) && ! empty( $_POST[ 'item_name' ] ) ) ? sanitize_text_field( $_POST[ 'item_name' ] ) : false;
+					$item_number      = ( isset( $_POST[ 'item_number' ] ) && ! empty( $_POST[ 'item_number' ] ) ) ? sanitize_text_field( $_POST[ 'item_number' ] ) : false;
+					$payment_status   = ( isset( $_POST[ 'payment_status' ] ) && ! empty( $_POST[ 'payment_status' ] ) ) ? sanitize_text_field( $_POST[ 'payment_status' ] ) : false;
+					$payment_amount   = ( isset( $_POST[ 'mc_gross' ] ) && ! empty( $_POST[ 'mc_gross' ] ) ) ? sanitize_text_field( $_POST[ 'mc_gross' ] ) : false;
+					$payment_currency = ( isset( $_POST[ 'mc_currency' ] ) && ! empty( $_POST[ 'mc_currency' ] ) ) ? sanitize_text_field( $_POST[ 'mc_currency' ] ) : false;
+					$txn_id           = ( isset( $_POST[ 'txn_id' ] ) && ! empty( $_POST[ 'txn_id' ] ) ) ? sanitize_text_field( $_POST[ 'txn_id' ] ) : false;
+					$txn_type         = ( isset( $_POST[ 'txn_type' ] ) && ! empty( $_POST[ 'txn_type' ] ) ) ? sanitize_text_field( $_POST[ 'txn_type' ] ) : false;
+					$receiver_email   = ( isset( $_POST[ 'receiver_email' ] ) && ! empty( $_POST[ 'receiver_email' ] ) ) ? sanitize_email( $_POST[ 'receiver_email' ] ) : false;
+					$payer_email      = ( isset( $_POST[ 'payer_email' ] ) && ! empty( $_POST[ 'payer_email' ] ) ) ? sanitize_email( $_POST[ 'payer_email' ] ) : false;
+					$recurring_id     = ( isset( $_POST[ 'recurring_payment_id' ] ) && ! empty( $_POST[ 'recurring_payment_id' ] ) ) ? sanitize_text_field( $_POST[ 'recurring_payment_id' ] ) : false;
+					$profile_status   = ( isset( $_POST[ 'profile_status' ] ) && ! empty( $_POST[ 'profile_status' ] ) ) ? sanitize_text_field( $_POST[ 'profile_status' ] ) : false;
 
 					$membership_methods	= new IMS_Membership_Method();
 					$receipt_methods	= new IMS_Receipt_Method();
