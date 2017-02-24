@@ -3,7 +3,7 @@
  * Plugin Name:     Inspiry Memberships
  * Plugin URI:      https://github.com/InspiryThemes/inspiry-memberships
  * Description:     Provides functionality to create membership packages for real estate themes by Inspiry Themes
- * Version:         1.0.1
+ * Version:         1.0.11
  * Author:          Inspiry Themes
  * Author URI:      https://inspirythemes.com
  * Contributors:	inspirythemes, mrasharirfan, saqibsarwar
@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Inspiry_Memberships.
  *
- * Plugin Core Class. Test change.
+ * Plugin Core Class.
  *
  * @since 1.0.0
  */
