@@ -12,7 +12,7 @@
  * Text Domain:     inspiry-memberships
  * Domain Path:     languages
  *
- * @link             https://github.com/InspiryThemes/inspiry-memberships
+ * GitHub Plugin URI: https://github.com/InspiryThemes/inspiry-memberships
  * @since            1.0.0
  * @package          IMS
  */
