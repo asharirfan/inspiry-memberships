@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Inspiry_Memberships.
  *
- * Plugin Core Class.
+ * Plugin Core Class. Test change.
  *
  * @since 1.0.0
  */
