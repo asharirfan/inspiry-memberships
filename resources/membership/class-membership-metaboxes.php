@@ -168,7 +168,7 @@ if ( ! class_exists( 'IMS_Membership_Meta_Boxes' ) ) :
 				<tr valign="top">
 					<th scope="row" valign="top">
 						<label for="stripe_plan_id">
-							<?php esc_html_e( 'Stripe Subscription Plan ID (optional)', 'inspiry-membership' ); ?>
+							<?php esc_html_e( 'Stripe Subscription Plan ID', 'inspiry-membership' ); ?>
 						</label>
 					</th>
 					<td>
@@ -177,7 +177,7 @@ if ( ! class_exists( 'IMS_Membership_Meta_Boxes' ) ) :
 								id="stripe_plan_id"
 								value="<?php echo esc_attr( get_post_meta( $membership->ID, "{$prefix}stripe_plan_id", true ) ); ?>"
 						/>
-						<p class="description"><?php esc_html_e( 'If you are using Stripe for recurring payments.', 'inspiry-membership' ); ?></p>
+						<p class="description"><?php esc_html_e( 'Required, If you are using Stripe for recurring payments.', 'inspiry-membership' ); ?></p>
 					</td>
 				</tr>
 
