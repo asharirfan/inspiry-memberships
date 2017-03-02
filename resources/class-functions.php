@@ -174,9 +174,6 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 			$current_featured_props	= get_user_meta( $user_id, 'ims_current_featured_props', true );
 			$membership_due_date 	= get_user_meta( $user_id, 'ims_membership_due_date', true );
 
-			// Membership Data array.
-			$membership_data 	= array();
-
 			if ( ! empty( $membership_id ) ) {
 
 				// Get membership object.
