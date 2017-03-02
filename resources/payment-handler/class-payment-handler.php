@@ -110,11 +110,10 @@ if ( ! class_exists( 'IMS_Payment_Handler' ) ) :
 
 				}
 
-				if ( wp_get_referer() ) {
-				    wp_safe_redirect( wp_get_referer() );
-				} else {
-				    wp_safe_redirect( get_home_url() );
-				}
+				$redirect_url 	= add_query_arg( array( 'membership' => 'purchased' ), esc_url( get_bloginfo( 'url' ) ) );
+				$redirect_url	= apply_filters( 'ims_membership_success_redirect', $redirect_url );
+				wp_redirect( $redirect_url );
+				die();
 
 			}
 
