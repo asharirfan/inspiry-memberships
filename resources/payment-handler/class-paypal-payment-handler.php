@@ -1295,6 +1295,7 @@ if ( ! class_exists( 'IMS_PayPal_Payment_Handler' ) ) :
 						// Extend membership.
 						$current_membership	= get_user_meta( $user_id, 'ims_current_membership', true );
 						$membership_methods->update_membership_due_date( $current_membership, $user_id );
+						$membership_methods->update_user_recurring_membership( $user_id, $current_membership );
 						$receipt_id 		= $receipt_methods->generate_receipt( $user_id, $current_membership, 'paypal', $txn_id, true );
 
 						if ( ! empty( $receipt_id ) ) {

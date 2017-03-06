@@ -718,6 +718,7 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 
 							$membership_methods	= new IMS_Membership_Method();
 							$membership_methods->update_membership_due_date( $membership_id, $customer->ID );
+							$membership_methods->update_user_recurring_membership( $customer->ID, $membership_id );
 
 							$receipt_methods	= new IMS_Receipt_Method();
 							$receipt_id 		= $receipt_methods->generate_receipt( $customer->ID, $membership_id, 'stripe', $subscription_id, true );
