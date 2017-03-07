@@ -686,6 +686,11 @@ if ( ! class_exists( 'WP_OSA' ) ) :
 		    	echo '<h1>' . __( 'Inspiry Memberships Settings', 'inspiry-memberships' ) . '</h1>';
 			    $this->show_navigation();
 			    $this->show_forms();
+			    echo '<p>' . __( 'For help, please consult the ', 'inspiry-memberships' );
+			    echo '<a href="#" target="_blank">' . __( 'documentation', 'inspiry-memberships' ) . '</a>';
+			    echo __( ' of the plugin.', 'inspiry-memberships' ) . '</p>';
+			    echo '<p>' . __( 'If you face any issues, please report them at ', 'inspiry-memberships' );
+			    echo '<a href="https://github.com/InspiryThemes/inspiry-memberships/issues" target="_blank">' . __( 'GitHub.', 'inspiry-memberships' ) . '</a></p>';
 		    echo '</div>';
 		}
 

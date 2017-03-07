@@ -143,6 +143,13 @@ $the_version = IMS_VERSION; ?>
 
 	</div>
 
+	<p>
+		<?php esc_html_e( 'For help, please consult the ', 'inspiry-memberships' ); ?><a target="_blank" href="<?php echo esc_url( "https://inspirythemes.com" ); ?>"><?php esc_html_e( 'documentation', 'inspiry-memberships' ); ?></a><?php esc_html_e( ' of the plugin.', 'inspiry-memberships' ); ?>
+	</p>
+	<p>
+		<?php esc_html_e( 'If you face any issues, please report them at ', 'inspiry-memberships' ); ?><a target="_blank" href="<?php echo esc_url( "https://github.com/InspiryThemes/inspiry-memberships/issues" ); ?>"><?php esc_html_e( 'GitHub.', 'inspiry-memberships' ); ?></a>
+	</p>
+
 	<hr>
 
 	<div class="return-to-dashboard">
