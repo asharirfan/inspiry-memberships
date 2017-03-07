@@ -147,8 +147,7 @@ $the_version = IMS_VERSION; ?>
 
 	<div class="return-to-dashboard">
 		<p>
-			<?php esc_html_e( 'With love, from', 'inspiry-memberships' ); ?>
-			<a target="_blank" href="<?php echo esc_url( "https://inspirythemes.com" ); ?>"><?php esc_html_e( 'Inspiry Themes', 'inspiry-memberships' ); ?></a>
+			<?php esc_html_e( 'With love, from', 'inspiry-memberships' ); ?><a target="_blank" href="<?php echo esc_url( "https://inspirythemes.com" ); ?>"><?php esc_html_e( 'Inspiry Themes', 'inspiry-memberships' ); ?></a>
 		</p>
 	</div>
 	<!-- /.return-to-dashboard -->
