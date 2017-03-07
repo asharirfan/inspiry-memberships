@@ -126,7 +126,13 @@ if ( ! class_exists( 'IMS_Membership_Meta_Boxes' ) ) :
 								<?php echo ( ! empty( $price ) ) ? 'disabled' : ''; ?>
 						/>
 						<p class="description"><?php esc_html_e( 'Example: 20', 'inspiry-membership' ); ?></p>
-						<p class="description doc-note"><?php printf( __( 'Note: Please consult the <a href="%s" target="_blank">documentation</a> of the plugin for changing the price of the memebership', 'inspiry-membership' ), '#' ); ?></p>
+						<p class="description doc-note">
+							<?php
+							esc_html_e( 'Note: Please consult the ', 'inspiry-membership' );
+							echo '<a href="' . esc_url( IMS_DOCS_URL ) . '" target="_blank">documentation</a>';
+							esc_html_e( ' of the plugin for changing the price of the memebership', 'inspiry-membership' );
+							?>
+						</p>
 					</td>
 				</tr>
 

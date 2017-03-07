@@ -110,6 +110,16 @@ if ( ! class_exists( 'Inspiry_Memberships' ) ) :
 				define( 'IMS_BASE_DIR', plugin_dir_path( __FILE__ ) );
 			}
 
+			// Plugin Docs URL
+			if ( ! defined( 'IMS_DOCS_URL' ) ) {
+				define( 'IMS_DOCS_URL', '#' );
+			}
+
+			// Plugin Issue Reporting URL
+			if ( ! defined( 'IMS_ISSUE_URL' ) ) {
+				define( 'IMS_ISSUE_URL', 'https://github.com/InspiryThemes/inspiry-memberships/issues' );
+			}
+
 		}
 
 		/**

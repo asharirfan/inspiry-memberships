@@ -687,10 +687,10 @@ if ( ! class_exists( 'WP_OSA' ) ) :
 			    $this->show_navigation();
 			    $this->show_forms();
 			    echo '<p>' . __( 'For help, please consult the ', 'inspiry-memberships' );
-			    echo '<a href="#" target="_blank">' . __( 'documentation', 'inspiry-memberships' ) . '</a>';
+			    echo '<a href="' . esc_url( IMS_DOCS_URL ) . '" target="_blank">' . __( 'documentation', 'inspiry-memberships' ) . '</a>';
 			    echo __( ' of the plugin.', 'inspiry-memberships' ) . '</p>';
 			    echo '<p>' . __( 'If you face any issues, please report them at ', 'inspiry-memberships' );
-			    echo '<a href="https://github.com/InspiryThemes/inspiry-memberships/issues" target="_blank">' . __( 'GitHub.', 'inspiry-memberships' ) . '</a></p>';
+			    echo '<a href="' . esc_url( IMS_ISSUE_URL ) . '" target="_blank">' . __( 'GitHub.', 'inspiry-memberships' ) . '</a></p>';
 		    echo '</div>';
 		}
 
