@@ -118,12 +118,15 @@ if ( ! class_exists( 'IMS_Membership_Meta_Boxes' ) ) :
 						</label>
 					</th>
 					<td>
+						<?php $price = intval( get_post_meta( $membership->ID, "{$prefix}price", true ) ); ?>
 						<input 	type="number"
 								name="price"
 								id="price"
-								value="<?php echo esc_attr( get_post_meta( $membership->ID, "{$prefix}price", true ) ); ?>"
+								value="<?php echo esc_attr( $price ); ?>"
+								<?php echo ( ! empty( $price ) ) ? 'disabled' : ''; ?>
 						/>
 						<p class="description"><?php esc_html_e( 'Example: 20', 'inspiry-membership' ); ?></p>
+						<p class="description doc-note"><?php printf( __( 'Note: Please consult the <a href="%s" target="_blank">documentation</a> of the plugin for changing the price of the memebership', 'inspiry-membership' ), '#' ); ?></p>
 					</td>
 				</tr>
 
