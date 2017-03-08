@@ -227,7 +227,7 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 			$user_package_featured		= intval( get_user_meta( $user_id, 'ims_package_featured_props', true ) );
 			$user_current_featured 		= intval( get_user_meta( $user_id, 'ims_current_featured_props', true ) );
 
-			if ( $package_properties === $user_package_properties ) {
+			if ( ( $package_properties === $user_package_properties ) && ( $package_feature_properties === $user_package_featured ) ) {
 				return true;
 			} else {
 
