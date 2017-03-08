@@ -119,12 +119,24 @@ if ( ! class_exists( 'IMS_Membership_Meta_Boxes' ) ) :
 					</th>
 					<td>
 						<?php $price = intval( get_post_meta( $membership->ID, "{$prefix}price", true ) ); ?>
-						<input 	type="number"
-								name="price"
-								id="price"
-								value="<?php echo esc_attr( $price ); ?>"
-								<?php echo ( ! empty( $price ) ) ? 'disabled' : ''; ?>
-						/>
+						<?php if ( empty( $price ) ) : ?>
+							<input 	type="number"
+									name="price"
+									id="price"
+									value="<?php echo esc_attr( $price ); ?>"
+									<?php echo ( ! empty( $price ) ) ? 'disabled' : ''; ?>
+							/>
+						<?php else : ?>
+							<input 	type="hidden"
+									name="price"
+									id="price"
+									value="<?php echo esc_attr( $price ); ?>"
+							/>
+							<input 	type="number"
+									value="<?php echo esc_attr( $price ); ?>"
+									<?php echo ( ! empty( $price ) ) ? 'disabled' : ''; ?>
+							/>
+						<?php endif; ?>
 						<p class="description"><?php esc_html_e( 'Example: 20', 'inspiry-membership' ); ?></p>
 						<p class="description doc-note">
 							<?php

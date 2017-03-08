@@ -170,7 +170,9 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 
 			// Get current membership details.
 			$membership_id 			= get_user_meta( $user_id, 'ims_current_membership', true );
+			$package_properties		= get_user_meta( $user_id, 'ims_package_properties', true );
 			$current_properties 	= get_user_meta( $user_id, 'ims_current_properties', true );
+			$package_featured_props	= get_user_meta( $user_id, 'ims_package_featured_props', true );
 			$current_featured_props	= get_user_meta( $user_id, 'ims_current_featured_props', true );
 			$membership_due_date 	= get_user_meta( $user_id, 'ims_membership_due_date', true );
 
@@ -185,9 +187,9 @@ if ( ! class_exists( 'IMS_Functions' ) ) :
 					'title' 			=> get_the_title( $membership_id ),
 					'format_price'		=> self::get_formatted_price( $membership_obj->get_price() ),
 					'price'				=> $membership_obj->get_price(),
-					'properties'		=> $membership_obj->get_properties(),
+					'properties'		=> $package_properties,
 					'current_props'		=> $current_properties,
-					'featured_prop'		=> $membership_obj->get_featured_properties(),
+					'featured_prop'		=> $package_featured_props,
 					'current_featured'	=> $current_featured_props,
 					'duration'			=> $membership_obj->get_duration(),
 					'duration_unit'		=> $membership_obj->get_duration_unit(),
