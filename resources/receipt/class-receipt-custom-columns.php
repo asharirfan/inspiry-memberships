@@ -112,7 +112,7 @@ if ( ! class_exists( 'IMS_Receipt_Custom_Columns' ) ) :
 						$user_name 	= $user->user_login;
 					}
 					if ( ! empty( $user_name ) ) {
-						echo '<a href="' . esc_url( get_edit_profile_url( $user_id ) ) . '">' . esc_html( $user_name ) . '</a>';
+						echo '<a href="' . esc_url( get_edit_user_link( $user_id ) ) . '">' . esc_html( $user_name ) . '</a>';
 					} else {
 						esc_html_e( 'Not Available', 'inspiry-memberships' );
 					}
