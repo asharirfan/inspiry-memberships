@@ -73,7 +73,7 @@ if ( class_exists( 'IMS_Stripe_Payment_Handler' ) ) {
 
 	add_action( 'init', array( $ims_stripe_payment_handler, 'process_stripe_payment' ) ); // Stripe Payment Process Init.
 
-	add_action( 'init', array( $ims_stripe_payment_handler, 'handle_stripe_subscription_event' ), 1 ); // Hande stripe events for memberships.
+	add_action( 'init', array( $ims_stripe_payment_handler, 'handle_stripe_subscription_event' ), 1 ); // Handle stripe events for memberships.
 
 }
 

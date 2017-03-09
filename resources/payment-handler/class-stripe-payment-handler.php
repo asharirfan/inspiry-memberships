@@ -314,9 +314,9 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 				$this->customer_details 	= apply_filters( 'ims_membership_customer_details', $this->customer_details );
 
 				// Charge the card using stripe.
-				if ( empty( $is_recurring ) ) {
+				if ( empty( $recurring ) ) {
 					$this->stripe_charge( $user_id, $membership_id, $membership_price, $redirect );
-				} elseif ( ! empty( $is_recurring ) ) {
+				} elseif ( ! empty( $recurring ) ) {
 					$this->stripe_recurring_charge( $user_id, $membership_id, $membership_price, $redirect );
 				}
 
@@ -456,7 +456,7 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 				$redirect_url	= apply_filters( 'ims_membership_success_redirect', $redirect_url );
 
 				// Add action hook after stripe payment is done.
-				do_action( 'ims_stripe_recurring_payment_success', $user_id, $membership_id, $receipt_id );
+				do_action( 'ims_stripe_recurring_payment_success', $user_id, $membership_id );
 
 			} catch ( Exception $e ) {
 
@@ -650,11 +650,6 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 					foreach ( $customer_arr as $customer_data => $value ) {
 						$cus_stripe_id	= $value->customer;
 					}
-				}
-
-				// If customer stripe id does not exist then exit.
-				if ( empty( $cus_stripe_id ) ) {
-					exit();
 				}
 
 				if ( 'customer.subscription.deleted' == $event->type ) {
