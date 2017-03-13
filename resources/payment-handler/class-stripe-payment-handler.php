@@ -645,18 +645,14 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 				$event 		= \Stripe\Event::retrieve( $event_json->id );
 
 				// Get stripe customer id.
-				$customer_arr	= get_object_vars( $event->data );
-				if ( ! empty( $customer_arr ) ) {
-					foreach ( $customer_arr as $customer_data => $value ) {
-						$cus_stripe_id	= $value->customer;
-					}
-				}
+				$stripe_customer_id = $event->data->object->customer;
 
 				if ( 'customer.subscription.deleted' == $event->type ) {
 
 					$customer_args	= array(
 						'meta_key'		=> 'ims_stripe_customer_id',
-						'meta_value'	=> $cus_stripe_id
+						'meta_value'	=> $stripe_customer_id,
+						'meta_compare'	=> '='
 					);
 					$customers 		= get_users( $customer_args );
 
@@ -680,7 +676,8 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 
 					$customer_args 	= array(
 						'meta_key'		=> 'ims_stripe_customer_id',
-						'meta_value'	=> $cus_stripe_id
+						'meta_value'	=> $stripe_customer_id,
+						'meta_compare'	=> '='
 					);
 					$customers 		= get_users( $customer_args );
 
@@ -696,7 +693,8 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 
 					$customer_args 	= array(
 						'meta_key'		=> 'ims_stripe_customer_id',
-						'meta_value'	=> $cus_stripe_id
+						'meta_value'	=> $stripe_customer_id,
+						'meta_compare'	=> '='
 					);
 					$customers 		= get_users( $customer_args );
 
@@ -732,7 +730,8 @@ if ( ! class_exists( 'IMS_Stripe_Payment_Handler' ) ) :
 
 					$customer_args 	= array(
 						'meta_key'		=> 'ims_stripe_customer_id',
-						'meta_value'	=> $cus_stripe_id
+						'meta_value'	=> $stripe_customer_id,
+						'meta_compare'	=> '='
 					);
 					$customers 		= get_users( $customer_args );
 
