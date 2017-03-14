@@ -13,26 +13,24 @@
  * Domain Path:     languages
  *
  * GitHub Plugin URI: https://github.com/InspiryThemes/inspiry-memberships
+ *
  * @since            1.0.0
  * @package          IMS
  */
-
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-
-/**
- * Inspiry_Memberships.
- *
- * Plugin Core Class.
- *
- * @since 1.0.0
- */
-
 if ( ! class_exists( 'Inspiry_Memberships' ) ) :
 
+	/**
+	 * Inspiry_Memberships.
+	 *
+	 * Plugin Core Class.
+	 *
+	 * @since 1.0.0
+	 */
 	class Inspiry_Memberships {
 
 		/**
@@ -90,32 +88,32 @@ if ( ! class_exists( 'Inspiry_Memberships' ) ) :
 		 */
 		public function define_constants() {
 
-			// Plugin version
+			// Plugin version.
 			if ( ! defined( 'IMS_VERSION' ) ) {
 				define( 'IMS_VERSION', $this->version );
 			}
 
-			// Plugin Name
+			// Plugin Name.
 			if ( ! defined( 'IMS_BASE_NAME' ) ) {
 				define( 'IMS_BASE_NAME', plugin_basename( __FILE__ ) );
 			}
 
-			// Plugin Directory URL
+			// Plugin Directory URL.
 			if ( ! defined( 'IMS_BASE_URL' ) ) {
 				define( 'IMS_BASE_URL', plugin_dir_url( __FILE__ ) );
 			}
 
-			// Plugin Directory Path
+			// Plugin Directory Path.
 			if ( ! defined( 'IMS_BASE_DIR' ) ) {
 				define( 'IMS_BASE_DIR', plugin_dir_path( __FILE__ ) );
 			}
 
-			// Plugin Docs URL
+			// Plugin Docs URL.
 			if ( ! defined( 'IMS_DOCS_URL' ) ) {
 				define( 'IMS_DOCS_URL', '#' );
 			}
 
-			// Plugin Issue Reporting URL
+			// Plugin Issue Reporting URL.
 			if ( ! defined( 'IMS_ISSUE_URL' ) ) {
 				define( 'IMS_ISSUE_URL', 'https://github.com/InspiryThemes/inspiry-memberships/issues' );
 			}
@@ -130,7 +128,7 @@ if ( ! class_exists( 'Inspiry_Memberships' ) ) :
 		public function include_files() {
 
 			/**
-			 * class-ims-install.
+			 * Class-ims-install.
 			 *
 			 * @since 1.0.0
 			 */
@@ -139,7 +137,7 @@ if ( ! class_exists( 'Inspiry_Memberships' ) ) :
 			}
 
 			/**
-			 * class-ims-uninstall.
+			 * Class-ims-uninstall.
 			 *
 			 * @since 1.0.0
 			 */
@@ -148,7 +146,7 @@ if ( ! class_exists( 'Inspiry_Memberships' ) ) :
 			}
 
 			/**
-			 * ims-init.php.
+			 * IMS-init.php.
 			 *
 			 * @since 1.0.0
 			 */
@@ -175,7 +173,7 @@ if ( ! class_exists( 'Inspiry_Memberships' ) ) :
 		/**
 		 * Add plugin settings link
 		 *
-		 * @param $links
+		 * @param string $links - links related to plugin.
 		 *
 		 * @since 1.0.0
 		 * @return array
@@ -195,8 +193,8 @@ endif;
  *
  * @since 1.0.0
  */
-function IMS() {
+function ims() {
 	return Inspiry_Memberships::instance();
 }
 
-IMS();
+ims();
