@@ -26,6 +26,7 @@ This plugin allows you to create recurring memberships. So that you can receive 
 
 ### Links
 - [GitHub Repository](https://github.com/InspiryThemes/inspiry-memberships)
+- [Its usage in Real Homes](http://realhomes.inspirythemes.biz/doc/#ims-installation)
 
 == Installation ==
 
