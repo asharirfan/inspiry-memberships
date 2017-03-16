@@ -110,7 +110,7 @@ if ( ! class_exists( 'Inspiry_Memberships' ) ) :
 
 			// Plugin Docs URL.
 			if ( ! defined( 'IMS_DOCS_URL' ) ) {
-				define( 'IMS_DOCS_URL', '#' );
+				define( 'IMS_DOCS_URL', 'http://realhomes.inspirythemes.biz/doc/#ims-installation' );
 			}
 
 			// Plugin Issue Reporting URL.
