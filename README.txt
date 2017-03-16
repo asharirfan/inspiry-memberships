@@ -3,8 +3,8 @@ Contributors: inspirythemes, mrasharirfan, saqibsarwar
 Donate link: url
 Tags: membership, real estate, inspiry
 Requires at least: 4.7
-Tested up to: 4.7.2
-Stable tag: 1.0.0
+Tested up to: 4.7.3
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -35,6 +35,9 @@ This plugin allows you to create recurring memberships. So that you can receive 
 1. Activate the `Inspiry Memberships` through the 'Plugins' menu in WordPress
 
 == Changelog ==
+
+= 1.0.1 =
+* Fixed some bugs related to basic use cases.
 
 = 1.0.0 =
 * Initial release.
