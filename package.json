@@ -27,6 +27,8 @@
   "devDependencies": {
     "gulp": "^3.9.1",
     "gulp-notify": "^2.2.0",
+    "gulp-sort": "^2.0.0",
+    "gulp-wp-pot": "^2.0.4",
     "gulp-zip": "^3.2.0"
   }
 }
