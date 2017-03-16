@@ -6,7 +6,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language-Team: InspiryThemes <ashar@inspirythemes.com>\n"
+"Language-Team: InspiryThemes <info@inspirythemes.com>\n"
 "Last-Translator: Ashar Irfan <ashar@inspirythemes.com>\n"
 "Report-Msgid-Bugs-To: https://github.com/InspiryThemes/inspiry-memberships/issues\n"
 "X-Poedit-Basepath: ..\n"
@@ -33,6 +33,7 @@ msgid "None"
 msgstr ""
 
 #: resources/class-functions.php:240, resources/settings/wire-settings.php:37, resources/welcome/form/paypal-settings.php:176, resources/welcome/form/stripe-settings.php:153
+msgid ""
 msgstr ""
 
 #: resources/class-functions.php:253
