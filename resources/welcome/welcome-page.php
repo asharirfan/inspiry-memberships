@@ -30,7 +30,7 @@ $the_version = IMS_VERSION; ?>
 
 	<?php $settings = get_option( 'ims_basic_settings' ); ?>
 	<?php if ( empty( $settings ) ) : ?>
-		<div class="feature-section one-col">
+		<div class="feature-section">
 			<h2><?php esc_html_e( 'Get Started', 'inspiry-memberships' ); ?></h2>
 			<ul>
 				<li>
@@ -118,7 +118,7 @@ $the_version = IMS_VERSION; ?>
 	</p>
 	<!-- /.lead-description -->
 
-	<div class="feature-section one-col">
+	<div class="feature-section">
 
 		<h3><?php esc_html_e( 'Easy to Use', 'inspiry-memberships' ); ?></h3>
 		<p class="ims__description"><?php esc_html_e( 'This plugin provides simple and straight forward settings to get you started on adding membership packages in your real estate website.', 'inspiry-memberships' ); ?></p>

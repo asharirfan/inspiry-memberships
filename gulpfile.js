@@ -24,7 +24,7 @@ var destFile                = 'inspiry-memberships.pot'; // Name of the transala
 var packageName             = 'inspiry-memberships'; // Package name.
 var bugReport               = 'https://github.com/InspiryThemes/inspiry-memberships/issues'; // Where can users report bugs.
 var lastTranslator          = 'Ashar Irfan <ashar@inspirythemes.com>'; // Last translator Email ID.
-var team                    = 'InspiryThemes <ashar@inspirythemes.com>'; // Team's Email ID.
+var team                    = 'InspiryThemes <info@inspirythemes.com>'; // Team's Email ID.
 
 /**
  * Build Plugin Zip
