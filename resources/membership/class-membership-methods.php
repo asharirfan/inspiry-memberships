@@ -229,7 +229,7 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 
 			if ( ( $package_properties === $user_package_properties ) && ( $package_feature_properties === $user_package_featured ) ) {
 				return true;
-			} else {
+			} elseif ( ( $package_properties !== $user_package_properties ) && ( $package_feature_properties !== $user_package_featured ) ) {
 
 				$prev_membership_details	= array(
 					'package_properties'	=> $user_package_properties,
@@ -240,6 +240,54 @@ if ( ! class_exists( 'IMS_Membership_Method' ) ) :
 
 				update_user_meta( $user_id, 'ims_package_properties', $package_properties );
 				update_user_meta( $user_id, 'ims_current_properties', $package_properties );
+				update_user_meta( $user_id, 'ims_package_featured_props', $package_feature_properties );
+				update_user_meta( $user_id, 'ims_current_featured_props', $package_feature_properties );
+
+				/**
+				 * Hook: To extend the functionality of updating recurring membership
+				 * of the plugin.
+				 *
+				 * @param int $user_id - ID of the user buying membership
+				 * @param int $membership_id - ID of the membership
+				 * @param array $prev_membership_details - array containing the previous details of modified membership
+				 *
+				 * @since 1.0.0
+				 */
+				do_action( 'ims_update_user_recurring_membership', $user_id, $membership_id, $prev_membership_details );
+
+			} elseif ( ( $package_properties !== $user_package_properties ) && ( $package_feature_properties === $user_package_featured ) ) {
+
+				$prev_membership_details	= array(
+					'package_properties'	=> $user_package_properties,
+					'current_properties'	=> $user_current_properties,
+					'package_featured'		=> $user_package_featured,
+					'current_featured'		=> $user_current_featured
+				);
+
+				update_user_meta( $user_id, 'ims_package_properties', $package_properties );
+				update_user_meta( $user_id, 'ims_current_properties', $package_properties );
+
+				/**
+				 * Hook: To extend the functionality of updating recurring membership
+				 * of the plugin.
+				 *
+				 * @param int $user_id - ID of the user buying membership
+				 * @param int $membership_id - ID of the membership
+				 * @param array $prev_membership_details - array containing the previous details of modified membership
+				 *
+				 * @since 1.0.0
+				 */
+				do_action( 'ims_update_user_recurring_membership', $user_id, $membership_id, $prev_membership_details );
+
+			} elseif ( ( $package_properties === $user_package_properties ) && ( $package_feature_properties !== $user_package_featured ) ) {
+
+				$prev_membership_details	= array(
+					'package_properties'	=> $user_package_properties,
+					'current_properties'	=> $user_current_properties,
+					'package_featured'		=> $user_package_featured,
+					'current_featured'		=> $user_current_featured
+				);
+
 				update_user_meta( $user_id, 'ims_package_featured_props', $package_feature_properties );
 				update_user_meta( $user_id, 'ims_current_featured_props', $package_feature_properties );
 
